@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/elms_db
+    username: root
+    password: password
