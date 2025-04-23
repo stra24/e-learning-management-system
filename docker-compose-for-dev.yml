@@ -1,0 +1,33 @@
+version: '3.8' # Docker Compose のバージョン
+
+services:
+  elms-app: # Spring Boot アプリケーションのサービス定義
+    build: # アプリケーションをビルドする設定
+      context: . # 現在のディレクトリ（このファイルがある場所）をビルドのコンテキストにする
+      dockerfile: Dockerfile # Dockerfile を使ってアプリのイメージをビルドする
+    ports:
+      - "8081:8080" # ローカルの8081番ポートをコンテナの8080番ポートにマッピング（Spring Bootのデフォルトポート）
+    depends_on:
+      elms-db:
+        condition: service_healthy # db（PostgreSQL）が「正常（healthy）」になるまで起動を待つ
+
+  elms-db: # PostgreSQL データベースのサービス定義
+    image: postgres:15 # PostgreSQL の公式イメージ（バージョン15を使用）
+    container_name: elms-db # コンテナ名
+    ports:
+      - "5433:5432" # ホストの指定ポートとコンテナ内の5432（PostgreSQLのデフォルト）を接続
+    environment: # PostgreSQL の初期設定を行う環境変数
+      POSTGRES_DB: elms_db # 初期作成するデータベース名
+      POSTGRES_USER: root # データベースユーザー名
+      POSTGRES_PASSWORD: pass # ユーザーパスワード
+      TZ: Asia/Tokyo # タイムゾーン設定
+    volumes:
+      - elms-db-data:/var/lib/postgresql/data # データ永続化のため、PostgreSQL のデータ格納ディレクトリをボリュームにマウント
+    healthcheck: # dbサービスのヘルスチェック設定
+      test: ["CMD-SHELL", "pg_isready -U root"] # PostgreSQL に接続できるか確認
+      interval: 10s # チェックの間隔
+      timeout: 5s # タイムアウト時間
+      retries: 5 # リトライ回数
+
+volumes:
+  elms-db-data: # 名前付きボリューム（PostgreSQLのデータを永続化）
