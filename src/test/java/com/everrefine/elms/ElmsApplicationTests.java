@@ -1,10 +1,10 @@
-package com.everrefine.elms.backend;
+package com.everrefine.elms;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BackendApplicationTests {
+class ElmsApplicationTests {
 
 	@Test
 	void contextLoads() {

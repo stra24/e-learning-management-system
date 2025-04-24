@@ -1,4 +1,4 @@
-package com.everrefine.elms.backend;
+package com.everrefine.elms;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
