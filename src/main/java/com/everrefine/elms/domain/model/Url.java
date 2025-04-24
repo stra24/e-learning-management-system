@@ -1,4 +1,4 @@
-package com.everrefine.elms.domain.model.user;
+package com.everrefine.elms.domain.model;
 
 import java.net.URI;
 import java.net.URISyntaxException;

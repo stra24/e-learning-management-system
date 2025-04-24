@@ -1,0 +1,33 @@
+package com.everrefine.elms.infrastructure.repository;
+
+import com.everrefine.elms.domain.model.pager.PagerRequest;
+import com.everrefine.elms.domain.model.user.User;
+import com.everrefine.elms.domain.repository.UserRepository;
+import com.everrefine.elms.infrastructure.mapper.UserMapper;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Repository;
+
+@Repository
+@AllArgsConstructor
+public class UserRepositoryImpl implements UserRepository {
+
+  private final UserMapper userMapper;
+
+  @Override
+  public Optional<User> findUserById(UUID id) {
+    return userMapper.findUserById(id);
+  }
+
+  @Override
+  public List<User> findUsers(PagerRequest pagerRequest) {
+    return userMapper.findUsers(pagerRequest);
+  }
+
+  @Override
+  public int countUsers() {
+    return userMapper.countUsers();
+  }
+}

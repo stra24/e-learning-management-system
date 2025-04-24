@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.everrefine.elms.infrastructure.mapper.UserMapper">
+  <select id="findUserById" resultType="com.everrefine.elms.domain.model.user.User">
+    SELECT
+    *
+    FROM
+    users
+    WHERE
+    id = #{id}
+  </select>
+
+  <select id="findUsers" resultType="com.everrefine.elms.domain.model.user.User">
+    SELECT
+    *
+    FROM
+    users
+    LIMIT #{pageSize} OFFSET #{offset}
+  </select>
+
+  <select id="countUsers" resultType="int">
+    SELECT COUNT(*) FROM users
+  </select>
+</mapper>

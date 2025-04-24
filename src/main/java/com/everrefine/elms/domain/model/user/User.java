@@ -1,36 +1,29 @@
 package com.everrefine.elms.domain.model.user;
 
-import jakarta.validation.Valid;
+import com.everrefine.elms.domain.model.Url;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 /**
  * ユーザーのエンティティ。
  */
 @Getter
-@ToString
 @AllArgsConstructor
 public class User {
 
   @NotNull
   private final UUID id;
   @NotNull
-  @Valid
   private EmailAddress emailAddress;
   @NotNull
-  @Valid
   private Password password;
   @NotNull
-  @Valid
   private RealName realName;
   @NotNull
-  @Valid
   private UserName userName;
-  @Valid
   private Url thumbnailUrl;
   @NotNull
   private LocalDateTime createdAt;
