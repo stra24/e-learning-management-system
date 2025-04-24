@@ -3,8 +3,9 @@ CREATE TABLE users (
     id UUID PRIMARY KEY,                             -- ユーザーID（UUID）
     email_address VARCHAR(255) NOT NULL UNIQUE,      -- メールアドレス（ユニーク）
     password VARCHAR(255) NOT NULL,                  -- ハッシュ化されたパスワード
-    name VARCHAR(100) NOT NULL,                               -- 本名
-    user_name VARCHAR(100) NOT NULL UNIQUE,                   -- 表示用ユーザー名（ユニーク）
+    real_name VARCHAR(50) NOT NULL,                  -- 本名
+    user_name VARCHAR(50) NOT NULL UNIQUE,           -- 表示用ユーザー名（ユニーク）
+    thumbnail_url TEXT,                              -- サムネイル画像のURL
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 登録日時
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  -- 更新日時
 );
