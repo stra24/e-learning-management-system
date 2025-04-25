@@ -53,7 +53,7 @@ CREATE TABLE lessons (
 CREATE TABLE news (
     id UUID PRIMARY KEY,                             -- お知らせID
     title VARCHAR(255) NOT NULL,                     -- タイトル
-    content TEXT,                                    -- 本文
+    content TEXT NOT NULL,                                    -- 本文
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 作成日時
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  -- 更新日時
 );

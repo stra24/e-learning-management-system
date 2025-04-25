@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.everrefine.elms.infrastructure.mapper.CourseMapper">
+  <select id="findCourseById" resultType="com.everrefine.elms.domain.model.course.Course">
+    SELECT
+    *
+    FROM
+    courses
+    WHERE
+    id = #{id}
+  </select>
+
+  <select id="findCourses" resultType="com.everrefine.elms.domain.model.course.Course">
+    SELECT
+    *
+    FROM
+    courses
+    LIMIT #{pageSize} OFFSET #{offset}
+  </select>
+
+  <select id="countCourses" resultType="int">
+    SELECT COUNT(*) FROM courses
+  </select>
+</mapper>

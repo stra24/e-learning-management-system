@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.everrefine.elms.infrastructure.mapper.NewsMapper">
+  <select id="findNewsById" resultType="com.everrefine.elms.domain.model.news.News">
+    SELECT
+    *
+    FROM
+    news
+    WHERE
+    id = #{id}
+  </select>
+
+  <select id="findNews" resultType="com.everrefine.elms.domain.model.news.News">
+    SELECT
+    *
+    FROM
+    news
+    LIMIT #{pageSize} OFFSET #{offset}
+  </select>
+
+  <select id="countNews" resultType="int">
+    SELECT COUNT(*) FROM news
+  </select>
+</mapper>

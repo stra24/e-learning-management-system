@@ -1,6 +1,7 @@
 package com.everrefine.elms.domain.model.user;
 
 import com.everrefine.elms.domain.model.Url;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -24,6 +25,7 @@ public class User {
   private RealName realName;
   @NotNull
   private UserName userName;
+  @Nullable
   private Url thumbnailUrl;
   @NotNull
   private LocalDateTime createdAt;
