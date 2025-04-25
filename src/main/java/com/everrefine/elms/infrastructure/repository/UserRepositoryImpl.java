@@ -1,6 +1,7 @@
 package com.everrefine.elms.infrastructure.repository;
 
 import com.everrefine.elms.domain.model.pager.PagerRequest;
+import com.everrefine.elms.domain.model.user.EmailAddress;
 import com.everrefine.elms.domain.model.user.User;
 import com.everrefine.elms.domain.repository.UserRepository;
 import com.everrefine.elms.infrastructure.mapper.UserMapper;
@@ -19,6 +20,11 @@ public class UserRepositoryImpl implements UserRepository {
   @Override
   public Optional<User> findUserById(UUID id) {
     return userMapper.findUserById(id);
+  }
+
+  @Override
+  public Optional<User> findUserByEmailAddress(EmailAddress emailAddress) {
+    return userMapper.findUserByEmailAddress(emailAddress);
   }
 
   @Override

@@ -11,6 +11,15 @@
     id = #{id}
   </select>
 
+  <select id="findUserByEmailAddress" resultType="com.everrefine.elms.domain.model.user.User">
+    SELECT
+    *
+    FROM
+    users
+    WHERE
+    email_address = #{emailAddress}
+  </select>
+
   <select id="findUsers" resultType="com.everrefine.elms.domain.model.user.User">
     SELECT
     *

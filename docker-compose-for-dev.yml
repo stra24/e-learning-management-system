@@ -24,7 +24,7 @@ services:
     volumes:
       - elms-db-data:/var/lib/postgresql/data # データ永続化のため、PostgreSQL のデータ格納ディレクトリをボリュームにマウント
     healthcheck: # dbサービスのヘルスチェック設定
-      test: ["CMD-SHELL", "pg_isready -U root"] # PostgreSQL に接続できるか確認
+      test: [ "CMD-SHELL", "pg_isready -U root" ] # PostgreSQL に接続できるか確認
       interval: 10s # チェックの間隔
       timeout: 5s # タイムアウト時間
       retries: 5 # リトライ回数

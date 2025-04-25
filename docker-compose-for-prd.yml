@@ -17,6 +17,7 @@ services:
       DB_PASS: ${DB_PASS} # データベースのパスワード
       DB_PORT: ${DB_PORT} # PostgreSQL のポート番号
       TZ: ${TZ} # タイムゾーン（例: Asia/Tokyo）
+      JWT_SECRET: ${JWT_SECRET} # JWTのsecret
 
   elms-db: # PostgreSQL データベースのサービス定義
     image: postgres:15 # PostgreSQL の公式イメージ（バージョン15を使用）
@@ -31,7 +32,7 @@ services:
     volumes:
       - elms-db-data:/var/lib/postgresql/data # データ永続化のため、PostgreSQL のデータ格納ディレクトリをボリュームにマウント
     healthcheck: # dbサービスのヘルスチェック設定
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"] # PostgreSQL に接続できるか確認
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER}" ] # PostgreSQL に接続できるか確認
       interval: 10s # チェックの間隔
       timeout: 5s # タイムアウト時間
       retries: 5 # リトライ回数

@@ -1,55 +1,69 @@
 buildscript {
-	dependencies {
-		classpath("org.flywaydb:flyway-database-postgresql:11.7.2")
-	}
+    dependencies {
+        classpath("org.flywaydb:flyway-database-postgresql:11.7.2")
+    }
 }
 
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.4.5-SNAPSHOT'
-	id 'io.spring.dependency-management' version '1.1.7'
-	id "org.flywaydb.flyway" version "11.7.2"
+    id 'java'
+    id 'org.springframework.boot' version '3.4.5-SNAPSHOT'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id "org.flywaydb.flyway" version "11.7.2"
 }
 
 group = 'com.everrefine.elms'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
-	maven { url 'https://repo.spring.io/snapshot' }
+    mavenCentral()
+    maven { url 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {
-	// implementation 'org.springframework.boot:spring-boot-starter-security' // コメントアウトしなくても起動には成功するが、パスワード生成されるので、コメントアウトする。
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+    // SpringBoot
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+    // コメントアウトなし→パスワード生成される。起動に成功する。コメントアウトあり→起動に成功する。
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	runtimeOnly 'org.postgresql:postgresql'
-	implementation 'org.flywaydb:flyway-core:11.7.2'
-	runtimeOnly 'org.flywaydb:flyway-database-postgresql:11.7.2' // https://qiita.com/wb773/items/ca85cf05c90c3037ed25
+    // DB, Flyway
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core:11.7.2'
+    runtimeOnly 'org.flywaydb:flyway-database-postgresql:11.7.2'
+    // https://qiita.com/wb773/items/ca85cf05c90c3037ed25
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
-	// testImplementation 'org.springframework.security:spring-security-test' // SpringSecurityをコメントアウトしているので、testのほうもコメントアウトする。
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JacksonでJSONパース
+
+    // パスワードエンコーディング（BCrypt）
+    implementation 'org.springframework.security:spring-security-crypto'
+
+    // テスト
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

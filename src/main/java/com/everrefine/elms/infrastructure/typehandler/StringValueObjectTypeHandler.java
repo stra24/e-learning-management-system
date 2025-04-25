@@ -19,7 +19,7 @@ public abstract class StringValueObjectTypeHandler<T> extends BaseTypeHandler<T>
   @Override
   public void setNonNullParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) {
     try {
-      var valueMethod = type.getMethod("value");
+      var valueMethod = type.getMethod("getValue");
       String value = (String) valueMethod.invoke(parameter);
       ps.setString(i, value);
     } catch (Exception e) {

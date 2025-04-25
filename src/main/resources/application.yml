@@ -27,3 +27,9 @@ mybatis:
   type-handlers-package: com.everrefine.elms.infrastructure.typehandler
   configuration:
     map-underscore-to-camel-case: true
+
+jwt:
+  # デバッグ環境 or 開発環境用
+  secret: 0dTIXBDkSbhltNOJX8M3oMuN5K+vDG4Z7ZaY8rpg8kQ=
+  # 本番環境用
+  # secret: ${JWT_SECRET}
