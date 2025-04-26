@@ -33,3 +33,12 @@ jwt:
   secret: 0dTIXBDkSbhltNOJX8M3oMuN5K+vDG4Z7ZaY8rpg8kQ=
   # 本番環境用
   # secret: ${JWT_SECRET}
+
+# HTTPS化するための設定
+#server:
+#  port: 8443
+#  ssl:
+#    enabled: true
+#    key-store: classpath:keystore.p12
+#    key-store-password: password
+#    key-store-type: PKCS12

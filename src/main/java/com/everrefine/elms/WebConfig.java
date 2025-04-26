@@ -6,10 +6,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:3000") // Next.js開発環境
-                .allowedMethods("*");
-    }
+
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/api/**")
+        .allowedOrigins("http://localhost:3000") // Next.js開発環境
+        .allowedMethods("*")
+        .allowCredentials(true);
+  }
 }

@@ -41,7 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
       String username = jwtUtil.extractUsername(jwt);
 
       if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+        UserDetails userDetails = customUserDetailsService.loadUserById(username);
 
         if (jwtUtil.validateToken(jwt, userDetails)) {
           // JWTがまだ有効であれば、そのまま認証情報をSecurityContextに設定
@@ -60,16 +60,16 @@ public class JwtFilter extends OncePerRequestFilter {
             if (newJwt != null) {
               // 新しいJWTをクッキーにセット
               ResponseCookie jwtCookie = ResponseCookie.from("JWT", newJwt)
-                  .httpOnly(true)
-                  .secure(false)
+                  .httpOnly(false)
+                  .secure(true)
                   .path("/")
-                  .maxAge(Duration.ofHours(1))
-                  .sameSite("Strict")
+                  .maxAge(Duration.ofMinutes(10))
+                  .sameSite("None")
                   .build();
               response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
               // 新しいJWTで認証情報を設定
-              UserDetails newUserDetails = customUserDetailsService.loadUserByUsername(
+              UserDetails newUserDetails = customUserDetailsService.loadUserById(
                   jwtUtil.extractUsername(newJwt));
               UsernamePasswordAuthenticationToken newAuthToken = new UsernamePasswordAuthenticationToken(
                   newUserDetails,
