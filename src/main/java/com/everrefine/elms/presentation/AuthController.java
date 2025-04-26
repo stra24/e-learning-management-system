@@ -47,11 +47,15 @@ public class AuthController {
 
       // アクセストークンのクッキー設定
       ResponseCookie jwtCookie = ResponseCookie.from("JWT", jwt)
-          .httpOnly(false) // フロントエンドでリクエストヘッダーにJWTを付与するため、JSを扱えるようにfalseにする。
-          .secure(true) // 本番環境ではtrue（sameSite=Noneの場合secure=trueでないとブラウザがクッキーを受け付けるのを拒否する）
+          .httpOnly(false) // フロントエンドでクッキーのJWTをリクエストヘッダーに付与するため、JSで扱えるようにfalseにする。
+          .secure(true) // sameSite=Noneの場合secure=trueでないとブラウザがクッキーを受け付けるのを拒否する
           .path("/")
           .maxAge(Duration.ofMinutes(10)) // アクセストークンの有効期限（例: 10分）万が一漏洩しても被害を最小にするため短命にする。
-          .sameSite("None") // ブラウザがそのクッキーを "どのタイミングで自動送信していいか" を決める設定。Strict（CSRF対策）だと、CORSエラーになってしまうため、Noneに設定。
+          // sameSite・・・「どんなときにブラウザがこのCookieを送るか」を決める設定。
+          // Strict（CSRF対策）: 他ドメインorポートの場合は送らない。ただし、リクエストヘッダーでJWTを指定した場合は送られる。
+          // Lax：GETの場合だけ送る。
+          // None: 無条件に送る。違うドメインやポートに送る場合はNoneでないといけない。
+          .sameSite("Strict") // CSRF対策用で、リクエストヘッダーJWT無しのリクエスト時は、クッキーではJWTを送らないようにする。
           .build();
 
       // リフレッシュトークンのクッキー設定
@@ -60,7 +64,7 @@ public class AuthController {
           .secure(true)
           .path("/")
           .maxAge(Duration.ofDays(30))
-          .sameSite("Strict")
+          .sameSite("None")
           .build();
 
       // クッキーをレスポンスに追加
