@@ -5,97 +5,231 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
+import java.util.Optional;
 import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
 
-  // 256ビット（32バイト）のBase64エンコードされた秘密鍵
-  @Value("${jwt.secret}")
-  private String base64EncodedSecretKey;
-
+  // Bearerトークンの先頭文字列
+  private static final String BEARER_PREFIX = "Bearer ";
   // JWTの有効期限（1時間）
   private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60; // 1時間
   // リフレッシュトークンの有効期限（30日）
   private static final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 30; // 30日
+  // 256ビット（32バイト）のBase64エンコードされた秘密鍵
+  private static String base64EncodedSecretKey;
 
-  private Key getSigningKey() {
+  /**
+   * 署名キーを取得する。
+   *
+   * @return 署名キー
+   */
+  private static Key getSigningKey() {
     byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
     return Keys.hmacShaKeyFor(keyBytes);
   }
 
-  // JWTからユーザー名を抽出
-  public String extractUsername(String token) {
-    return extractClaim(token, Claims::getSubject);
+  /**
+   * トークンの中からSubject（ユーザーID）を取得する。
+   *
+   * @param token 対象のトークン
+   * @return Subject（ユーザーID）
+   */
+  public static String extractSubjectFromToken(String token) {
+    return extractSpecificInfoFromClaim(token, Claims::getSubject);
   }
 
-  // クレーム（情報）を抽出するための共通メソッド
-  public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+  /**
+   * クレーム（情報）内の指定の情報を抽出する
+   *
+   * @param token           トークン
+   * @param claimsTFunction 引数: クレーム、戻り値: TのFunction
+   * @param <T>             クレーム（情報）内の指定の情報の型
+   * @return クレーム（情報）内の指定の情報
+   */
+  public static <T> T extractSpecificInfoFromClaim(String token,
+      Function<Claims, T> claimsTFunction) {
     Claims claims = Jwts.parserBuilder()
         .setSigningKey(getSigningKey())
         .build()
         .parseClaimsJws(token)
         .getBody();
-    return claimsResolver.apply(claims);
+    return claimsTFunction.apply(claims);
   }
 
-  // トークンが有効かどうかを検証
-  public boolean validateToken(String token, UserDetails userDetails) {
-    final String username = extractUsername(token);
-    return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+  /**
+   * JWTトークンをレスポンスのクッキーにセットする。
+   *
+   * @param response レスポンス情報
+   * @param token    JWTトークン
+   */
+  public static void setJwtTokenToResponseCookie(HttpServletResponse response, String token) {
+    ResponseCookie jwtCookie = ResponseCookie.from("JWT", token)
+        .httpOnly(false) // フロントエンドでクッキーのJWTをリクエストヘッダーに付与するため、JSで扱えるようにfalseにする。
+        .secure(true) // sameSite=Noneの場合secure=trueでないとブラウザがクッキーを受け付けるのを拒否する
+        .path("/")
+        .maxAge(Duration.ofMinutes(10)) // アクセストークンの有効期限（例: 10分）万が一漏洩しても被害を最小にするため短命にする。
+        // sameSite・・・「どんなときにブラウザがこのCookieを送るか」を決める設定。
+        // Strict（CSRF対策）: 他ドメインorポートの場合は送らない。ただし、リクエストヘッダーでJWTを指定した場合は送られる。
+        // Lax：GETの場合だけ送る。
+        // None: 無条件に送る。違うドメインやポートに送る場合はNoneでないといけない。
+        .sameSite("Strict") // CSRF対策用で、リクエストヘッダーJWT無しのリクエスト時は、クッキーではJWTを送らないようにする。
+        .build();
+
+    response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
   }
 
-  // トークンが期限切れかどうかを確認
-  private boolean isTokenExpired(String token) {
-    Date expiration = extractClaim(token, Claims::getExpiration);
-    return expiration.before(new Date());
+  /**
+   * リフレッシュトークンをレスポンスのクッキーにセットする。
+   *
+   * @param response レスポンス情報
+   * @param token    リフレッシュトークン
+   */
+  public static void setRefreshTokenToResponseCookie(HttpServletResponse response, String token) {
+    ResponseCookie refreshTokenCookie = ResponseCookie.from("RefreshToken", token)
+        .httpOnly(true)
+        .secure(true)
+        .path("/")
+        .maxAge(Duration.ofDays(30))
+        .sameSite("None")
+        .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
   }
 
-  // アクセストークン（JWT）の生成
-  public String generateToken(String username) {
-    return Jwts.builder()
-        .setSubject(username)
-        .setIssuedAt(new Date())
-        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1時間
-        .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-        .compact();
-  }
-
-  // リフレッシュトークンの生成
-  public String generateRefreshToken(String username) {
-    return Jwts.builder()
-        .setSubject(username)
-        .setIssuedAt(new Date())
-        .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
-        .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-        .compact();
-  }
-
-  // リフレッシュトークンを使用して新しいアクセストークンを生成
-  public String refreshToken(String refreshToken) {
-    if (!validateToken(refreshToken)) {
-      return null; // 無効なリフレッシュトークンの場合、nullを返す
+  /**
+   * リクエストヘッダーからJWTを取得する。
+   *
+   * @param request リクエスト情報
+   * @return JWTの値
+   */
+  public static Optional<String> getJwtFromRequestHeader(HttpServletRequest request) {
+    String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+    if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
+      return Optional.of(authorizationHeader.substring(BEARER_PREFIX.length()));
     }
-
-    String username = extractUsername(refreshToken);
-
-    // 新しいアクセストークンを生成して返す
-    return generateToken(username);
+    return Optional.empty();
   }
 
-  // リフレッシュトークンが有効かどうかを検証
-  public boolean validateToken(String token) {
+  /**
+   * トークンのフォーマットが有効であるかをチェックする。
+   *
+   * @param token 対象のトークン
+   * @return true: トークンのフォーマットが有効である、false: トークンのフォーマットが無効である
+   */
+  public static boolean isTokenFormatValid(String token) {
     try {
-      // トークンの検証
       Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
       return true;
     } catch (Exception e) {
       return false;
     }
+  }
+
+  /**
+   * トークンが有効期限切れであるかをチェックする。
+   *
+   * @param token 対象トークン
+   * @return true: 有効期限切れ、false: 有効期間中
+   */
+  public static boolean isTokenExpired(String token) {
+    Date expiration = extractSpecificInfoFromClaim(token, Claims::getExpiration);
+    return expiration.before(new Date());
+  }
+
+  /**
+   * 認証情報をSecurityContextにセットする。
+   *
+   * @param request     リクエスト情報
+   * @param userDetails 認証情報
+   */
+  public static void setTokenToSecurityContext(HttpServletRequest request,
+      UserDetails userDetails) {
+    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        userDetails,
+        null,
+        userDetails.getAuthorities()
+    );
+    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+  }
+
+  /**
+   * クッキーからRefreshTokenを取得する。 クッキー自体がない or RefreshTokenのクッキーがない場合はOptional.empty()を返す。
+   *
+   * @param request リクエスト情報
+   * @return RefreshTokenのクッキー
+   */
+  public static Optional<String> getRefreshTokenFromCookie(HttpServletRequest request) {
+    Cookie[] cookies = request.getCookies();
+    if (cookies == null) {
+      return Optional.empty();
+    }
+
+    for (Cookie cookie : cookies) {
+      if ("RefreshToken".equals(cookie.getName())) {
+        return Optional.of(cookie.getValue());
+      }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * JWTトークンを生成する。
+   *
+   * @param subject サブジェクト
+   * @return JWTトークン
+   */
+  public static String generateJwtToken(String subject) {
+    return generateToken(subject, ACCESS_TOKEN_EXPIRATION);
+  }
+
+  /**
+   * リフレッシュトークンを生成する。
+   *
+   * @param subject サブジェクト
+   * @return リフレッシュトークン
+   */
+  public static String generateRefreshToken(String subject) {
+    return generateToken(subject, REFRESH_TOKEN_EXPIRATION);
+  }
+
+  /**
+   * トークンを生成する。
+   *
+   * @param subject サブジェクト
+   * @return トークン
+   */
+  private static String generateToken(String subject, long expiration) {
+    return Jwts.builder()
+        .setSubject(subject)
+        .setIssuedAt(new Date())
+        .setExpiration(new Date(System.currentTimeMillis() + expiration))
+        .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+        .compact();
+  }
+
+  /**
+   * application.ymlに定義した値をstaticフィールドに代入したいため、定義している。
+   *
+   * @param secretKey 秘密鍵
+   */
+  @Value("${jwt.secret}")
+  public void setBase64EncodedSecretKey(String secretKey) {
+    JwtUtil.base64EncodedSecretKey = secretKey;
   }
 }
