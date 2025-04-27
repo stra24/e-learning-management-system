@@ -6,7 +6,7 @@ import lombok.Value;
  * データ取得のリクエスト時に使うページャーの値オブジェクト。
  */
 @Value
-public class PagerRequest {
+public class PagerForRequest {
 
   /**
    * ページ番号
@@ -18,7 +18,7 @@ public class PagerRequest {
    */
   int pageSize;
 
-  public PagerRequest(int pageNum, int pageSize) {
+  public PagerForRequest(int pageNum, int pageSize) {
     if (pageNum < 1) {
       throw new IllegalArgumentException("pageNum must be at least 1");
     }

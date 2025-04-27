@@ -1,7 +1,7 @@
 package com.everrefine.elms.infrastructure.repository;
 
 import com.everrefine.elms.domain.model.course.Course;
-import com.everrefine.elms.domain.model.pager.PagerRequest;
+import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import com.everrefine.elms.domain.repository.CourseRepository;
 import com.everrefine.elms.infrastructure.mapper.CourseMapper;
 import java.util.List;
@@ -22,8 +22,8 @@ public class CourseRepositoryImpl implements CourseRepository {
   }
 
   @Override
-  public List<Course> findCourses(PagerRequest pagerRequest) {
-    return courseMapper.findCourses(pagerRequest);
+  public List<Course> findCourses(PagerForRequest pagerForRequest) {
+    return courseMapper.findCourses(pagerForRequest);
   }
 
   @Override

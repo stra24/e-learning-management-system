@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,5 +52,17 @@ public class AuthController {
       // 認証失敗
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout(HttpServletResponse response) {
+    JwtUtil.clearJwtAndRefreshToken(response);
+    return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/auth/refresh")
+  public ResponseEntity<Void> refreshAuth() {
+    // JwtFilterにより、JWTとリフレッシュトークンが再生成されるので、APIとしては何もしない。
+    return ResponseEntity.ok().build();
   }
 }

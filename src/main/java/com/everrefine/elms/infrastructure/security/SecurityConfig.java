@@ -42,7 +42,7 @@ public class SecurityConfig {
         )
         .authorizeHttpRequests(auth ->
             auth
-                .requestMatchers("/api/login", "/api/reset-password")
+                .requestMatchers("/api/login", "/api/reset-password", "/uploads/**")
                 .permitAll() // 特定のリクエストは認証なしで許可する
                 .anyRequest().authenticated() // それ以外の全てのリクエストは認証が必要とする
         )

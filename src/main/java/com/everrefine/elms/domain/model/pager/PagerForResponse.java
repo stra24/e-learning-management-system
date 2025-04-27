@@ -6,7 +6,7 @@ import lombok.Value;
  * ページネーション結果の値オブジェクト。
  */
 @Value
-public class PagerResponse {
+public class PagerForResponse {
 
   /**
    * ページ番号
@@ -23,7 +23,7 @@ public class PagerResponse {
    */
   int totalSize;
 
-  public PagerResponse(int pageNum, int pageSize, int totalSize) {
+  public PagerForResponse(int pageNum, int pageSize, int totalSize) {
     if (pageNum < 1) {
       throw new IllegalArgumentException("pageNum must be at least 1");
     }

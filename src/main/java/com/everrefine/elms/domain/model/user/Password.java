@@ -2,6 +2,7 @@ package com.everrefine.elms.domain.model.user;
 
 import java.util.regex.Pattern;
 import lombok.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * パスワードの値オブジェクト。
@@ -22,8 +23,8 @@ public class Password {
     this.value = value;
   }
 
-  @Override
-  public String toString() {
-    return "********";
+  public static Password encryptAndCreate(String value) {
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    return new Password(encoder.encode(value));
   }
 }

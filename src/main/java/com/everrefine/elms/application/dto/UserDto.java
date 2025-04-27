@@ -13,6 +13,7 @@ public class UserDto {
   private final String realName;
   private final String userName;
   private final String thumbnailUrl;
+  private final String userRole;
   private final LocalDateTime createdAt;
 
   // コンストラクタ
@@ -24,6 +25,7 @@ public class UserDto {
     this.thumbnailUrl = (user.getThumbnailUrl() != null)
         ? user.getThumbnailUrl().getValue()
         : null;
+    this.userRole = user.getUserRole().getRoleName();
     this.createdAt = user.getCreatedAt();
   }
 }

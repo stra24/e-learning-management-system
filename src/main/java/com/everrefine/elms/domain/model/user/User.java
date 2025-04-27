@@ -28,6 +28,8 @@ public class User {
   @Nullable
   private Url thumbnailUrl;
   @NotNull
+  private UserRole userRole;
+  @NotNull
   private LocalDateTime createdAt;
   @NotNull
   private LocalDateTime updatedAt;

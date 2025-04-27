@@ -3,8 +3,8 @@ package com.everrefine.elms.application.service;
 import com.everrefine.elms.application.dto.NewsDto;
 import com.everrefine.elms.application.dto.NewsPageDto;
 import com.everrefine.elms.domain.model.news.News;
-import com.everrefine.elms.domain.model.pager.PagerRequest;
-import com.everrefine.elms.domain.model.pager.PagerResponse;
+import com.everrefine.elms.domain.model.pager.PagerForRequest;
+import com.everrefine.elms.domain.model.pager.PagerForResponse;
 import com.everrefine.elms.domain.repository.NewsRepository;
 import java.util.List;
 import java.util.UUID;
@@ -27,10 +27,10 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
 
   @Override
   public NewsPageDto findNews(int pageNum, int pageSize) {
-    PagerRequest pagerRequest = new PagerRequest(pageNum, pageSize);
-    List<News> news = newsRepository.findNews(pagerRequest);
+    PagerForRequest pagerForRequest = new PagerForRequest(pageNum, pageSize);
+    List<News> news = newsRepository.findNews(pagerForRequest);
     int totalSize = newsRepository.countNews();
-    PagerResponse pagerResponse = new PagerResponse(pageNum, pageSize, totalSize);
-    return new NewsPageDto(news, pagerResponse);
+    PagerForResponse pagerForResponse = new PagerForResponse(pageNum, pageSize, totalSize);
+    return new NewsPageDto(news, pagerForResponse);
   }
 }

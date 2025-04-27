@@ -1,7 +1,7 @@
 package com.everrefine.elms.infrastructure.repository;
 
 import com.everrefine.elms.domain.model.news.News;
-import com.everrefine.elms.domain.model.pager.PagerRequest;
+import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import com.everrefine.elms.domain.repository.NewsRepository;
 import com.everrefine.elms.infrastructure.mapper.NewsMapper;
 import java.util.List;
@@ -22,8 +22,8 @@ public class NewsRepositoryImpl implements NewsRepository {
   }
 
   @Override
-  public List<News> findNews(PagerRequest pagerRequest) {
-    return newsMapper.findNews(pagerRequest);
+  public List<News> findNews(PagerForRequest pagerForRequest) {
+    return newsMapper.findNews(pagerForRequest);
   }
 
   @Override

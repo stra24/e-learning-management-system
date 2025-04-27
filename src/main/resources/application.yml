@@ -42,3 +42,6 @@ jwt:
 #    key-store: classpath:keystore.p12
 #    key-store-password: password
 #    key-store-type: PKCS12
+
+upload:
+  directory: uploads # ファイルアップロード先ディレクトリ

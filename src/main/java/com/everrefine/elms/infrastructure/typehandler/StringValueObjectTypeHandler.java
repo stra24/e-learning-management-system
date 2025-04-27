@@ -43,7 +43,7 @@ public abstract class StringValueObjectTypeHandler<T> extends BaseTypeHandler<T>
   }
 
   private T create(String value) {
-    if (value == null) {
+    if (value == null || value.isEmpty()) {
       return null;
     }
     try {

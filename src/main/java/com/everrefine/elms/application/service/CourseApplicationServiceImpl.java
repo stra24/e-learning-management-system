@@ -3,8 +3,8 @@ package com.everrefine.elms.application.service;
 import com.everrefine.elms.application.dto.CourseDto;
 import com.everrefine.elms.application.dto.CoursePageDto;
 import com.everrefine.elms.domain.model.course.Course;
-import com.everrefine.elms.domain.model.pager.PagerRequest;
-import com.everrefine.elms.domain.model.pager.PagerResponse;
+import com.everrefine.elms.domain.model.pager.PagerForRequest;
+import com.everrefine.elms.domain.model.pager.PagerForResponse;
 import com.everrefine.elms.domain.repository.CourseRepository;
 import java.util.List;
 import java.util.UUID;
@@ -27,10 +27,10 @@ public class CourseApplicationServiceImpl implements CourseApplicationService {
 
   @Override
   public CoursePageDto findCourses(int pageNum, int pageSize) {
-    PagerRequest pagerRequest = new PagerRequest(pageNum, pageSize);
-    List<Course> courses = courseRepository.findCourses(pagerRequest);
+    PagerForRequest pagerForRequest = new PagerForRequest(pageNum, pageSize);
+    List<Course> courses = courseRepository.findCourses(pagerForRequest);
     int totalSize = courseRepository.countCourses();
-    PagerResponse pagerResponse = new PagerResponse(pageNum, pageSize, totalSize);
-    return new CoursePageDto(courses, pagerResponse);
+    PagerForResponse pagerForResponse = new PagerForResponse(pageNum, pageSize, totalSize);
+    return new CoursePageDto(courses, pagerForResponse);
   }
 }

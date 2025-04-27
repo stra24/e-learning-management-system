@@ -1,7 +1,7 @@
 package com.everrefine.elms.infrastructure.mapper;
 
 import com.everrefine.elms.domain.model.course.Course;
-import com.everrefine.elms.domain.model.pager.PagerRequest;
+import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,7 +12,7 @@ public interface CourseMapper {
 
   Optional<Course> findCourseById(UUID id);
 
-  List<Course> findCourses(PagerRequest pagerRequest);
+  List<Course> findCourses(PagerForRequest pagerForRequest);
 
   int countCourses();
 }

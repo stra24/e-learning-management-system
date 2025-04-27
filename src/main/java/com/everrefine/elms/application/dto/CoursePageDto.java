@@ -1,7 +1,7 @@
 package com.everrefine.elms.application.dto;
 
 import com.everrefine.elms.domain.model.course.Course;
-import com.everrefine.elms.domain.model.pager.PagerResponse;
+import com.everrefine.elms.domain.model.pager.PagerForResponse;
 import java.util.List;
 import lombok.Getter;
 
@@ -27,10 +27,10 @@ public class CoursePageDto {
    */
   private final int totalSize;
 
-  public CoursePageDto(List<Course> courses, PagerResponse pagerResponse) {
+  public CoursePageDto(List<Course> courses, PagerForResponse pagerForResponse) {
     courseDtos = courses.stream().map(CourseDto::new).toList();
-    pageNum = pagerResponse.getPageNum();
-    pageSize = pagerResponse.getPageSize();
-    totalSize = pagerResponse.getTotalSize();
+    pageNum = pagerForResponse.getPageNum();
+    pageSize = pagerForResponse.getPageSize();
+    totalSize = pagerForResponse.getTotalSize();
   }
 }
