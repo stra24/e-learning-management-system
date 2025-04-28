@@ -1,12 +1,21 @@
 package com.everrefine.elms.presentation;
 
+import com.everrefine.elms.application.command.CourseCreateCommand;
+import com.everrefine.elms.application.command.CourseUpdateCommand;
 import com.everrefine.elms.application.dto.CourseDto;
 import com.everrefine.elms.application.dto.CoursePageDto;
 import com.everrefine.elms.application.service.CourseApplicationService;
+import com.everrefine.elms.presentation.request.CourseCreateRequest;
+import com.everrefine.elms.presentation.request.CourseUpdateRequest;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +27,54 @@ public class CourseController {
 
   private final CourseApplicationService courseApplicationService;
 
+  /**
+   * 指定したコースを更新する。
+   *
+   * @param courseId            コースID（パスパラメータ）
+   * @param courseUpdateRequest コースの更新リクエスト（リクエストボディ）
+   */
+  @PutMapping("/{courseId}")
+  public ResponseEntity<Void> updateCourse(
+      @PathVariable String courseId,
+      @RequestBody CourseUpdateRequest courseUpdateRequest
+  ) {
+    CourseUpdateCommand courseUpdateCommand = CourseUpdateCommand.create(
+        UUID.fromString(courseId),
+        courseUpdateRequest.getTitle(),
+        courseUpdateRequest.getDescription(),
+        courseUpdateRequest.getThumbnailUrl()
+    );
+    courseApplicationService.updateCourse(courseUpdateCommand);
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * コースを新規作成する。
+   *
+   * @param courseCreateRequest コースの新規作成リクエスト（リクエストボディ）
+   */
+  @PostMapping()
+  public ResponseEntity<Void> createCourse(@RequestBody CourseCreateRequest courseCreateRequest) {
+    CourseCreateCommand courseCreateCommand = CourseCreateCommand.create(
+        courseCreateRequest.getTitle(),
+        courseCreateRequest.getDescription(),
+        courseCreateRequest.getThumbnailUrl()
+    );
+    courseApplicationService.createCourse(courseCreateCommand);
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * 指定したコースIDのコースを削除する。
+   *
+   * @param courseId コースID（UUID形式の文字列）
+   */
+  @DeleteMapping("/{courseId}")
+  public ResponseEntity<Void> deleteCourseById(@PathVariable String courseId) {
+    courseApplicationService.deleteCourseById(courseId);
+    return ResponseEntity.noContent().build();
+  }
+  
   /**
    * 指定したコースIDでコースを取得する。
    *

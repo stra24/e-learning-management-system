@@ -8,37 +8,33 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 更新用ユーザーのコマンド。
+ * 更新用コースのコマンド。
  */
 @Getter
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-public class UserUpdateCommand {
+public class CourseUpdateCommand {
 
   @NotNull
   private UUID id;
   @NotNull
-  private String realName;
+  private String title;
   @NotNull
-  private String userName;
-  @NotNull
-  private String emailAddress;
+  private String description;
   @Nullable
   private String thumbnailUrl;
   @NotNull
   private LocalDateTime updatedAt;
 
-  public static UserUpdateCommand create(
+  public static CourseUpdateCommand create(
       UUID id,
-      String realName,
-      String userName,
-      String emailAddress,
+      String title,
+      String description,
       String thumbnailUrl
   ) {
-    return new UserUpdateCommand(
+    return new CourseUpdateCommand(
         id,
-        realName,
-        userName,
-        emailAddress,
+        title,
+        description,
         thumbnailUrl,
         LocalDateTime.now()
     );

@@ -1,4 +1,4 @@
-package com.everrefine.elms.domain.model.user;
+package com.everrefine.elms.domain.model.course;
 
 import com.everrefine.elms.domain.model.Url;
 import jakarta.annotation.Nullable;
@@ -8,20 +8,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * ユーザーの更新用リクエストのエンティティ。
+ * コースの更新用リクエストのエンティティ。
  */
 @Getter
 @AllArgsConstructor
-public class UserForUpdateRequest {
+public class CourseForUpdateRequest {
 
   @NotNull
   private final UUID id;
   @NotNull
-  private EmailAddress emailAddress;
+  private Title title;
   @NotNull
-  private RealName realName;
-  @NotNull
-  private UserName userName;
+  private Description description;
   @Nullable
   private Url thumbnailUrl;
 
@@ -30,7 +28,7 @@ public class UserForUpdateRequest {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof UserForUpdateRequest other)) {
+    if (!(o instanceof CourseForUpdateRequest other)) {
       return false;
     }
     return id.equals(other.id);

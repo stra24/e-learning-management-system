@@ -2,6 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.everrefine.elms.infrastructure.mapper.CourseMapper">
+  <delete id="deleteCourseById">
+    DELETE FROM courses
+    WHERE
+    id = #{id}
+  </delete>
+
+  <insert id="createCourse" parameterType="com.everrefine.elms.domain.model.course.Course">
+    INSERT INTO courses (
+    id,
+    thumbnail_url,
+    title,
+    description,
+    created_at,
+    updated_at
+    ) VALUES (
+    #{id},
+    #{thumbnailUrl.value},
+    #{title.value},
+    #{description.value},
+    #{createdAt},
+    #{updatedAt}
+    )
+  </insert>
+
+  <insert id="updateCourse"
+    parameterType="com.everrefine.elms.domain.model.course.CourseForUpdateRequest">
+    UPDATE courses
+    SET
+    title = #{title.value},
+    description = #{description.value},
+    thumbnail_url = #{thumbnailUrl},
+    updated_at = now()
+    WHERE id = #{id};
+  </insert>
+
   <select id="findCourseById" resultType="com.everrefine.elms.domain.model.course.Course">
     SELECT
     *

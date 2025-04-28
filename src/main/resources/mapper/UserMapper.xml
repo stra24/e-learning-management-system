@@ -27,8 +27,8 @@
     #{userName.value},
     #{thumbnailUrl.value},
     #{userRole.code},
-    #{updatedAt},
-    #{createdAt}
+    #{createdAt},
+    #{updatedAt}
     )
   </insert>
 

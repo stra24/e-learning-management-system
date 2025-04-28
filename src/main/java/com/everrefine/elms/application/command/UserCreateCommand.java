@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 新規作成用ユーザーのエンティティ。
+ * 新規作成用ユーザーのコマンド。
  */
 @Getter
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)

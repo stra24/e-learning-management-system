@@ -1,11 +1,19 @@
 package com.everrefine.elms.application.service;
 
+import com.everrefine.elms.application.command.CourseCreateCommand;
+import com.everrefine.elms.application.command.CourseUpdateCommand;
 import com.everrefine.elms.application.dto.CourseDto;
 import com.everrefine.elms.application.dto.CoursePageDto;
+import com.everrefine.elms.application.dto.CourseDto;
+import com.everrefine.elms.domain.model.Url;
 import com.everrefine.elms.domain.model.course.Course;
+import com.everrefine.elms.domain.model.course.Description;
+import com.everrefine.elms.domain.model.course.Title;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import com.everrefine.elms.domain.model.pager.PagerForResponse;
+import com.everrefine.elms.domain.model.course.CourseForUpdateRequest;
 import com.everrefine.elms.domain.repository.CourseRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -16,6 +24,41 @@ import org.springframework.stereotype.Service;
 public class CourseApplicationServiceImpl implements CourseApplicationService {
 
   private final CourseRepository courseRepository;
+
+  @Override
+  public void updateCourse(CourseUpdateCommand courseUpdateCommand) {
+    CourseDto courseDto = findCourseById(courseUpdateCommand.getId().toString());
+    CourseForUpdateRequest course = new CourseForUpdateRequest(
+        courseDto.getId(),
+        new Title(courseUpdateCommand.getTitle()),
+        new Description(courseUpdateCommand.getDescription()),
+        new Url(courseUpdateCommand.getThumbnailUrl())
+    );
+    courseRepository.updateCourse(course);
+  }
+
+  @Override
+  public void createCourse(CourseCreateCommand courseCreateCommand) {
+    LocalDateTime now = LocalDateTime.now();
+    Course course = new Course(
+        courseCreateCommand.getId(),
+        new Url(courseCreateCommand.getThumbnailUrl()),
+        new Title(courseCreateCommand.getTitle()),
+        new Description(courseCreateCommand.getDescription()),
+        now,
+        now
+    );
+    courseRepository.createCourse(course);
+  }
+
+  @Override
+  public void deleteCourseById(String courseId) {
+    UUID uuid = UUID.fromString(courseId);
+    // コースが存在しなくてもエラーにはしない。
+    courseRepository.findCourseById(uuid).ifPresent(course ->
+        courseRepository.deleteCourseById(uuid)
+    );
+  }
 
   @Override
   public CourseDto findCourseById(String courseId) {

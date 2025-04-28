@@ -1,12 +1,19 @@
 package com.everrefine.elms.domain.repository;
 
 import com.everrefine.elms.domain.model.course.Course;
+import com.everrefine.elms.domain.model.course.CourseForUpdateRequest;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface CourseRepository {
+
+  int updateCourse(CourseForUpdateRequest course);
+
+  int createCourse(Course course);
+
+  int deleteCourseById(UUID id);
 
   Optional<Course> findCourseById(UUID id);
 
