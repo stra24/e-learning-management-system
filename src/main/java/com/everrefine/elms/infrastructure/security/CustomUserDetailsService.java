@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     return new org.springframework.security.core.userdetails.User(
         user.getId().toString(),
         user.getPassword().getValue(),
-        List.of(new SimpleGrantedAuthority("ROLE_USER"))
+        List.of(new SimpleGrantedAuthority(user.getUserRole().getCode()))
     );
   }
 
@@ -39,7 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     return new org.springframework.security.core.userdetails.User(
         user.getId().toString(),
         user.getPassword().getValue(),
-        List.of(new SimpleGrantedAuthority("ROLE_USER"))
+        List.of(new SimpleGrantedAuthority(user.getUserRole().getCode()))
     );
   }
 }

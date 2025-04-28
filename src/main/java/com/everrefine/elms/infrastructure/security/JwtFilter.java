@@ -35,7 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
         // リクエストヘッダーJWTの値のフォーマットが正常である場合
         String userId = JwtUtil.extractSubjectFromToken(jwt);
 
-        UserDetails userDetails = null;
+        UserDetails userDetails;
         try {
           userDetails = customUserDetailsService.loadUserById(userId);
         } catch (UsernameNotFoundException e) {
@@ -59,7 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
       }
     }
 
-    // レスポンスヘッダーにJWTが付与されていない場合（CSRFされた or 認証パス不要なAPI）は何もしない。
+    // リクエストヘッダーにJWTが付与されていない場合（CSRFされた or 認証パス不要なAPI）は何もしない。
     filterChain.doFilter(request, response);
   }
 
