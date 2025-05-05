@@ -1,5 +1,6 @@
 package com.everrefine.elms.application.service;
 
+import com.everrefine.elms.application.command.NewsCreateCommand;
 import com.everrefine.elms.application.dto.NewsDto;
 import com.everrefine.elms.application.dto.NewsPageDto;
 import com.everrefine.elms.domain.model.news.News;
@@ -32,5 +33,17 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
     int totalSize = newsRepository.countNews();
     PagerForResponse pagerForResponse = new PagerForResponse(pageNum, pageSize, totalSize);
     return new NewsPageDto(news, pagerForResponse);
+  }
+
+  @Override
+  public void createNews(NewsCreateCommand newsCreateCommand) {
+    newsRepository.createNews(newsCreateCommand);
+
+  }
+
+  @Override
+  public void deleteNewsById(String newsId) {
+    UUID uuid = UUID.fromString(newsId);
+    newsRepository.findNewsById(uuid).ifPresent(news -> newsRepository.deleteNewsById(uuid));
   }
 }

@@ -1,5 +1,6 @@
 package com.everrefine.elms.domain.repository;
 
+import com.everrefine.elms.application.command.NewsCreateCommand;
 import com.everrefine.elms.domain.model.news.News;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import java.util.List;
@@ -13,4 +14,8 @@ public interface NewsRepository {
   List<News> findNews(PagerForRequest pagerForRequest);
 
   int countNews();
+
+  void createNews(NewsCreateCommand newsCreateCommand);
+
+  void deleteNewsById(UUID id);
 }

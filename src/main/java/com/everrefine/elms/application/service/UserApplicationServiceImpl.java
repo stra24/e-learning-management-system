@@ -87,4 +87,5 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     PagerForResponse pagerForResponse = new PagerForResponse(pageNum, pageSize, totalSize);
     return new UserPageDto(users, pagerForResponse);
   }
+
 }
