@@ -7,5 +7,4 @@ public class NewsCreateRequest {
 
   private String title;
   private String content;
-
 }

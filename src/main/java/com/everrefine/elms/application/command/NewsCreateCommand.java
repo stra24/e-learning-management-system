@@ -1,6 +1,5 @@
 package com.everrefine.elms.application.command;
 
-
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.AccessLevel;

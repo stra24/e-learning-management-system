@@ -46,5 +46,4 @@
     SELECT COUNT(*) FROM news
   </select>
 
-
 </mapper>

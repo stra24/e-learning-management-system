@@ -23,10 +23,6 @@ public class NewsController {
 
   private final NewsApplicationService newsApplicationService;
 
-/**
- * 指定したお知らせを更新する。
- */
-
   /**
    * お知らせを新規登録する
    *
