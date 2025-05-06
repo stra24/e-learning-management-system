@@ -1,6 +1,5 @@
 package com.everrefine.elms.infrastructure.mapper;
 
-import com.everrefine.elms.application.command.NewsCreateCommand;
 import com.everrefine.elms.domain.model.news.News;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import java.util.List;
@@ -17,5 +16,5 @@ public interface NewsMapper {
 
   int countNews();
 
-  void createNews(NewsCreateCommand newsCreateCommand);
+  void createNews(News news);
 }

@@ -3,10 +3,14 @@ package com.everrefine.elms.application.service;
 import com.everrefine.elms.application.command.NewsCreateCommand;
 import com.everrefine.elms.application.dto.NewsDto;
 import com.everrefine.elms.application.dto.NewsPageDto;
+import com.everrefine.elms.domain.model.news.Content;
 import com.everrefine.elms.domain.model.news.News;
+
+import com.everrefine.elms.domain.model.news.Title;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import com.everrefine.elms.domain.model.pager.PagerForResponse;
 import com.everrefine.elms.domain.repository.NewsRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -37,8 +41,15 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
 
   @Override
   public void createNews(NewsCreateCommand newsCreateCommand) {
-    newsRepository.createNews(newsCreateCommand);
-
+    LocalDateTime now = LocalDateTime.now();
+    News news = new News(
+        newsCreateCommand.getId(),
+        new Title(newsCreateCommand.getTitle()),
+        new Content(newsCreateCommand.getContent()),
+        now,
+        now
+    );
+    newsRepository.createNews(news);
   }
 
   @Override

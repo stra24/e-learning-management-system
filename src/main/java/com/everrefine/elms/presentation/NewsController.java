@@ -25,18 +25,13 @@ public class NewsController {
 
 /**
  * 指定したお知らせを更新する。
- *
  */
-
-
-
 
   /**
    * お知らせを新規登録する
    *
    * @param newsCreateRequest newsの新規作成リクエスト（リクエストボディ）
    */
-
   @PostMapping()
   public ResponseEntity<Void> createNews(@RequestBody NewsCreateRequest newsCreateRequest) {
     NewsCreateCommand newsCreateCommand = NewsCreateCommand.create(
@@ -57,8 +52,6 @@ public class NewsController {
     newsApplicationService.deleteNewsById(newsId);
     return ResponseEntity.noContent().build();
   }
-
-
 
   /**
    * 指定したお知らせIDでお知らせを取得する。
@@ -87,8 +80,4 @@ public class NewsController {
     NewsPageDto newsPageDto = newsApplicationService.findNews(pageNum, pageSize);
     return ResponseEntity.ok(newsPageDto);
   }
-
-
-
-
 }

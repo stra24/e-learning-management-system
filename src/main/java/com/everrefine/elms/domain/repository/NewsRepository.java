@@ -15,7 +15,7 @@ public interface NewsRepository {
 
   int countNews();
 
-  void createNews(NewsCreateCommand newsCreateCommand);
+  void createNews(News news);
 
   void deleteNewsById(UUID id);
 }

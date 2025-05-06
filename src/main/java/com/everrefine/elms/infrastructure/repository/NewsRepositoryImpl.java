@@ -1,6 +1,5 @@
 package com.everrefine.elms.infrastructure.repository;
 
-import com.everrefine.elms.application.command.NewsCreateCommand;
 import com.everrefine.elms.domain.model.news.News;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import com.everrefine.elms.domain.repository.NewsRepository;
@@ -32,9 +31,9 @@ public class NewsRepositoryImpl implements NewsRepository {
     return newsMapper.countNews();
   }
 
-
   @Override
-  public void createNews(NewsCreateCommand newsCreateCommand) {
+  public void createNews(News news) {
+    newsMapper.createNews(news);
   }
 
   @Override

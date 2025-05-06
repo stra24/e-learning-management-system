@@ -9,7 +9,6 @@
     id = #{id}
   </delete>
 
-
   <insert id="createNews" parameterType="com.everrefine.elms.domain.model.news.News">
     INSERT INTO news (
     id,
@@ -25,7 +24,6 @@
     #{updatedAt}
     )
   </insert>
-
 
   <select id="findNewsById" resultType="com.everrefine.elms.domain.model.news.News">
     SELECT

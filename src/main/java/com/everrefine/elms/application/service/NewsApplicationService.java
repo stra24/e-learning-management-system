@@ -14,5 +14,3 @@ public interface NewsApplicationService {
 
   void deleteNewsById(String newsId);
 }
-
-
