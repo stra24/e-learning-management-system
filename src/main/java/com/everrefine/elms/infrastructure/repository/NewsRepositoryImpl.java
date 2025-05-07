@@ -38,5 +38,6 @@ public class NewsRepositoryImpl implements NewsRepository {
 
   @Override
   public void deleteNewsById(UUID id) {
+    newsMapper.deleteNewsById(id);
   }
 }

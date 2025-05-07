@@ -17,4 +17,6 @@ public interface NewsMapper {
   int countNews();
 
   void createNews(News news);
+
+  void deleteNewsById(UUID id);
 }
