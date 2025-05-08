@@ -30,4 +30,14 @@ public class NewsRepositoryImpl implements NewsRepository {
   public int countNews() {
     return newsMapper.countNews();
   }
+
+  @Override
+  public void createNews(News news) {
+    newsMapper.createNews(news);
+  }
+
+  @Override
+  public void deleteNewsById(UUID id) {
+    newsMapper.deleteNewsById(id);
+  }
 }

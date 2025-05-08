@@ -15,4 +15,8 @@ public interface NewsMapper {
   List<News> findNews(PagerForRequest pagerForRequest);
 
   int countNews();
+
+  void createNews(News news);
+
+  void deleteNewsById(UUID id);
 }

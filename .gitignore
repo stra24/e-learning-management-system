@@ -38,3 +38,11 @@ out/
 
 ### environment ###
 .env
+
+# uploadsフォルダ全体を無視
+uploads/*
+
+# 例外として以下ファイルは追跡対象に含める
+!uploads/course_thumbnail_sample.png
+!uploads/kanrisya.png
+!uploads/ippan.png
