@@ -1,13 +1,14 @@
 package com.everrefine.elms.application.command;
 
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-public class NewsCreateCommand {
+public class NewsUpdateCommand {
 
   @NotNull
   private UUID id;
@@ -15,15 +16,19 @@ public class NewsCreateCommand {
   private String title;
   @NotNull
   private String content;
+  @NotNull
+  private LocalDateTime updatedAt;
 
-  public static NewsCreateCommand create(
+  public static NewsUpdateCommand create(
+      UUID id,
       String title,
       String content
   ) {
-    return new NewsCreateCommand(
-        UUID.randomUUID(),
+    return new NewsUpdateCommand(
+        id,
         title,
-        content
+        content,
+        LocalDateTime.now()
     );
   }
 }

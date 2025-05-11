@@ -1,16 +1,20 @@
 package com.everrefine.elms.presentation;
 
 import com.everrefine.elms.application.command.NewsCreateCommand;
+import com.everrefine.elms.application.command.NewsUpdateCommand;
 import com.everrefine.elms.application.dto.NewsDto;
 import com.everrefine.elms.application.dto.NewsPageDto;
 import com.everrefine.elms.application.service.NewsApplicationService;
 import com.everrefine.elms.presentation.request.NewsCreateRequest;
+import com.everrefine.elms.presentation.request.NewsUpdateRequest;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +26,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class NewsController {
 
   private final NewsApplicationService newsApplicationService;
+
+  /**
+   * お知らせを更新する
+   *
+   * @param newsUpdateRequest newsの更新リクエスト（リクエストボディ)
+   */
+  @PutMapping("/{newsId}")
+  public ResponseEntity<Void> updateNews(@PathVariable String newsId,
+      @RequestBody NewsUpdateRequest newsUpdateRequest) {
+    NewsUpdateCommand newsUpdateCommand = NewsUpdateCommand.create(
+        UUID.fromString(newsId),
+        newsUpdateRequest.getTitle(),
+        newsUpdateRequest.getContent()
+    );
+    newsApplicationService.updateNews(newsUpdateCommand);
+    return ResponseEntity.ok().build();
+  }
 
   /**
    * お知らせを新規登録する

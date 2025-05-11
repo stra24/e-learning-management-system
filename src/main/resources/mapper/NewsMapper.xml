@@ -25,14 +25,14 @@
     )
   </insert>
 
-  <select id="findNewsById" resultType="com.everrefine.elms.domain.model.news.News">
-    SELECT
-    *
-    FROM
-    news
-    WHERE
-    id = #{id}
-  </select>
+  <insert id="updateNews">
+    UPDATE news
+    SET
+    title = #{title},
+    content = #{content},
+    updated_at = now()
+    WHERE id = #{id};
+  </insert>
 
   <select id="findNews" resultType="com.everrefine.elms.domain.model.news.News">
     SELECT
@@ -44,6 +44,15 @@
 
   <select id="countNews" resultType="int">
     SELECT COUNT(*) FROM news
+  </select>
+
+  <select id="findNewsById" resultType="com.everrefine.elms.domain.model.news.News">
+    SELECT
+    *
+    FROM
+    news
+    WHERE
+    id = #{id}
   </select>
 
 </mapper>
