@@ -6,12 +6,10 @@ import com.everrefine.elms.application.dto.NewsDto;
 import com.everrefine.elms.application.dto.NewsPageDto;
 import com.everrefine.elms.domain.model.news.Content;
 import com.everrefine.elms.domain.model.news.News;
-
 import com.everrefine.elms.domain.model.news.NewsForUpdateRequest;
 import com.everrefine.elms.domain.model.news.Title;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import com.everrefine.elms.domain.model.pager.PagerForResponse;
-import com.everrefine.elms.domain.model.user.UserForUpdateRequest;
 import com.everrefine.elms.domain.repository.NewsRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,13 +43,8 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   @Override
   public void createNews(NewsCreateCommand newsCreateCommand) {
     LocalDateTime now = LocalDateTime.now();
-    News news = new News(
-        newsCreateCommand.getId(),
-        new Title(newsCreateCommand.getTitle()),
-        new Content(newsCreateCommand.getContent()),
-        now,
-        now
-    );
+    News news = new News(newsCreateCommand.getId(), new Title(newsCreateCommand.getTitle()),
+        new Content(newsCreateCommand.getContent()), now, now);
     newsRepository.createNews(news);
   }
 
@@ -64,11 +57,9 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   @Override
   public void updateNews(NewsUpdateCommand newsUpdateCommand) {
     NewsDto newsDto = findNewsById(newsUpdateCommand.getId().toString());
-    NewsForUpdateRequest news = new NewsForUpdateRequest(
-        newsDto.getId(),
+    NewsForUpdateRequest news = new NewsForUpdateRequest(newsDto.getId(),
         new Title(newsUpdateCommand.getTitle()),
-        new Content(newsUpdateCommand.getContent())
-        );
-        newsRepository.updateNews(news);
+        new Content(newsUpdateCommand.getContent()));
+    newsRepository.updateNews(news);
   }
 }

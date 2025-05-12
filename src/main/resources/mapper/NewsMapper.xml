@@ -14,8 +14,8 @@
     id,
     title,
     content,
-    createdAt,
-    updatedAt
+    created_at,
+    updated_at
     ) VALUES (
     #{id},
     #{title},
@@ -25,14 +25,14 @@
     )
   </insert>
 
-  <insert id="updateNews">
+  <update id="updateNews">
     UPDATE news
     SET
     title = #{title},
     content = #{content},
     updated_at = now()
     WHERE id = #{id};
-  </insert>
+  </update>
 
   <select id="findNews" resultType="com.everrefine.elms.domain.model.news.News">
     SELECT

@@ -32,18 +32,6 @@
     )
   </insert>
 
-  <insert id="updateUser"
-    parameterType="com.everrefine.elms.domain.model.user.UserForUpdateRequest">
-    UPDATE users
-    SET
-    email_address = #{emailAddress.value},
-    real_name = #{realName.value},
-    user_name = #{userName.value},
-    thumbnail_url = #{thumbnailUrl},
-    updated_at = now()
-    WHERE id = #{id};
-  </insert>
-
   <select id="findUserByEmailAddress" resultType="com.everrefine.elms.domain.model.user.User">
     SELECT
     *
@@ -73,4 +61,16 @@
     WHERE
     id = #{id}
   </select>
+
+  <update id="updateUser"
+    parameterType="com.everrefine.elms.domain.model.user.UserForUpdateRequest">
+    UPDATE users
+    SET
+    email_address = #{emailAddress.value},
+    real_name = #{realName.value},
+    user_name = #{userName.value},
+    thumbnail_url = #{thumbnailUrl},
+    updated_at = now()
+    WHERE id = #{id};
+  </update>
 </mapper>

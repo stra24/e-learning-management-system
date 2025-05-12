@@ -2,11 +2,12 @@ package com.everrefine.elms.application.command;
 
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class NewsCreateCommand {
 
   @NotNull

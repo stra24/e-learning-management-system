@@ -33,7 +33,8 @@ public class NewsController {
    * @param newsUpdateRequest newsの更新リクエスト（リクエストボディ)
    */
   @PutMapping("/{newsId}")
-  public ResponseEntity<Void> updateNews(@PathVariable String newsId,
+  public ResponseEntity<Void> updateNews(
+      @PathVariable String newsId,
       @RequestBody NewsUpdateRequest newsUpdateRequest) {
     NewsUpdateCommand newsUpdateCommand = NewsUpdateCommand.create(
         UUID.fromString(newsId),
@@ -50,7 +51,8 @@ public class NewsController {
    * @param newsCreateRequest newsの新規作成リクエスト（リクエストボディ）
    */
   @PostMapping()
-  public ResponseEntity<Void> createNews(@RequestBody NewsCreateRequest newsCreateRequest) {
+  public ResponseEntity<Void> createNews(
+      @RequestBody NewsCreateRequest newsCreateRequest) {
     NewsCreateCommand newsCreateCommand = NewsCreateCommand.create(
         newsCreateRequest.getTitle(),
         newsCreateRequest.getContent()
