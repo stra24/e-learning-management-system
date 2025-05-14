@@ -26,17 +26,6 @@
     )
   </insert>
 
-  <insert id="updateCourse"
-    parameterType="com.everrefine.elms.domain.model.course.CourseForUpdateRequest">
-    UPDATE courses
-    SET
-    title = #{title.value},
-    description = #{description.value},
-    thumbnail_url = #{thumbnailUrl},
-    updated_at = now()
-    WHERE id = #{id};
-  </insert>
-
   <select id="findCourseById" resultType="com.everrefine.elms.domain.model.course.Course">
     SELECT
     *
@@ -57,4 +46,15 @@
   <select id="countCourses" resultType="int">
     SELECT COUNT(*) FROM courses
   </select>
+
+  <update id="updateCourse"
+    parameterType="com.everrefine.elms.domain.model.course.CourseForUpdateRequest">
+    UPDATE courses
+    SET
+    title = #{title.value},
+    description = #{description.value},
+    thumbnail_url = #{thumbnailUrl},
+    updated_at = now()
+    WHERE id = #{id};
+  </update>
 </mapper>

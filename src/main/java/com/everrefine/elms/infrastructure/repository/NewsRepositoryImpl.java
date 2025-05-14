@@ -1,6 +1,7 @@
 package com.everrefine.elms.infrastructure.repository;
 
 import com.everrefine.elms.domain.model.news.News;
+import com.everrefine.elms.domain.model.news.NewsForUpdateRequest;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import com.everrefine.elms.domain.repository.NewsRepository;
 import com.everrefine.elms.infrastructure.mapper.NewsMapper;
@@ -39,5 +40,10 @@ public class NewsRepositoryImpl implements NewsRepository {
   @Override
   public void deleteNewsById(UUID id) {
     newsMapper.deleteNewsById(id);
+  }
+
+  @Override
+  public void updateNews(NewsForUpdateRequest news) {
+    newsMapper.updateNews(news);
   }
 }

@@ -1,6 +1,5 @@
 package com.everrefine.elms.application.command;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -8,35 +7,28 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * 更新用コースのコマンド。
- */
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class CourseUpdateCommand {
+public class NewsUpdateCommand {
 
   @NotNull
   private UUID id;
   @NotNull
   private String title;
   @NotNull
-  private String description;
-  @Nullable
-  private String thumbnailUrl;
+  private String content;
   @NotNull
   private LocalDateTime updatedAt;
 
-  public static CourseUpdateCommand create(
+  public static NewsUpdateCommand create(
       UUID id,
       String title,
-      String description,
-      String thumbnailUrl
+      String content
   ) {
-    return new CourseUpdateCommand(
+    return new NewsUpdateCommand(
         id,
         title,
-        description,
-        thumbnailUrl,
+        content,
         LocalDateTime.now()
     );
   }
