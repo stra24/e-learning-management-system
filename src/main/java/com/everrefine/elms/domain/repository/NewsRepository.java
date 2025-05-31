@@ -1,9 +1,9 @@
 package com.everrefine.elms.domain.repository;
 
-import com.everrefine.elms.application.command.NewsCreateCommand;
 import com.everrefine.elms.domain.model.news.News;
 import com.everrefine.elms.domain.model.news.NewsForUpdateRequest;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
+import com.everrefine.elms.domain.model.pager.SearchPagerForRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,4 +21,8 @@ public interface NewsRepository {
   void deleteNewsById(UUID id);
 
   void updateNews(NewsForUpdateRequest news);
+
+  Optional<News> findNewsIdByTitle(SearchPagerForRequest searchPagerForRequest);
+
+
 }

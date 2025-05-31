@@ -25,15 +25,6 @@
     )
   </insert>
 
-  <update id="updateNews">
-    UPDATE news
-    SET
-    title = #{title},
-    content = #{content},
-    updated_at = now()
-    WHERE id = #{id};
-  </update>
-
   <select id="findNews" resultType="com.everrefine.elms.domain.model.news.News">
     SELECT
     *
@@ -54,5 +45,22 @@
     WHERE
     id = #{id}
   </select>
+
+  <select id="findNewsIdByTitle"
+    resultType="com.everrefine.elms.domain.model.pager.SearchPagerForRequest">
+    SELECT id FROM news
+    WHERE title = #{title}
+    AND created_at BETWEEN #{createdDateFrom} AND #{createdDateTo}
+    LIMIT #{pageSize} OFFSET #{offset}
+  </select>
+
+  <update id="updateNews">
+    UPDATE news
+    SET
+    title = #{title},
+    content = #{content},
+    updated_at = now()
+    WHERE id = #{id};
+  </update>
 
 </mapper>
