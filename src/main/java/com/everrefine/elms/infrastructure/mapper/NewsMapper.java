@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface NewsMapper {
 
-  Optional<News> findNewsById(UUID id);
+  Optional<News> findNewsById(@Param("idList") List<UUID> newsUuIdList);
 
   List<News> findNews(PagerForRequest pagerForRequest);
 
@@ -24,5 +25,5 @@ public interface NewsMapper {
 
   void updateNews(NewsForUpdateRequest news);
 
-  Optional<News> findNewsIdByTitle(SearchPagerForRequest searchPagerForRequest);
+  Optional<News> findNewsIdsBySearchConditions(SearchPagerForRequest searchPagerForRequest);
 }
