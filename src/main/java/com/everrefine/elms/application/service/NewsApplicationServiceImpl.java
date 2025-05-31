@@ -1,6 +1,7 @@
 package com.everrefine.elms.application.service;
 
 import com.everrefine.elms.application.command.NewsCreateCommand;
+import com.everrefine.elms.application.command.NewsSearchCommand;
 import com.everrefine.elms.application.command.NewsUpdateCommand;
 import com.everrefine.elms.application.dto.NewsDto;
 import com.everrefine.elms.application.dto.NewsPageDto;
@@ -65,5 +66,11 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
         new Title(newsUpdateCommand.getTitle()),
         new Content(newsUpdateCommand.getContent()));
     newsRepository.updateNews(news);
+  }
+
+  @Override
+  public NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommand) {
+    int totalSize = newsRepository.countNews();
+    return null;
   }
 }

@@ -25,15 +25,6 @@
     )
   </insert>
 
-  <update id="updateNews">
-    UPDATE news
-    SET
-    title = #{title},
-    content = #{content},
-    updated_at = now()
-    WHERE id = #{id};
-  </update>
-
   <select id="findNews" resultType="com.everrefine.elms.domain.model.news.News">
     SELECT
     *
@@ -44,6 +35,19 @@
 
   <select id="countNews" resultType="int">
     SELECT COUNT(*) FROM news
+    <where>
+      <if test="title != null">
+        title = #{title}
+      </if>
+      <if test="createdDateFrom != null">
+        AND created_at >= CAST(#{createdDateFrom} AS DATE)
+      </if>
+      <if test="createdDateTo != null">
+        <![CDATA[
+        AND created_at <= CAST(#{createdDateTo} AS DATE)
+          ]]>
+      </if>
+    </where>
   </select>
 
   <select id="findNewsById" resultType="com.everrefine.elms.domain.model.news.News">
@@ -52,7 +56,38 @@
     FROM
     news
     WHERE
-    id = #{id}
+    id IN
+    <foreach close=")" collection="idList" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
   </select>
+
+  <select id="findNewsIdsBySearchConditions"
+    resultType="com.everrefine.elms.domain.model.pager.SearchPagerForRequest">
+    SELECT id FROM news
+    <where>
+      <if test="title != null">
+        title = #{title}
+      </if>
+      <if test="createdDateFrom != null">
+        AND created_at >= CAST(#{createdDateFrom} AS DATE)
+      </if>
+      <if test="createdDateTo != null">
+        <![CDATA[
+        AND created_at <= CAST(#{createdDateTo} AS DATE)
+          ]]>
+      </if>
+    </where>
+    LIMIT #{pageSize} OFFSET #{offset}
+  </select>
+
+  <update id="updateNews">
+    UPDATE news
+    SET
+    title = #{title},
+    content = #{content},
+    updated_at = now()
+    WHERE id = #{id};
+  </update>
 
 </mapper>

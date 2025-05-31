@@ -1,11 +1,13 @@
 package com.everrefine.elms.presentation;
 
 import com.everrefine.elms.application.command.NewsCreateCommand;
+import com.everrefine.elms.application.command.NewsSearchCommand;
 import com.everrefine.elms.application.command.NewsUpdateCommand;
 import com.everrefine.elms.application.dto.NewsDto;
 import com.everrefine.elms.application.dto.NewsPageDto;
 import com.everrefine.elms.application.service.NewsApplicationService;
 import com.everrefine.elms.presentation.request.NewsCreateRequest;
+import com.everrefine.elms.presentation.request.NewsSearchRequest;
 import com.everrefine.elms.presentation.request.NewsUpdateRequest;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -97,6 +99,19 @@ public class NewsController {
       @RequestParam(defaultValue = "10") int pageSize
   ) {
     NewsPageDto newsPageDto = newsApplicationService.findNews(pageNum, pageSize);
+    return ResponseEntity.ok(newsPageDto);
+  }
+
+  @GetMapping()
+  public ResponseEntity<NewsPageDto> findSerchNews(NewsSearchRequest newsSearchRequest) {
+    NewsSearchCommand newsSearchCommand = NewsSearchCommand.create(
+        newsSearchRequest.getPageNum(),
+        newsSearchRequest.getPageSize(),
+        newsSearchRequest.getTitle(),
+        newsSearchRequest.getCreatedDateFrom(),
+        newsSearchRequest.getCreatedDateTo()
+    );
+    NewsPageDto newsPageDto = newsApplicationService.findSearchNews(newsSearchCommand);
     return ResponseEntity.ok(newsPageDto);
   }
 }
