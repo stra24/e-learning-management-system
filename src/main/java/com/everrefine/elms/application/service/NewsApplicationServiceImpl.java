@@ -26,15 +26,15 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   private final NewsRepository newsRepository;
 
   @Override
-  public NewsDto findNewsByIds(List<String> newsIdList) {
+  public List<NewsDto> findNewsByIds(List<String> newsIdsList) {
     List<UUID> newsUuidList = new ArrayList<>();
-    newsIdList.forEach(newsId -> {
+    newsIdsList.forEach(newsId -> {
       UUID uuid = UUID.fromString(newsId);
       newsUuidList.add(uuid);
     });
-    News news = newsRepository.findNewsByIds(newsUuidList)
-        .orElseThrow(() -> new RuntimeException("News not found with ID: " + newsIdList));
-    return new NewsDto(news);
+    List<News> newsList = newsRepository.findNewsByIds(newsUuidList)
+        .orElseThrow(() -> new RuntimeException("News not found with ID: " + newsIdsList));
+    return new List<NewsDto>(newsList) ;
   }
 
   @Override

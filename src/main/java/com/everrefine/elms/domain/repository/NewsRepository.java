@@ -2,15 +2,15 @@ package com.everrefine.elms.domain.repository;
 
 import com.everrefine.elms.domain.model.news.News;
 import com.everrefine.elms.domain.model.news.NewsForUpdateRequest;
+import com.everrefine.elms.domain.model.news.NewsSearchCondition;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
-import com.everrefine.elms.domain.model.pager.SearchPagerForRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface NewsRepository {
 
-  Optional<News> findNewsByIds(List<UUID> newsIdList);
+  Optional<List<News>> findNewsByIds(List<UUID> newsIdsList);
 
   List<News> findNews(PagerForRequest pagerForRequest);
 
@@ -22,7 +22,7 @@ public interface NewsRepository {
 
   void updateNews(NewsForUpdateRequest news);
 
-  Optional<News> indNewsIdsBySearchConditions(SearchPagerForRequest searchPagerForRequest);
+  Optional<List<UUID>> findNewsIdsBySearchConditions(NewsSearchCondition newsSearchCondition);
 
   Optional<News> findNewsById(UUID id);
 

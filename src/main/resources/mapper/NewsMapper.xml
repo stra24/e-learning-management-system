@@ -66,13 +66,13 @@
     news
     WHERE
     id IN
-    <foreach close=")" collection="idList" item="id" open="(" separator=",">
+    <foreach close=")" collection="idsList" item="id" open="(" separator=",">
       #{id}
     </foreach>
   </select>
 
   <select id="findNewsIdsBySearchConditions"
-    resultType="com.everrefine.elms.domain.model.pager.SearchPagerForRequest">
+    resultType="com.everrefine.elms.domain.model.news.NewsSearchCondition">
     SELECT id FROM news
     <where>
       <if test="title != null and title != ''">

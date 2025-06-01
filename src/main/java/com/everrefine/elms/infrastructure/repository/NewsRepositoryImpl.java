@@ -2,8 +2,8 @@ package com.everrefine.elms.infrastructure.repository;
 
 import com.everrefine.elms.domain.model.news.News;
 import com.everrefine.elms.domain.model.news.NewsForUpdateRequest;
+import com.everrefine.elms.domain.model.news.NewsSearchCondition;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
-import com.everrefine.elms.domain.model.pager.SearchPagerForRequest;
 import com.everrefine.elms.domain.repository.NewsRepository;
 import com.everrefine.elms.infrastructure.mapper.NewsMapper;
 import java.util.List;
@@ -19,8 +19,8 @@ public class NewsRepositoryImpl implements NewsRepository {
   private final NewsMapper newsMapper;
 
   @Override
-  public Optional<News> findNewsByIds(List<UUID> newsIdList) {
-    return newsMapper.findNewsByIds(newsIdList);
+  public Optional<List<News>> findNewsByIds(List<UUID> newsIdsList) {
+    return newsMapper.findNewsByIds(newsIdsList);
   }
 
   @Override
@@ -49,8 +49,9 @@ public class NewsRepositoryImpl implements NewsRepository {
   }
 
   @Override
-  public Optional<News> indNewsIdsBySearchConditions(SearchPagerForRequest searchPagerForRequest) {
-    return newsMapper.findNewsIdsBySearchConditions(searchPagerForRequest);
+  public Optional<List<UUID>> findNewsIdsBySearchConditions(
+      NewsSearchCondition newsSearchCondition) {
+    return newsMapper.findNewsIdsBySearchConditions(newsSearchCondition);
   }
 
   @Override

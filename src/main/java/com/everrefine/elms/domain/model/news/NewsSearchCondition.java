@@ -1,20 +1,16 @@
-package com.everrefine.elms.domain.model.pager;
+package com.everrefine.elms.domain.model.news;
 
+import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import java.time.LocalDate;
 import lombok.Value;
 
 @Value
-public class SearchPagerForRequest {
+public class NewsSearchCondition {
 
   /**
    * ページ番号
    */
-  int pageNum;
-
-  /**
-   * 1ページ当たりの件数
-   */
-  int pageSize;
+  PagerForRequest pagerForRequest;
 
   /**
    * お知らせのタイトル
@@ -37,24 +33,14 @@ public class SearchPagerForRequest {
   int totalSize;
 
 
-  public SearchPagerForRequest(
+  public NewsSearchCondition(
       int pageNum,
       int pageSize,
       String title,
       LocalDate createdDateFrom,
       LocalDate createDateTo,
       int totalSize) {
-    if (pageNum < 1) {
-      throw new IllegalArgumentException("pageNum must be at least 1");
-    }
-    if (pageSize < 1) {
-      throw new IllegalArgumentException("pageSize must be at least 1");
-    }
-    if (createdDateFrom.isAfter(createDateTo)) {
-      throw new IllegalArgumentException("createdDateFrom must be earlier than createDateTo");
-    }
-    this.pageNum = pageNum;
-    this.pageSize = pageSize;
+    this.pagerForRequest = new PagerForRequest(pageNum, pageSize);
     this.title = title;
     this.createdDateFrom = createdDateFrom;
     this.createDateTo = createDateTo;
