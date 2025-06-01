@@ -36,21 +36,23 @@
   <select id="countNews" resultType="int">
     SELECT COUNT(*) FROM news
     <where>
-      <if test="title != null">
-        title = #{title}
+      <if test="title != null and title != ''">
+        title LIKE CONCAT('%', #{title}, '%')
       </if>
       <if test="createdDateFrom != null">
+        <![CDATA[
         AND created_at >= CAST(#{createdDateFrom} AS DATE)
+         ]]>
       </if>
       <if test="createdDateTo != null">
         <![CDATA[
-        AND created_at <= CAST(#{createdDateTo} AS DATE)
+        AND created_at < CAST(#{createdDateTo} AS DATE) + INTERVAL '1 day'
           ]]>
       </if>
     </where>
   </select>
 
-  <select id="findNewsById" resultType="com.everrefine.elms.domain.model.news.News">
+  <select id="findNewsByIds" resultType="com.everrefine.elms.domain.model.news.News">
     SELECT
     *
     FROM
@@ -66,15 +68,17 @@
     resultType="com.everrefine.elms.domain.model.pager.SearchPagerForRequest">
     SELECT id FROM news
     <where>
-      <if test="title != null">
-        title = #{title}
+      <if test="title != null and title != ''">
+        title LIKE CONCAT('%', #{title}, '%')
       </if>
       <if test="createdDateFrom != null">
+        <![CDATA[
         AND created_at >= CAST(#{createdDateFrom} AS DATE)
+         ]]>
       </if>
       <if test="createdDateTo != null">
         <![CDATA[
-        AND created_at <= CAST(#{createdDateTo} AS DATE)
+        AND created_at < CAST(#{createdDateTo} AS DATE) + INTERVAL '1 day'
           ]]>
       </if>
     </where>
