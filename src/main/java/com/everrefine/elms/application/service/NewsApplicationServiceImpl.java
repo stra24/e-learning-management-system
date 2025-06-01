@@ -13,6 +13,7 @@ import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import com.everrefine.elms.domain.model.pager.PagerForResponse;
 import com.everrefine.elms.domain.repository.NewsRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,18 @@ import org.springframework.stereotype.Service;
 public class NewsApplicationServiceImpl implements NewsApplicationService {
 
   private final NewsRepository newsRepository;
+
+  @Override
+  public NewsDto findNewsByIds(List<String> newsIdList) {
+    List<UUID> newsUuidList = new ArrayList<>();
+    newsIdList.forEach(newsId -> {
+      UUID uuid = UUID.fromString(newsId);
+      newsUuidList.add(uuid);
+    });
+    News news = newsRepository.findNewsByIds(newsUuidList)
+        .orElseThrow(() -> new RuntimeException("News not found with ID: " + newsIdList));
+    return new NewsDto(news);
+  }
 
   @Override
   public NewsDto findNewsById(String newsId) {
@@ -69,7 +82,7 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   }
 
   @Override
-  public NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommand) {
+  public List<NewsPageDto> findSearchNews(NewsSearchCommand newsSearchCommand) {
     int totalSize = newsRepository.countNews();
     return null;
   }

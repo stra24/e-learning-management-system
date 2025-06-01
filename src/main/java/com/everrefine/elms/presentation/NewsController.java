@@ -9,6 +9,7 @@ import com.everrefine.elms.application.service.NewsApplicationService;
 import com.everrefine.elms.presentation.request.NewsCreateRequest;
 import com.everrefine.elms.presentation.request.NewsSearchRequest;
 import com.everrefine.elms.presentation.request.NewsUpdateRequest;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -103,7 +104,7 @@ public class NewsController {
   }
 
   @GetMapping()
-  public ResponseEntity<NewsPageDto> findSerchNews(NewsSearchRequest newsSearchRequest) {
+  public ResponseEntity<List<NewsPageDto>> findSearchNews(NewsSearchRequest newsSearchRequest) {
     NewsSearchCommand newsSearchCommand = NewsSearchCommand.create(
         newsSearchRequest.getPageNum(),
         newsSearchRequest.getPageSize(),
@@ -111,7 +112,8 @@ public class NewsController {
         newsSearchRequest.getCreatedDateFrom(),
         newsSearchRequest.getCreatedDateTo()
     );
-    NewsPageDto newsPageDto = newsApplicationService.findSearchNews(newsSearchCommand);
-    return ResponseEntity.ok(newsPageDto);
+
+    List<NewsPageDto> newsPageDtos = newsApplicationService.findSearchNews(newsSearchCommand);
+    return ResponseEntity.ok(newsPageDtos);
   }
 }

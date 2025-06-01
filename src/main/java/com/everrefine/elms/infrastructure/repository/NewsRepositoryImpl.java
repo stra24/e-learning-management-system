@@ -19,8 +19,8 @@ public class NewsRepositoryImpl implements NewsRepository {
   private final NewsMapper newsMapper;
 
   @Override
-  public Optional<News> findNewsById(UUID id) {
-    return newsMapper.findNewsById(id);
+  public Optional<News> findNewsByIds(List<UUID> newsIdList) {
+    return newsMapper.findNewsByIds(newsIdList);
   }
 
   @Override
@@ -49,7 +49,12 @@ public class NewsRepositoryImpl implements NewsRepository {
   }
 
   @Override
-  public Optional<News> findNewsIdByTitle(SearchPagerForRequest searchPagerForRequest) {
-    return newsMapper.findNewsIdByTitle(searchPagerForRequest);
+  public Optional<News> indNewsIdsBySearchConditions(SearchPagerForRequest searchPagerForRequest) {
+    return newsMapper.findNewsIdsBySearchConditions(searchPagerForRequest);
+  }
+
+  @Override
+  public Optional<News> findNewsById(UUID id) {
+    return newsMapper.findNewsById(id);
   }
 }

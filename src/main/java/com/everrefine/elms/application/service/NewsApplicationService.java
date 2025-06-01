@@ -5,11 +5,11 @@ import com.everrefine.elms.application.command.NewsSearchCommand;
 import com.everrefine.elms.application.command.NewsUpdateCommand;
 import com.everrefine.elms.application.dto.NewsDto;
 import com.everrefine.elms.application.dto.NewsPageDto;
-import com.everrefine.elms.presentation.request.NewsSearchRequest;
+import java.util.List;
 
 public interface NewsApplicationService {
 
-  NewsDto findNewsById(String NewsId);
+  NewsDto findNewsByIds(List<String> newsIdList);
 
   NewsPageDto findNews(int pageNum, int pageSize);
 
@@ -19,5 +19,7 @@ public interface NewsApplicationService {
 
   void updateNews(NewsUpdateCommand newsUpdateCommand);
 
-  NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommand);
+  List<NewsPageDto> findSearchNews(NewsSearchCommand newsSearchCommands);
+
+  NewsDto findNewsById(String id);
 }

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface NewsRepository {
 
-  Optional<News> findNewsById(UUID id);
+  Optional<News> findNewsByIds(List<UUID> newsIdList);
 
   List<News> findNews(PagerForRequest pagerForRequest);
 
@@ -22,7 +22,8 @@ public interface NewsRepository {
 
   void updateNews(NewsForUpdateRequest news);
 
-  Optional<News> findNewsIdByTitle(SearchPagerForRequest searchPagerForRequest);
+  Optional<News> indNewsIdsBySearchConditions(SearchPagerForRequest searchPagerForRequest);
 
+  Optional<News> findNewsById(UUID id);
 
 }

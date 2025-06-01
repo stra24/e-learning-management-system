@@ -26,4 +26,6 @@ public interface NewsMapper {
   void updateNews(NewsForUpdateRequest news);
 
   Optional<News> findNewsIdsBySearchConditions(SearchPagerForRequest searchPagerForRequest);
+
+  Optional<News> findNewsById(UUID id);
 }

@@ -52,6 +52,13 @@
     </where>
   </select>
 
+  <select id="findNewsById" resultType="com.everrefine.elms.domain.model.news.News">
+    SELECT
+    *
+    FROM
+    news
+  </select>
+
   <select id="findNewsByIds" resultType="com.everrefine.elms.domain.model.news.News">
     SELECT
     *
