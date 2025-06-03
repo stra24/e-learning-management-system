@@ -27,23 +27,16 @@ public class NewsSearchCondition {
    */
   LocalDate createDateTo;
 
-  /**
-   * 層データ数
-   */
-  int totalSize;
-
-
   public NewsSearchCondition(
       int pageNum,
       int pageSize,
       String title,
       LocalDate createdDateFrom,
-      LocalDate createDateTo,
-      int totalSize) {
+      LocalDate createDateTo
+  ) {
     this.pagerForRequest = new PagerForRequest(pageNum, pageSize);
     this.title = title;
     this.createdDateFrom = createdDateFrom;
     this.createDateTo = createDateTo;
-    this.totalSize = totalSize;
   }
 }

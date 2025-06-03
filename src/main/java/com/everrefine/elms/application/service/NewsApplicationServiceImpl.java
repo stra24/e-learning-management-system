@@ -8,6 +8,7 @@ import com.everrefine.elms.application.dto.NewsPageDto;
 import com.everrefine.elms.domain.model.news.Content;
 import com.everrefine.elms.domain.model.news.News;
 import com.everrefine.elms.domain.model.news.NewsForUpdateRequest;
+import com.everrefine.elms.domain.model.news.NewsSearchCondition;
 import com.everrefine.elms.domain.model.news.Title;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import com.everrefine.elms.domain.model.pager.PagerForResponse;
@@ -26,15 +27,14 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   private final NewsRepository newsRepository;
 
   @Override
-  public List<NewsDto> findNewsByIds(List<String> newsIdsList) {
-    List<UUID> newsUuidList = new ArrayList<>();
-    newsIdsList.forEach(newsId -> {
+  public List<NewsDto> findNewsByIds(List<String> newsIds) {
+    List<UUID> newsUUIDs = new ArrayList<>();
+    newsIds.forEach(newsId -> {
       UUID uuid = UUID.fromString(newsId);
-      newsUuidList.add(uuid);
+      newsUUIDs.add(uuid);
     });
-    List<News> newsList = newsRepository.findNewsByIds(newsUuidList)
-        .orElseThrow(() -> new RuntimeException("News not found with ID: " + newsIdsList));
-    return new List<NewsDto>(newsList) ;
+    List<News> newsList = newsRepository.findNewsByIds(newsUUIDs);
+    return new List<NewsDto>(newsList);
   }
 
   @Override
@@ -49,7 +49,8 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   public NewsPageDto findNews(int pageNum, int pageSize) {
     PagerForRequest pagerForRequest = new PagerForRequest(pageNum, pageSize);
     List<News> news = newsRepository.findNews(pagerForRequest);
-    int totalSize = newsRepository.countNews();
+    int totalSize = newsRepository.countNews(
+        new NewsSearchCondition(pageNum, pageSize, "", null, null));
     PagerForResponse pagerForResponse = new PagerForResponse(pageNum, pageSize, totalSize);
     return new NewsPageDto(news, pagerForResponse);
   }
@@ -83,7 +84,11 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
 
   @Override
   public List<NewsPageDto> findSearchNews(NewsSearchCommand newsSearchCommand) {
-    int totalSize = newsRepository.countNews();
+    NewsSearchCondition NewsSearchCondition = new NewsSearchCondition(
+        newsSearchCommand.getPageNum(),
+
+        )
+    int totalSize = newsRepository.countNews(new NewsSearchCondition());
     return null;
   }
 }

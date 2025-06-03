@@ -19,7 +19,7 @@ public class NewsRepositoryImpl implements NewsRepository {
   private final NewsMapper newsMapper;
 
   @Override
-  public Optional<List<News>> findNewsByIds(List<UUID> newsIdsList) {
+  public List<News> findNewsByIds(List<UUID> newsIdsList) {
     return newsMapper.findNewsByIds(newsIdsList);
   }
 
@@ -29,8 +29,8 @@ public class NewsRepositoryImpl implements NewsRepository {
   }
 
   @Override
-  public int countNews() {
-    return newsMapper.countNews();
+  public int countNews(NewsSearchCondition newsSearchCondition) {
+    return newsMapper.countNews(newsSearchCondition);
   }
 
   @Override
@@ -49,7 +49,7 @@ public class NewsRepositoryImpl implements NewsRepository {
   }
 
   @Override
-  public Optional<List<UUID>> findNewsIdsBySearchConditions(
+  public List<UUID> findNewsIdsBySearchConditions(
       NewsSearchCondition newsSearchCondition) {
     return newsMapper.findNewsIdsBySearchConditions(newsSearchCondition);
   }

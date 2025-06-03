@@ -10,11 +10,11 @@ import java.util.UUID;
 
 public interface NewsRepository {
 
-  Optional<List<News>> findNewsByIds(List<UUID> newsIdsList);
+  List<News> findNewsByIds(List<UUID> newsIds);
 
   List<News> findNews(PagerForRequest pagerForRequest);
 
-  int countNews();
+  int countNews(NewsSearchCondition newsSearchCondition);
 
   void createNews(News news);
 
@@ -22,7 +22,7 @@ public interface NewsRepository {
 
   void updateNews(NewsForUpdateRequest news);
 
-  Optional<List<UUID>> findNewsIdsBySearchConditions(NewsSearchCondition newsSearchCondition);
+  List<UUID> findNewsIdsBySearchConditions(NewsSearchCondition newsSearchCondition);
 
   Optional<News> findNewsById(UUID id);
 

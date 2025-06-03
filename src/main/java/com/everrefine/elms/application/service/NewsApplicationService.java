@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface NewsApplicationService {
 
-  List<NewsDto> findNewsByIds(List<String> newsIdsList);
+  List<NewsDto> findNewsByIds(List<String> newsIds);
 
   NewsPageDto findNews(int pageNum, int pageSize);
 
