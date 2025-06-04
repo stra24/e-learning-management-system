@@ -23,7 +23,20 @@ public class PagerForResponse {
    */
   int totalSize;
 
-  public PagerForResponse(int pageNum, int pageSize, int totalSize) {
+  /**
+   * 検索条件のお知らせタイトル
+   */
+  String title;
+
+  /**
+   * 検索条件の開始日
+   */
+
+  /**
+   * 検索条件の終了日
+   */
+
+  public PagerForResponse(int pageNum, int pageSize, int totalSize, String title) {
     if (pageNum < 1) {
       throw new IllegalArgumentException("pageNum must be at least 1");
     }
@@ -36,6 +49,7 @@ public class PagerForResponse {
     this.pageNum = pageNum;
     this.pageSize = pageSize;
     this.totalSize = totalSize;
+    this.title = title;
   }
 
   /**

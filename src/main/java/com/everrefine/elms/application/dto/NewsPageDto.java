@@ -27,10 +27,25 @@ public class NewsPageDto {
    */
   private final int totalSize;
 
+  /**
+   * 検索条件のお知らせタイトル
+   */
+  private final String title;
+
+  /**
+   * 検索条件の開始日
+   */
+
+  /**
+   * 検索条件の終了日
+   */
+
+
   public NewsPageDto(List<News> news, PagerForResponse pagerForResponse) {
     newsDtos = news.stream().map(NewsDto::new).toList();
     pageNum = pagerForResponse.getPageNum();
     pageSize = pagerForResponse.getPageSize();
     totalSize = pagerForResponse.getTotalSize();
+    title = pagerForResponse.getTitle();
   }
 }

@@ -32,7 +32,8 @@ public class NewsSearchCommand {
       LocalDate createDateFrom,
       LocalDate createDateTo
   ) {
-    return new NewsSearchCommand(pageNum,
+    return new NewsSearchCommand(
+        pageNum,
         pageSize,
         title,
         createDateFrom,

@@ -104,7 +104,7 @@ public class NewsController {
   }
 
   @GetMapping()
-  public ResponseEntity<List<NewsPageDto>> findSearchNews(NewsSearchRequest newsSearchRequest) {
+  public ResponseEntity<NewsPageDto> findSearchNews(NewsSearchRequest newsSearchRequest) {
     NewsSearchCommand newsSearchCommand = NewsSearchCommand.create(
         newsSearchRequest.getPageNum(),
         newsSearchRequest.getPageSize(),
@@ -113,7 +113,7 @@ public class NewsController {
         newsSearchRequest.getCreatedDateTo()
     );
 
-    List<NewsPageDto> newsPageDtos = newsApplicationService.findSearchNews(newsSearchCommand);
-    return ResponseEntity.ok(newsPageDtos);
+    NewsPageDto newsPageDto = newsApplicationService.findSearchNews(newsSearchCommand);
+    return ResponseEntity.ok(newsPageDto);
   }
 }

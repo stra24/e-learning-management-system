@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface NewsMapper {
 
-  List<News> findNewsByIds(@Param("idsList") List<UUID> ids);
+  List<News> findNewsByIds(@Param("ids") List<UUID> ids);
 
   List<News> findNews(PagerForRequest pagerForRequest);
 

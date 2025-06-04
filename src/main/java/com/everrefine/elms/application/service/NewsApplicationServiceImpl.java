@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +34,8 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
       UUID uuid = UUID.fromString(newsId);
       newsUUIDs.add(uuid);
     });
-    List<News> newsList = newsRepository.findNewsByIds(newsUUIDs);
-    return new List<NewsDto>(newsList);
+    List<News> newses = newsRepository.findNewsByIds(newsUUIDs);
+    return newses.stream().map(NewsDto::new).collect(Collectors.toList());
   }
 
   @Override
@@ -51,7 +52,7 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
     List<News> news = newsRepository.findNews(pagerForRequest);
     int totalSize = newsRepository.countNews(
         new NewsSearchCondition(pageNum, pageSize, "", null, null));
-    PagerForResponse pagerForResponse = new PagerForResponse(pageNum, pageSize, totalSize);
+    PagerForResponse pagerForResponse = new PagerForResponse(pageNum, pageSize, totalSize, "");
     return new NewsPageDto(news, pagerForResponse);
   }
 
@@ -83,12 +84,15 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   }
 
   @Override
-  public List<NewsPageDto> findSearchNews(NewsSearchCommand newsSearchCommand) {
-    NewsSearchCondition NewsSearchCondition = new NewsSearchCondition(
+  public NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommand) {
+    NewsSearchCondition newsSearchCondition = new NewsSearchCondition(
         newsSearchCommand.getPageNum(),
-
-        )
-    int totalSize = newsRepository.countNews(new NewsSearchCondition());
+        newsSearchCommand.getPageSize(),
+        newsSearchCommand.getTitle(),
+        newsSearchCommand.getCreatedDateFrom(),
+        newsSearchCommand.getCreateDateTo()
+    );
+    int totalSize = newsRepository.countNews(newsSearchCondition);
     return null;
   }
 }

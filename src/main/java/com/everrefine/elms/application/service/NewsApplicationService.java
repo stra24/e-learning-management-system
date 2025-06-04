@@ -19,7 +19,7 @@ public interface NewsApplicationService {
 
   void updateNews(NewsUpdateCommand newsUpdateCommand);
 
-  List<NewsPageDto> findSearchNews(NewsSearchCommand newsSearchCommands);
+  NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommands);
 
   NewsDto findNewsById(String id);
 }
