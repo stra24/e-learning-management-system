@@ -1,5 +1,6 @@
 package com.everrefine.elms.domain.model.pager;
 
+import java.time.LocalDate;
 import lombok.Value;
 
 /**
@@ -24,19 +25,22 @@ public class PagerForResponse {
   int totalSize;
 
   /**
-   * 検索条件のお知らせタイトル
+   * 検索条件のタイトル
    */
   String title;
 
   /**
    * 検索条件の開始日
    */
+  LocalDate createdDateFrom;
 
   /**
    * 検索条件の終了日
    */
+  LocalDate createDateTo;
 
-  public PagerForResponse(int pageNum, int pageSize, int totalSize, String title) {
+
+  public PagerForResponse(int pageNum, int pageSize, int totalSize, String title, LocalDate createdDateFrom, LocalDate createDateTo) {
     if (pageNum < 1) {
       throw new IllegalArgumentException("pageNum must be at least 1");
     }
@@ -50,6 +54,8 @@ public class PagerForResponse {
     this.pageSize = pageSize;
     this.totalSize = totalSize;
     this.title = title;
+    this.createdDateFrom = createdDateFrom;
+    this.createDateTo = createDateTo;
   }
 
   /**

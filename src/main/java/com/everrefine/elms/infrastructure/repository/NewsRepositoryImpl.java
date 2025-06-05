@@ -19,8 +19,8 @@ public class NewsRepositoryImpl implements NewsRepository {
   private final NewsMapper newsMapper;
 
   @Override
-  public List<News> findNewsByIds(List<UUID> newsIdsList) {
-    return newsMapper.findNewsByIds(newsIdsList);
+  public List<News> findNewsByIds(List<UUID> newsIds) {
+    return newsMapper.findNewsByIds(newsIds);
   }
 
   @Override

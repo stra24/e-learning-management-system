@@ -39,4 +39,5 @@ public class NewsSearchCondition {
     this.createdDateFrom = createdDateFrom;
     this.createDateTo = createDateTo;
   }
+
 }
