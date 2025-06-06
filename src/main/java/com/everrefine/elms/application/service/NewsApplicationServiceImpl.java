@@ -96,14 +96,20 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
     List<UUID> newsIds = newsRepository.findNewsIdsBySearchConditions(newsSearchCondition);
     List<News> news = newsRepository.findNewsByIds(newsIds);
     int totalSize = newsRepository.countNews(newsSearchCondition);
-    PagerForResponse pagerForResponse = new PagerForResponse(
+//    PagerForResponse pagerForResponse = new PagerForResponse(
+//        newsSearchCondition.getPagerForRequest().getPageNum(),
+//        newsSearchCondition.getPagerForRequest().getPageSize(),
+//        totalSize,
+//        newsSearchCondition.getTitle(),
+//        newsSearchCondition.getCreatedDateFrom(),
+//        newsSearchCondition.getCreateDateTo()
+//    );
+    return new NewsPageDto(news,
         newsSearchCondition.getPagerForRequest().getPageNum(),
         newsSearchCondition.getPagerForRequest().getPageSize(),
         totalSize,
         newsSearchCondition.getTitle(),
         newsSearchCondition.getCreatedDateFrom(),
-        newsSearchCondition.getCreateDateTo()
-    );
-    return new NewsPageDto(news, pagerForResponse);
+        newsSearchCondition.getCreateDateTo());
   }
 }
