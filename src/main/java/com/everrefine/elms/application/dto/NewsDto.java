@@ -12,6 +12,7 @@ public class NewsDto {
   private final String title;
   private final String content;
   private final LocalDate createdAt;
+  private final LocalDate updatedAt;
 
   // コンストラクタ
   public NewsDto(News news) {
@@ -19,5 +20,6 @@ public class NewsDto {
     this.title = news.getTitle().getValue();
     this.content = news.getContent().getValue();
     this.createdAt = news.getCreatedAt().toLocalDate();
+    this.updatedAt = news.getUpdatedAt().toLocalDate();
   }
 }

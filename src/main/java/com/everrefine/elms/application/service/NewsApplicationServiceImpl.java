@@ -95,6 +95,9 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
     );
     List<UUID> newsIds = newsRepository.findNewsIdsBySearchConditions(newsSearchCondition);
     List<News> news = newsRepository.findNewsByIds(newsIds);
+    List<NewsDto> newsDtos = news.stream()
+        .map(NewsDto::new)
+        .collect(Collectors.toList());
     int totalSize = newsRepository.countNews(newsSearchCondition);
 //    PagerForResponse pagerForResponse = new PagerForResponse(
 //        newsSearchCondition.getPagerForRequest().getPageNum(),
@@ -104,12 +107,9 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
 //        newsSearchCondition.getCreatedDateFrom(),
 //        newsSearchCondition.getCreateDateTo()
 //    );
-    return new NewsPageDto(news,
+    return new NewsPageDto(newsDtos,
         newsSearchCondition.getPagerForRequest().getPageNum(),
         newsSearchCondition.getPagerForRequest().getPageSize(),
-        totalSize,
-        newsSearchCondition.getTitle(),
-        newsSearchCondition.getCreatedDateFrom(),
-        newsSearchCondition.getCreateDateTo());
+        totalSize);
   }
 }
