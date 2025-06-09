@@ -10,10 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class NewsSearchCommand {
 
-  @NotNull
   private int pageNum;
 
-  @NotNull
   private int pageSize;
 
   @NotNull

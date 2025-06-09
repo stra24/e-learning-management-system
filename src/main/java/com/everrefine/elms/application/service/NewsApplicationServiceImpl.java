@@ -14,7 +14,6 @@ import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import com.everrefine.elms.domain.model.pager.PagerForResponse;
 import com.everrefine.elms.domain.repository.NewsRepository;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,17 +25,6 @@ import org.springframework.stereotype.Service;
 public class NewsApplicationServiceImpl implements NewsApplicationService {
 
   private final NewsRepository newsRepository;
-
-  @Override
-  public List<NewsDto> findNewsByIds(List<String> newsIds) {
-    List<UUID> newsUUIDs = new ArrayList<>();
-    newsIds.forEach(newsId -> {
-      UUID uuid = UUID.fromString(newsId);
-      newsUUIDs.add(uuid);
-    });
-    List<News> news = newsRepository.findNewsByIds(newsUUIDs);
-    return news.stream().map(NewsDto::new).collect(Collectors.toList());
-  }
 
   @Override
   public NewsDto findNewsById(String newsId) {
@@ -99,14 +87,6 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
         .map(NewsDto::new)
         .collect(Collectors.toList());
     int totalSize = newsRepository.countNews(newsSearchCondition);
-//    PagerForResponse pagerForResponse = new PagerForResponse(
-//        newsSearchCondition.getPagerForRequest().getPageNum(),
-//        newsSearchCondition.getPagerForRequest().getPageSize(),
-//        totalSize,
-//        newsSearchCondition.getTitle(),
-//        newsSearchCondition.getCreatedDateFrom(),
-//        newsSearchCondition.getCreateDateTo()
-//    );
     return new NewsPageDto(newsDtos,
         newsSearchCondition.getPagerForRequest().getPageNum(),
         newsSearchCondition.getPagerForRequest().getPageSize(),

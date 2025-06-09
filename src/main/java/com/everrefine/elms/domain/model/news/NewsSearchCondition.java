@@ -8,7 +8,7 @@ import lombok.Value;
 public class NewsSearchCondition {
 
   /**
-   * ページ番号
+   * リクエスト用のページャー情報
    */
   PagerForRequest pagerForRequest;
 

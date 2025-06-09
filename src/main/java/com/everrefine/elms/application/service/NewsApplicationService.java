@@ -5,11 +5,8 @@ import com.everrefine.elms.application.command.NewsSearchCommand;
 import com.everrefine.elms.application.command.NewsUpdateCommand;
 import com.everrefine.elms.application.dto.NewsDto;
 import com.everrefine.elms.application.dto.NewsPageDto;
-import java.util.List;
 
 public interface NewsApplicationService {
-
-  List<NewsDto> findNewsByIds(List<String> newsIds);
 
   NewsPageDto findNews(int pageNum, int pageSize);
 
