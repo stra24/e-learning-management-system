@@ -37,7 +37,5 @@ public class NewsSearchCommand {
         createDateFrom,
         createDateTo);
   }
-
-
 }
 

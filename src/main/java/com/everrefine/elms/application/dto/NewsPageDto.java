@@ -11,7 +11,7 @@ public class NewsPageDto {
   /**
    * お知らせDTOリスト
    */
-  private final List<NewsDto> newsDto;
+  private final List<NewsDto> newsDtos;
   /**
    * ページ番号
    */
@@ -30,7 +30,7 @@ public class NewsPageDto {
 
   //不要になったら削除する！！
   public NewsPageDto(List<News> news, PagerForResponse pagerForResponse) {
-    newsDto = news.stream().map(NewsDto::new).toList();
+    newsDtos = news.stream().map(NewsDto::new).toList();
     pageNum = pagerForResponse.getPageNum();
     pageSize = pagerForResponse.getPageSize();
     totalSize = pagerForResponse.getTotalSize();
@@ -40,7 +40,7 @@ public class NewsPageDto {
       int pageNum,
       int pageSize,
       int totalSize) {
-    this.newsDto = newsDto;
+    this.newsDtos = newsDto;
     this.pageNum = pageNum;
     this.pageSize = pageSize;
     this.totalSize = totalSize;
