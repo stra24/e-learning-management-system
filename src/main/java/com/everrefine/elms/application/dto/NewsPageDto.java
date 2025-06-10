@@ -27,10 +27,22 @@ public class NewsPageDto {
    */
   private final int totalSize;
 
+
+  //不要になったら削除する！！
   public NewsPageDto(List<News> news, PagerForResponse pagerForResponse) {
     newsDtos = news.stream().map(NewsDto::new).toList();
     pageNum = pagerForResponse.getPageNum();
     pageSize = pagerForResponse.getPageSize();
     totalSize = pagerForResponse.getTotalSize();
+  }
+
+  public NewsPageDto(List<NewsDto> newsDto,
+      int pageNum,
+      int pageSize,
+      int totalSize) {
+    this.newsDtos = newsDto;
+    this.pageNum = pageNum;
+    this.pageSize = pageSize;
+    this.totalSize = totalSize;
   }
 }

@@ -1,12 +1,14 @@
 package com.everrefine.elms.application.service;
 
 import com.everrefine.elms.application.command.NewsCreateCommand;
+import com.everrefine.elms.application.command.NewsSearchCommand;
 import com.everrefine.elms.application.command.NewsUpdateCommand;
 import com.everrefine.elms.application.dto.NewsDto;
 import com.everrefine.elms.application.dto.NewsPageDto;
 import com.everrefine.elms.domain.model.news.Content;
 import com.everrefine.elms.domain.model.news.News;
 import com.everrefine.elms.domain.model.news.NewsForUpdateRequest;
+import com.everrefine.elms.domain.model.news.NewsSearchCondition;
 import com.everrefine.elms.domain.model.news.Title;
 import com.everrefine.elms.domain.model.pager.PagerForRequest;
 import com.everrefine.elms.domain.model.pager.PagerForResponse;
@@ -14,6 +16,7 @@ import com.everrefine.elms.domain.repository.NewsRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +38,10 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   public NewsPageDto findNews(int pageNum, int pageSize) {
     PagerForRequest pagerForRequest = new PagerForRequest(pageNum, pageSize);
     List<News> news = newsRepository.findNews(pagerForRequest);
-    int totalSize = newsRepository.countNews();
-    PagerForResponse pagerForResponse = new PagerForResponse(pageNum, pageSize, totalSize);
+    int totalSize = newsRepository.countNews(
+        new NewsSearchCondition(pageNum, pageSize, "", null, null));
+    PagerForResponse pagerForResponse = new PagerForResponse(pageNum, pageSize, totalSize, "", null,
+        null);
     return new NewsPageDto(news, pagerForResponse);
   }
 
@@ -65,5 +70,26 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
         new Title(newsUpdateCommand.getTitle()),
         new Content(newsUpdateCommand.getContent()));
     newsRepository.updateNews(news);
+  }
+
+  @Override
+  public NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommand) {
+    NewsSearchCondition newsSearchCondition = new NewsSearchCondition(
+        newsSearchCommand.getPageNum(),
+        newsSearchCommand.getPageSize(),
+        newsSearchCommand.getTitle(),
+        newsSearchCommand.getCreatedDateFrom(),
+        newsSearchCommand.getCreateDateTo()
+    );
+    List<UUID> newsIds = newsRepository.findNewsIdsBySearchConditions(newsSearchCondition);
+    List<News> news = newsRepository.findNewsByIds(newsIds);
+    List<NewsDto> newsDtos = news.stream()
+        .map(NewsDto::new)
+        .collect(Collectors.toList());
+    int totalSize = newsRepository.countNews(newsSearchCondition);
+    return new NewsPageDto(newsDtos,
+        newsSearchCondition.getPagerForRequest().getPageNum(),
+        newsSearchCondition.getPagerForRequest().getPageSize(),
+        totalSize);
   }
 }
