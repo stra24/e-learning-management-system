@@ -8,15 +8,13 @@ import com.everrefine.elms.application.dto.NewsPageDto;
 
 public interface NewsApplicationService {
 
-  NewsPageDto findNews(int pageNum, int pageSize);
-
-  void createNews(NewsCreateCommand newsCreateCommand);
-
-  void deleteNewsById(String newsId);
-
-  void updateNews(NewsUpdateCommand newsUpdateCommand);
+  NewsDto findNewsById(String id);
 
   NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommands);
 
-  NewsDto findNewsById(String id);
+  void createNews(NewsCreateCommand newsCreateCommand);
+
+  void updateNews(NewsUpdateCommand newsUpdateCommand);
+
+  void deleteNewsById(String newsId);
 }

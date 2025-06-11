@@ -7,13 +7,13 @@ import com.everrefine.elms.application.dto.CoursePageDto;
 
 public interface CourseApplicationService {
 
-  void updateCourse(CourseUpdateCommand courseUpdateCommand);
-
-  void createCourse(CourseCreateCommand courseCreateCommand);
-
-  void deleteCourseById(String courseId);
-
   CourseDto findCourseById(String CourseId);
 
   CoursePageDto findCourses(int pageNum, int pageSize);
+
+  void createCourse(CourseCreateCommand courseCreateCommand);
+
+  void updateCourse(CourseUpdateCommand courseUpdateCommand);
+
+  void deleteCourseById(String courseId);
 }

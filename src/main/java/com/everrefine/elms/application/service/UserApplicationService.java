@@ -6,13 +6,13 @@ import com.everrefine.elms.application.dto.UserDto;
 import com.everrefine.elms.application.dto.UserPageDto;
 
 public interface UserApplicationService {
-  void updateUser(UserUpdateCommand userUpdateCommand);
-
-  void createUser(UserCreateCommand userCreateCommand);
-
-  void deleteUserById(String userId);
-
   UserDto findUserById(String userId);
 
   UserPageDto findUsers(int pageNum, int pageSize);
+
+  void createUser(UserCreateCommand userCreateCommand);
+
+  void updateUser(UserUpdateCommand userUpdateCommand);
+
+  void deleteUserById(String userId);
 }

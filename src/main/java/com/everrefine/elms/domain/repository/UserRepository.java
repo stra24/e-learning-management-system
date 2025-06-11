@@ -1,6 +1,6 @@
 package com.everrefine.elms.domain.repository;
 
-import com.everrefine.elms.domain.model.pager.PagerForRequest;
+import com.everrefine.elms.domain.model.PagerForRequest;
 import com.everrefine.elms.domain.model.user.EmailAddress;
 import com.everrefine.elms.domain.model.user.User;
 import com.everrefine.elms.domain.model.user.UserForUpdateRequest;

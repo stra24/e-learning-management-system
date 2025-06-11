@@ -1,4 +1,4 @@
-package com.everrefine.elms.domain.model.pager;
+package com.everrefine.elms.domain.model;
 
 import lombok.Value;
 

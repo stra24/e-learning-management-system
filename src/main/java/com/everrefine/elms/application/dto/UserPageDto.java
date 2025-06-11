@@ -1,10 +1,11 @@
 package com.everrefine.elms.application.dto;
 
-import com.everrefine.elms.domain.model.pager.PagerForResponse;
-import com.everrefine.elms.domain.model.user.User;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public class UserPageDto {
 
@@ -26,11 +27,4 @@ public class UserPageDto {
    * 総データ件数
    */
   private final int totalSize;
-
-  public UserPageDto(List<User> users, PagerForResponse pagerForResponse) {
-    userDtos = users.stream().map(UserDto::new).toList();
-    pageNum = pagerForResponse.getPageNum();
-    pageSize = pagerForResponse.getPageSize();
-    totalSize = pagerForResponse.getTotalSize();
-  }
 }

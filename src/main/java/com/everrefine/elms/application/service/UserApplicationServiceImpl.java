@@ -4,9 +4,9 @@ import com.everrefine.elms.application.command.UserCreateCommand;
 import com.everrefine.elms.application.command.UserUpdateCommand;
 import com.everrefine.elms.application.dto.UserDto;
 import com.everrefine.elms.application.dto.UserPageDto;
+import com.everrefine.elms.application.dto.converter.UserDtoConverter;
 import com.everrefine.elms.domain.model.Url;
-import com.everrefine.elms.domain.model.pager.PagerForRequest;
-import com.everrefine.elms.domain.model.pager.PagerForResponse;
+import com.everrefine.elms.domain.model.PagerForRequest;
 import com.everrefine.elms.domain.model.user.EmailAddress;
 import com.everrefine.elms.domain.model.user.Password;
 import com.everrefine.elms.domain.model.user.RealName;
@@ -28,16 +28,22 @@ public class UserApplicationServiceImpl implements UserApplicationService {
   private final UserRepository userRepository;
 
   @Override
-  public void updateUser(UserUpdateCommand userUpdateCommand) {
-    UserDto userDto = findUserById(userUpdateCommand.getId().toString());
-    UserForUpdateRequest user = new UserForUpdateRequest(
-        userDto.getId(),
-        new EmailAddress(userUpdateCommand.getEmailAddress()),
-        new RealName(userUpdateCommand.getRealName()),
-        new UserName(userUpdateCommand.getUserName()),
-        new Url(userUpdateCommand.getThumbnailUrl())
-    );
-    userRepository.updateUser(user);
+  public UserDto findUserById(String userId) {
+    UUID uuid = UUID.fromString(userId);
+    User user = userRepository.findUserById(uuid)
+            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+    return UserDtoConverter.toDto(user);
+  }
+
+  @Override
+  public UserPageDto findUsers(int pageNum, int pageSize) {
+    PagerForRequest pagerForRequest = new PagerForRequest(pageNum, pageSize);
+    List<User> users = userRepository.findUsers(pagerForRequest);
+    int totalSize = userRepository.countUsers();
+    List<UserDto> userDtos = users.stream()
+            .map(UserDtoConverter::toDto)
+            .toList();
+    return new UserPageDto(userDtos, pageNum, pageSize, totalSize);
   }
 
   @Override
@@ -63,28 +69,24 @@ public class UserApplicationServiceImpl implements UserApplicationService {
   }
 
   @Override
+  public void updateUser(UserUpdateCommand userUpdateCommand) {
+    UserDto userDto = findUserById(userUpdateCommand.getId().toString());
+    UserForUpdateRequest user = new UserForUpdateRequest(
+            userDto.getId(),
+            new EmailAddress(userUpdateCommand.getEmailAddress()),
+            new RealName(userUpdateCommand.getRealName()),
+            new UserName(userUpdateCommand.getUserName()),
+            new Url(userUpdateCommand.getThumbnailUrl())
+    );
+    userRepository.updateUser(user);
+  }
+
+  @Override
   public void deleteUserById(String userId) {
     UUID uuid = UUID.fromString(userId);
     // ユーザーが存在しなくてもエラーにはしない。
     userRepository.findUserById(uuid).ifPresent(user ->
         userRepository.deleteUserById(uuid)
     );
-  }
-
-  @Override
-  public UserDto findUserById(String userId) {
-    UUID uuid = UUID.fromString(userId);
-    User user = userRepository.findUserById(uuid)
-        .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-    return new UserDto(user);
-  }
-
-  @Override
-  public UserPageDto findUsers(int pageNum, int pageSize) {
-    PagerForRequest pagerForRequest = new PagerForRequest(pageNum, pageSize);
-    List<User> users = userRepository.findUsers(pagerForRequest);
-    int totalSize = userRepository.countUsers();
-    PagerForResponse pagerForResponse = new PagerForResponse(pageNum, pageSize, totalSize);
-    return new UserPageDto(users, pagerForResponse);
   }
 }

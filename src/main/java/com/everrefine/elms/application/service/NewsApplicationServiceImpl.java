@@ -5,13 +5,12 @@ import com.everrefine.elms.application.command.NewsSearchCommand;
 import com.everrefine.elms.application.command.NewsUpdateCommand;
 import com.everrefine.elms.application.dto.NewsDto;
 import com.everrefine.elms.application.dto.NewsPageDto;
+import com.everrefine.elms.application.dto.converter.NewsDtoConverter;
 import com.everrefine.elms.domain.model.news.Content;
 import com.everrefine.elms.domain.model.news.News;
 import com.everrefine.elms.domain.model.news.NewsForUpdateRequest;
 import com.everrefine.elms.domain.model.news.NewsSearchCondition;
 import com.everrefine.elms.domain.model.news.Title;
-import com.everrefine.elms.domain.model.pager.PagerForRequest;
-import com.everrefine.elms.domain.model.pager.PagerForResponse;
 import com.everrefine.elms.domain.repository.NewsRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,18 +30,28 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
     UUID uuid = UUID.fromString(newsId);
     News news = newsRepository.findNewsById(uuid)
         .orElseThrow(() -> new RuntimeException("News not found with ID: " + newsId));
-    return new NewsDto(news);
+    return NewsDtoConverter.toDto(news);
   }
 
   @Override
-  public NewsPageDto findNews(int pageNum, int pageSize) {
-    PagerForRequest pagerForRequest = new PagerForRequest(pageNum, pageSize);
-    List<News> news = newsRepository.findNews(pagerForRequest);
-    int totalSize = newsRepository.countNews(
-        new NewsSearchCondition(pageNum, pageSize, "", null, null));
-    PagerForResponse pagerForResponse = new PagerForResponse(pageNum, pageSize, totalSize, "", null,
-        null);
-    return new NewsPageDto(news, pagerForResponse);
+  public NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommand) {
+    NewsSearchCondition newsSearchCondition = new NewsSearchCondition(
+            newsSearchCommand.getPageNum(),
+            newsSearchCommand.getPageSize(),
+            newsSearchCommand.getTitle(),
+            newsSearchCommand.getCreatedDateFrom(),
+            newsSearchCommand.getCreateDateTo()
+    );
+    List<UUID> newsIds = newsRepository.findNewsIdsBySearchConditions(newsSearchCondition);
+    List<News> news = newsRepository.findNewsByIds(newsIds);
+    List<NewsDto> newsDtos = news.stream()
+            .map(NewsDtoConverter::toDto)
+            .collect(Collectors.toList());
+    int totalSize = newsRepository.countNews(newsSearchCondition);
+    return new NewsPageDto(newsDtos,
+            newsSearchCondition.getPagerForRequest().getPageNum(),
+            newsSearchCondition.getPagerForRequest().getPageSize(),
+            totalSize);
   }
 
   @Override
@@ -57,39 +66,18 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   }
 
   @Override
-  public void deleteNewsById(String newsId) {
-    UUID uuid = UUID.fromString(newsId);
-    newsRepository.findNewsById(uuid).ifPresent(news -> newsRepository.deleteNewsById(uuid));
-  }
-
-  @Override
   public void updateNews(NewsUpdateCommand newsUpdateCommand) {
     NewsDto newsDto = findNewsById(newsUpdateCommand.getId().toString());
     NewsForUpdateRequest news = new NewsForUpdateRequest(
-        newsDto.getId(),
-        new Title(newsUpdateCommand.getTitle()),
-        new Content(newsUpdateCommand.getContent()));
+            newsDto.getId(),
+            new Title(newsUpdateCommand.getTitle()),
+            new Content(newsUpdateCommand.getContent()));
     newsRepository.updateNews(news);
   }
 
   @Override
-  public NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommand) {
-    NewsSearchCondition newsSearchCondition = new NewsSearchCondition(
-        newsSearchCommand.getPageNum(),
-        newsSearchCommand.getPageSize(),
-        newsSearchCommand.getTitle(),
-        newsSearchCommand.getCreatedDateFrom(),
-        newsSearchCommand.getCreateDateTo()
-    );
-    List<UUID> newsIds = newsRepository.findNewsIdsBySearchConditions(newsSearchCondition);
-    List<News> news = newsRepository.findNewsByIds(newsIds);
-    List<NewsDto> newsDtos = news.stream()
-        .map(NewsDto::new)
-        .collect(Collectors.toList());
-    int totalSize = newsRepository.countNews(newsSearchCondition);
-    return new NewsPageDto(newsDtos,
-        newsSearchCondition.getPagerForRequest().getPageNum(),
-        newsSearchCondition.getPagerForRequest().getPageSize(),
-        totalSize);
+  public void deleteNewsById(String newsId) {
+    UUID uuid = UUID.fromString(newsId);
+    newsRepository.findNewsById(uuid).ifPresent(news -> newsRepository.deleteNewsById(uuid));
   }
 }

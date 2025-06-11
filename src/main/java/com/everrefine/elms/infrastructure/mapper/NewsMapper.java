@@ -3,7 +3,7 @@ package com.everrefine.elms.infrastructure.mapper;
 import com.everrefine.elms.domain.model.news.News;
 import com.everrefine.elms.domain.model.news.NewsForUpdateRequest;
 import com.everrefine.elms.domain.model.news.NewsSearchCondition;
-import com.everrefine.elms.domain.model.pager.PagerForRequest;
+import com.everrefine.elms.domain.model.PagerForRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

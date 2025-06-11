@@ -1,6 +1,8 @@
 package com.everrefine.elms.domain.model.news;
 
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;

@@ -90,19 +90,9 @@ public class NewsController {
   /**
    * 指定した範囲の全てのお知らせを取得する。
    *
-   * @param pageNum  ページ番号
-   * @param pageSize 1ページ当たりの件数
+   * @param newsSearchRequest  お知らせ検索リクエスト
    * @return お知らせのページ情報を表すDTO
    */
-  @GetMapping()
-  public ResponseEntity<NewsPageDto> findNews(
-      @RequestParam(defaultValue = "1") int pageNum,
-      @RequestParam(defaultValue = "10") int pageSize
-  ) {
-    NewsPageDto newsPageDto = newsApplicationService.findNews(pageNum, pageSize);
-    return ResponseEntity.ok(newsPageDto);
-  }
-
   @GetMapping()
   public ResponseEntity<NewsPageDto> findSearchNews(NewsSearchRequest newsSearchRequest) {
     NewsSearchCommand newsSearchCommand = NewsSearchCommand.create(

@@ -1,6 +1,6 @@
 package com.everrefine.elms.domain.model.news;
 
-import com.everrefine.elms.domain.model.pager.PagerForRequest;
+import com.everrefine.elms.domain.model.PagerForRequest;
 import java.time.LocalDate;
 import lombok.Value;
 

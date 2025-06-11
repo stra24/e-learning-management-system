@@ -1,8 +1,7 @@
 package com.everrefine.elms.infrastructure.repository;
 
 import com.everrefine.elms.domain.model.course.Course;
-import com.everrefine.elms.domain.model.pager.PagerForRequest;
-import com.everrefine.elms.domain.model.course.Course;
+import com.everrefine.elms.domain.model.PagerForRequest;
 import com.everrefine.elms.domain.model.course.CourseForUpdateRequest;
 import com.everrefine.elms.domain.repository.CourseRepository;
 import com.everrefine.elms.infrastructure.mapper.CourseMapper;
