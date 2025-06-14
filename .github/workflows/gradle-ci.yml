@@ -27,6 +27,9 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
 
+      - name: DockerのDBコンテナを起動
+        run: docker compose -f docker-compose-default.yml up --build -d
+
       - name: gradlewの実行権限を付与
         run: chmod +x ./gradlew
 
