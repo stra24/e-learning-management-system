@@ -31,7 +31,7 @@ public class NewsController {
   private final NewsApplicationService newsApplicationService;
 
   /**
-   * お知らせを更新する
+   * お知らせを更新する。
    *
    * @param newsUpdateRequest newsの更新リクエスト（リクエストボディ)
    */
@@ -49,7 +49,7 @@ public class NewsController {
   }
 
   /**
-   * お知らせを新規登録する
+   * お知らせを新規登録する。
    *
    * @param newsCreateRequest newsの新規作成リクエスト（リクエストボディ）
    */
@@ -65,7 +65,7 @@ public class NewsController {
   }
 
   /**
-   * 指定したユーザーIDのユーザーを削除する
+   * 指定したユーザーIDのユーザーを削除する。
    *
    * @param newsId newsID(UUID形式の文字列）
    */
