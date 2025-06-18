@@ -25,19 +25,27 @@ public class NewsSearchCondition {
   /**
    * 検索条件：終了日
    */
-  LocalDate createDateTo;
+  LocalDate createdDateTo;
 
   public NewsSearchCondition(
       int pageNum,
       int pageSize,
       String title,
       LocalDate createdDateFrom,
-      LocalDate createDateTo
+      LocalDate createdDateTo
   ) {
     this.pagerForRequest = new PagerForRequest(pageNum, pageSize);
     this.title = title;
     this.createdDateFrom = createdDateFrom;
-    this.createDateTo = createDateTo;
+    this.createdDateTo = createdDateTo;
   }
 
+  public int getPageSize() {
+    return pagerForRequest.getPageSize();
+  }
+
+  public int getOffset() {
+    return pagerForRequest.getOffset();
+  }
 }
+
