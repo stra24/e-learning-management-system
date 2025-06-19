@@ -36,22 +36,22 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   @Override
   public NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommand) {
     NewsSearchCondition newsSearchCondition = new NewsSearchCondition(
-            newsSearchCommand.getPageNum(),
-            newsSearchCommand.getPageSize(),
-            newsSearchCommand.getTitle(),
-            newsSearchCommand.getCreatedDateFrom(),
-            newsSearchCommand.getCreateDateTo()
+        newsSearchCommand.getPageNum(),
+        newsSearchCommand.getPageSize(),
+        newsSearchCommand.getTitle(),
+        newsSearchCommand.getCreatedDateFrom(),
+        newsSearchCommand.getCreateDateTo()
     );
     List<UUID> newsIds = newsRepository.findNewsIdsBySearchConditions(newsSearchCondition);
     List<News> news = newsRepository.findNewsByIds(newsIds);
     List<NewsDto> newsDtos = news.stream()
-            .map(NewsDtoConverter::toDto)
-            .collect(Collectors.toList());
+        .map(NewsDtoConverter::toDto)
+        .collect(Collectors.toList());
     int totalSize = newsRepository.countNews(newsSearchCondition);
     return new NewsPageDto(newsDtos,
-            newsSearchCondition.getPagerForRequest().getPageNum(),
-            newsSearchCondition.getPagerForRequest().getPageSize(),
-            totalSize);
+        newsSearchCondition.getPagerForRequest().getPageNum(),
+        newsSearchCondition.getPagerForRequest().getPageSize(),
+        totalSize);
   }
 
   @Override
@@ -69,9 +69,9 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   public void updateNews(NewsUpdateCommand newsUpdateCommand) {
     NewsDto newsDto = findNewsById(newsUpdateCommand.getId().toString());
     NewsForUpdateRequest news = new NewsForUpdateRequest(
-            newsDto.getId(),
-            new Title(newsUpdateCommand.getTitle()),
-            new Content(newsUpdateCommand.getContent()));
+        newsDto.getId(),
+        new Title(newsUpdateCommand.getTitle()),
+        new Content(newsUpdateCommand.getContent()));
     newsRepository.updateNews(news);
   }
 

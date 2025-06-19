@@ -57,6 +57,7 @@
     *
     FROM
     news
+    WHERE id = #{id}
   </select>
 
   <select id="findNewsByIds" resultType="com.everrefine.elms.domain.model.news.News">
