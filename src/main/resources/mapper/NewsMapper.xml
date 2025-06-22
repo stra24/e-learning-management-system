@@ -25,16 +25,6 @@
     )
   </insert>
 
-  <select id="findNews" resultType="com.everrefine.elms.domain.model.news.News">
-    SELECT
-    *
-    FROM
-    news
-    ORDER BY
-    created_at DESC, id DESC
-    LIMIT #{pageSize} OFFSET #{offset}
-  </select>
-
   <select id="countNews" resultType="int">
     SELECT COUNT(*) FROM news
     <where>
@@ -93,6 +83,7 @@
           ]]>
       </if>
     </where>
+    ORDER BY created_at DESC
     LIMIT #{pageSize} OFFSET #{offset}
   </select>
 
