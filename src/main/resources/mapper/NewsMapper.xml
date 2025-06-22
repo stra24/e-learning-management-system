@@ -30,6 +30,8 @@
     *
     FROM
     news
+    ORDER BY
+    created_at DESC, id DESC
     LIMIT #{pageSize} OFFSET #{offset}
   </select>
 
@@ -70,6 +72,7 @@
     <foreach close=")" collection="ids" item="id" open="(" separator=",">
       #{id}
     </foreach>
+    ORDER BY created_at DESC
   </select>
 
   <select id="findNewsIdsBySearchConditions"
