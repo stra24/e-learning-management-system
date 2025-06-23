@@ -40,7 +40,7 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
         newsSearchCommand.getPageSize(),
         newsSearchCommand.getTitle(),
         newsSearchCommand.getCreatedDateFrom(),
-        newsSearchCommand.getCreateDateTo()
+        newsSearchCommand.getCreatedDateTo()
     );
     List<UUID> newsIds = newsRepository.findNewsIdsBySearchConditions(newsSearchCondition);
     List<News> news = newsRepository.findNewsByIds(newsIds);

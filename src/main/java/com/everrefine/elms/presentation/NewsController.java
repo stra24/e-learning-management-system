@@ -9,7 +9,6 @@ import com.everrefine.elms.application.service.NewsApplicationService;
 import com.everrefine.elms.presentation.request.NewsCreateRequest;
 import com.everrefine.elms.presentation.request.NewsSearchRequest;
 import com.everrefine.elms.presentation.request.NewsUpdateRequest;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -90,7 +88,7 @@ public class NewsController {
   /**
    * 指定した範囲の全てのお知らせを取得する。
    *
-   * @param newsSearchRequest  お知らせ検索リクエスト
+   * @param newsSearchRequest お知らせ検索リクエスト
    * @return お知らせのページ情報を表すDTO
    */
   @GetMapping()

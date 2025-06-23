@@ -21,21 +21,21 @@ public class NewsSearchCommand {
   private LocalDate createdDateFrom;
 
   @NotNull
-  private LocalDate createDateTo;
+  private LocalDate createdDateTo;
 
   public static NewsSearchCommand create(
       int pageNum,
       int pageSize,
       String title,
       LocalDate createDateFrom,
-      LocalDate createDateTo
+      LocalDate createdDateTo
   ) {
     return new NewsSearchCommand(
         pageNum,
         pageSize,
         title,
         createDateFrom,
-        createDateTo);
+        createdDateTo);
   }
 }
 
