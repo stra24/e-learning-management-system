@@ -48,4 +48,3 @@ public class NewsSearchCondition {
     return pagerForRequest.getOffset();
   }
 }
-

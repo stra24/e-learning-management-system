@@ -27,11 +27,6 @@ public class NewsRepositoryImpl implements NewsRepository {
     return newsMapper.findNewsByIds(newsIds);
   }
 
-//  @Override
-//  public List<News> findNews(PagerForRequest pagerForRequest) {
-//    return newsMapper.findNews(pagerForRequest);
-//  }
-
   @Override
   public int countNews(NewsSearchCondition newsSearchCondition) {
     return newsMapper.countNews(newsSearchCondition);
