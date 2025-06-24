@@ -15,8 +15,6 @@ public interface NewsMapper {
 
   List<News> findNewsByIds(@Param("ids") List<UUID> ids);
 
-  List<News> findNews(PagerForRequest pagerForRequest);
-
   int countNews(NewsSearchCondition newsSearchCondition);
 
   void createNews(News news);

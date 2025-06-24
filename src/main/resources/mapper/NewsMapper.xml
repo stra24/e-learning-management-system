@@ -25,14 +25,6 @@
     )
   </insert>
 
-  <select id="findNews" resultType="com.everrefine.elms.domain.model.news.News">
-    SELECT
-    *
-    FROM
-    news
-    LIMIT #{pageSize} OFFSET #{offset}
-  </select>
-
   <select id="countNews" resultType="int">
     SELECT COUNT(*) FROM news
     <where>
@@ -57,6 +49,7 @@
     *
     FROM
     news
+    WHERE id = #{id}
   </select>
 
   <select id="findNewsByIds" resultType="com.everrefine.elms.domain.model.news.News">
@@ -69,10 +62,11 @@
     <foreach close=")" collection="ids" item="id" open="(" separator=",">
       #{id}
     </foreach>
+    ORDER BY created_at DESC
   </select>
 
   <select id="findNewsIdsBySearchConditions"
-    resultType="com.everrefine.elms.domain.model.news.NewsSearchCondition">
+    resultType="java.util.UUID">
     SELECT id FROM news
     <where>
       <if test="title != null and title != ''">
@@ -89,6 +83,7 @@
           ]]>
       </if>
     </where>
+    ORDER BY created_at DESC
     LIMIT #{pageSize} OFFSET #{offset}
   </select>
 

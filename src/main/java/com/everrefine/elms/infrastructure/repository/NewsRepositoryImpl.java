@@ -6,6 +6,7 @@ import com.everrefine.elms.domain.model.news.NewsSearchCondition;
 import com.everrefine.elms.domain.model.PagerForRequest;
 import com.everrefine.elms.domain.repository.NewsRepository;
 import com.everrefine.elms.infrastructure.mapper.NewsMapper;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,12 +21,10 @@ public class NewsRepositoryImpl implements NewsRepository {
 
   @Override
   public List<News> findNewsByIds(List<UUID> newsIds) {
+    if (newsIds.isEmpty()) {
+      return Collections.emptyList();
+    }
     return newsMapper.findNewsByIds(newsIds);
-  }
-
-  @Override
-  public List<News> findNews(PagerForRequest pagerForRequest) {
-    return newsMapper.findNews(pagerForRequest);
   }
 
   @Override
