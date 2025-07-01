@@ -10,7 +10,7 @@ public interface NewsApplicationService {
 
   NewsDto findNewsById(String id);
 
-  NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommands);
+  NewsPageDto findNews(NewsSearchCommand newsSearchCommands);
 
   void createNews(NewsCreateCommand newsCreateCommand);
 

@@ -51,9 +51,8 @@ public class NewsController {
    *
    * @param newsCreateRequest newsの新規作成リクエスト（リクエストボディ）
    */
-  @PostMapping()
-  public ResponseEntity<Void> createNews(
-      @RequestBody NewsCreateRequest newsCreateRequest) {
+  @PostMapping
+  public ResponseEntity<Void> createNews(@RequestBody NewsCreateRequest newsCreateRequest) {
     NewsCreateCommand newsCreateCommand = NewsCreateCommand.create(
         newsCreateRequest.getTitle(),
         newsCreateRequest.getContent()
@@ -91,8 +90,8 @@ public class NewsController {
    * @param newsSearchRequest お知らせ検索リクエスト
    * @return お知らせのページ情報を表すDTO
    */
-  @GetMapping()
-  public ResponseEntity<NewsPageDto> findSearchNews(NewsSearchRequest newsSearchRequest) {
+  @GetMapping
+  public ResponseEntity<NewsPageDto> findNews(NewsSearchRequest newsSearchRequest) {
     NewsSearchCommand newsSearchCommand = NewsSearchCommand.create(
         newsSearchRequest.getPageNum(),
         newsSearchRequest.getPageSize(),
@@ -101,7 +100,7 @@ public class NewsController {
         newsSearchRequest.getCreatedDateTo()
     );
 
-    NewsPageDto newsPageDto = newsApplicationService.findSearchNews(newsSearchCommand);
+    NewsPageDto newsPageDto = newsApplicationService.findNews(newsSearchCommand);
     return ResponseEntity.ok(newsPageDto);
   }
 }

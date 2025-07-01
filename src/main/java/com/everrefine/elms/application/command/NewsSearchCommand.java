@@ -11,7 +11,6 @@ import lombok.Getter;
 public class NewsSearchCommand {
 
   private int pageNum;
-
   private int pageSize;
 
   @NotNull

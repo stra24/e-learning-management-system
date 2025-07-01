@@ -1,23 +1,25 @@
 package com.everrefine.elms.application.service;
 
 import com.everrefine.elms.application.command.UserCreateCommand;
+import com.everrefine.elms.application.command.UserSearchCommand;
 import com.everrefine.elms.application.command.UserUpdateCommand;
 import com.everrefine.elms.application.dto.UserDto;
 import com.everrefine.elms.application.dto.UserPageDto;
 import com.everrefine.elms.application.dto.converter.UserDtoConverter;
 import com.everrefine.elms.domain.model.Url;
-import com.everrefine.elms.domain.model.PagerForRequest;
 import com.everrefine.elms.domain.model.user.EmailAddress;
 import com.everrefine.elms.domain.model.user.Password;
 import com.everrefine.elms.domain.model.user.RealName;
 import com.everrefine.elms.domain.model.user.User;
 import com.everrefine.elms.domain.model.user.UserForUpdateRequest;
 import com.everrefine.elms.domain.model.user.UserName;
+import com.everrefine.elms.domain.model.user.UserSearchCondition;
 import com.everrefine.elms.domain.repository.UserRepository;
 import com.everrefine.elms.domain.service.UserDomainService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,19 +33,35 @@ public class UserApplicationServiceImpl implements UserApplicationService {
   public UserDto findUserById(String userId) {
     UUID uuid = UUID.fromString(userId);
     User user = userRepository.findUserById(uuid)
-            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
     return UserDtoConverter.toDto(user);
   }
 
   @Override
-  public UserPageDto findUsers(int pageNum, int pageSize) {
-    PagerForRequest pagerForRequest = new PagerForRequest(pageNum, pageSize);
-    List<User> users = userRepository.findUsers(pagerForRequest);
-    int totalSize = userRepository.countUsers();
+  public UserPageDto findUsers(UserSearchCommand userSearchCommand) {
+    UserSearchCondition userSearchCondition = new UserSearchCondition(
+        userSearchCommand.getPageNum(),
+        userSearchCommand.getPageSize(),
+        userSearchCommand.getUserId(),
+        userSearchCommand.getUserRole(),
+        userSearchCommand.getRealName(),
+        userSearchCommand.getUserName(),
+        userSearchCommand.getEmailAddress(),
+        userSearchCommand.getCreatedDateFrom(),
+        userSearchCommand.getCreatedDateTo()
+    );
+    List<UUID> userIds = userRepository.findUserIdsBySearchConditions(userSearchCondition);
+    List<User> users = userRepository.findUsersByIds(userIds);
     List<UserDto> userDtos = users.stream()
-            .map(UserDtoConverter::toDto)
-            .toList();
-    return new UserPageDto(userDtos, pageNum, pageSize, totalSize);
+        .map(UserDtoConverter::toDto)
+        .collect(Collectors.toList());
+    int totalSize = userRepository.countUsers(userSearchCondition);
+    return new UserPageDto(
+        userDtos,
+        userSearchCondition.getPagerForRequest().getPageNum(),
+        userSearchCondition.getPagerForRequest().getPageSize(),
+        totalSize
+    );
   }
 
   @Override
@@ -72,11 +90,11 @@ public class UserApplicationServiceImpl implements UserApplicationService {
   public void updateUser(UserUpdateCommand userUpdateCommand) {
     UserDto userDto = findUserById(userUpdateCommand.getId().toString());
     UserForUpdateRequest user = new UserForUpdateRequest(
-            userDto.getId(),
-            new EmailAddress(userUpdateCommand.getEmailAddress()),
-            new RealName(userUpdateCommand.getRealName()),
-            new UserName(userUpdateCommand.getUserName()),
-            new Url(userUpdateCommand.getThumbnailUrl())
+        userDto.getId(),
+        new EmailAddress(userUpdateCommand.getEmailAddress()),
+        new RealName(userUpdateCommand.getRealName()),
+        new UserName(userUpdateCommand.getUserName()),
+        new Url(userUpdateCommand.getThumbnailUrl())
     );
     userRepository.updateUser(user);
   }

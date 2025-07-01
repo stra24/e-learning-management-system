@@ -26,10 +26,11 @@
   </insert>
 
   <select id="countNews" resultType="int">
-    SELECT COUNT(*) FROM news
+    SELECT COUNT(*)
+    FROM news
     <where>
       <if test="title != null and title != ''">
-        title LIKE CONCAT('%', #{title}, '%')
+        AND title LIKE CONCAT('%', #{title}, '%')
       </if>
       <if test="createdDateFrom != null">
         <![CDATA[
@@ -70,7 +71,7 @@
     SELECT id FROM news
     <where>
       <if test="title != null and title != ''">
-        title LIKE CONCAT('%', #{title}, '%')
+        AND title LIKE CONCAT('%', #{title}, '%')
       </if>
       <if test="createdDateFrom != null">
         <![CDATA[
@@ -84,7 +85,8 @@
       </if>
     </where>
     ORDER BY created_at DESC
-    LIMIT #{pageSize} OFFSET #{offset}
+    LIMIT #{pageSize}
+    OFFSET #{offset}
   </select>
 
   <update id="updateNews">

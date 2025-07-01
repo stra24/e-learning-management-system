@@ -50,7 +50,35 @@
   </select>
 
   <select id="countUsers" resultType="int">
-    SELECT COUNT(*) FROM users
+    SELECT COUNT(*)
+    FROM users
+    <where>
+      <if test="userId != null and userId != ''">
+        AND CAST(id AS TEXT) LIKE CONCAT('%', #{userId}, '%')
+      </if>
+      <if test="userRole != null and userRole != ''">
+        AND user_role = #{userRole}
+      </if>
+      <if test="realName != null and realName != ''">
+        AND real_name = #{realName}
+      </if>
+      <if test="userName != null and userName != ''">
+        AND user_name = #{userName}
+      </if>
+      <if test="emailAddress != null and emailAddress != ''">
+        AND email_address = #{emailAddress}
+      </if>
+      <if test="createdDateFrom != null">
+        <![CDATA[
+        AND created_at >= CAST(#{createdDateFrom} AS DATE)
+         ]]>
+      </if>
+      <if test="createdDateTo != null">
+        <![CDATA[
+        AND created_at < CAST(#{createdDateTo} AS DATE) + INTERVAL '1 day'
+          ]]>
+      </if>
+    </where>
   </select>
 
   <select id="findUserById" resultType="com.everrefine.elms.domain.model.user.User">
@@ -60,6 +88,54 @@
     users
     WHERE
     id = #{id}
+  </select>
+
+  <select id="findUsersByIds" resultType="com.everrefine.elms.domain.model.user.User">
+    SELECT
+    *
+    FROM
+    users
+    WHERE
+    id IN
+    <foreach close=")" collection="ids" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+    ORDER BY created_at DESC
+  </select>
+
+  <select id="findUserIdsBySearchConditions" resultType="java.util.UUID">
+    SELECT id
+    FROM users
+    <where>
+      <if test="userId != null and userId != ''">
+        AND CAST(id AS TEXT) LIKE CONCAT('%', #{userId}, '%')
+      </if>
+      <if test="userRole != null and userRole != ''">
+        AND user_role = #{userRole}
+      </if>
+      <if test="realName != null and realName != ''">
+        AND real_name = #{realName}
+      </if>
+      <if test="userName != null and userName != ''">
+        AND user_name = #{userName}
+      </if>
+      <if test="emailAddress != null and emailAddress != ''">
+        AND email_address = #{emailAddress}
+      </if>
+      <if test="createdDateFrom != null">
+        <![CDATA[
+        AND created_at >= CAST(#{createdDateFrom} AS DATE)
+         ]]>
+      </if>
+      <if test="createdDateTo != null">
+        <![CDATA[
+        AND created_at < CAST(#{createdDateTo} AS DATE) + INTERVAL '1 day'
+          ]]>
+      </if>
+    </where>
+    ORDER BY created_at DESC
+    LIMIT #{pageSize}
+    OFFSET #{offset}
   </select>
 
   <update id="updateUser"

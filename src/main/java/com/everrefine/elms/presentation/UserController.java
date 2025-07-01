@@ -1,11 +1,13 @@
 package com.everrefine.elms.presentation;
 
 import com.everrefine.elms.application.command.UserCreateCommand;
+import com.everrefine.elms.application.command.UserSearchCommand;
 import com.everrefine.elms.application.command.UserUpdateCommand;
 import com.everrefine.elms.application.dto.UserDto;
 import com.everrefine.elms.application.dto.UserPageDto;
 import com.everrefine.elms.application.service.UserApplicationService;
 import com.everrefine.elms.presentation.request.UserCreateRequest;
+import com.everrefine.elms.presentation.request.UserSearchRequest;
 import com.everrefine.elms.presentation.request.UserUpdateRequest;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -54,7 +55,7 @@ public class UserController {
    *
    * @param userCreateRequest ユーザーの新規作成リクエスト（リクエストボディ）
    */
-  @PostMapping()
+  @PostMapping
   public ResponseEntity<Void> createUser(@RequestBody UserCreateRequest userCreateRequest) {
     UserCreateCommand userCreateCommand = UserCreateCommand.create(
         userCreateRequest.getRealName(),
@@ -95,16 +96,23 @@ public class UserController {
   /**
    * 指定した範囲の全てのユーザーを取得する。
    *
-   * @param pageNum  ページ番号
-   * @param pageSize 1ページ当たりの件数
+   * @param userSearchRequest ユーザー検索リクエスト
    * @return ユーザーのページ情報を表すDTO
    */
-  @GetMapping()
-  public ResponseEntity<UserPageDto> findUsers(
-      @RequestParam(defaultValue = "1") int pageNum,
-      @RequestParam(defaultValue = "10") int pageSize
-  ) {
-    UserPageDto userPageDto = userApplicationService.findUsers(pageNum, pageSize);
+  @GetMapping
+  public ResponseEntity<UserPageDto> findUsers(UserSearchRequest userSearchRequest) {
+    UserSearchCommand userSearchCommand = UserSearchCommand.create(
+        userSearchRequest.getPageNum(),
+        userSearchRequest.getPageSize(),
+        userSearchRequest.getUserId(),
+        userSearchRequest.getUserRole(),
+        userSearchRequest.getRealName(),
+        userSearchRequest.getUserName(),
+        userSearchRequest.getEmailAddress(),
+        userSearchRequest.getCreatedDateFrom(),
+        userSearchRequest.getCreatedDateTo()
+    );
+    UserPageDto userPageDto = userApplicationService.findUsers(userSearchCommand);
     return ResponseEntity.ok(userPageDto);
   }
 }

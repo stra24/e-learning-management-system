@@ -34,7 +34,7 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   }
 
   @Override
-  public NewsPageDto findSearchNews(NewsSearchCommand newsSearchCommand) {
+  public NewsPageDto findNews(NewsSearchCommand newsSearchCommand) {
     NewsSearchCondition newsSearchCondition = new NewsSearchCondition(
         newsSearchCommand.getPageNum(),
         newsSearchCommand.getPageSize(),
@@ -48,10 +48,12 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
         .map(NewsDtoConverter::toDto)
         .collect(Collectors.toList());
     int totalSize = newsRepository.countNews(newsSearchCondition);
-    return new NewsPageDto(newsDtos,
+    return new NewsPageDto(
+        newsDtos,
         newsSearchCondition.getPagerForRequest().getPageNum(),
         newsSearchCondition.getPagerForRequest().getPageSize(),
-        totalSize);
+        totalSize
+    );
   }
 
   @Override
