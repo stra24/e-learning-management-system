@@ -59,6 +59,12 @@ public class JdbcConfig extends AbstractJdbcConfiguration {
     converters.add(new OrderToBigDecimalConverter());
     converters.add(new BigDecimalToOrderConverter());
 
+    converters.add(new LessonTitleToStringConverter());
+    converters.add(new StringToLessonTitleConverter());
+
+    converters.add(new LessonDescriptionToStringConverter());
+    converters.add(new StringToLessonDescriptionConverter());
+
     return new JdbcCustomConversions(converters);
   }
 
@@ -235,6 +241,38 @@ public class JdbcConfig extends AbstractJdbcConfiguration {
     @Override
     public Order convert(BigDecimal source) {
       return new Order(source);
+    }
+  }
+
+  @WritingConverter
+  static class LessonTitleToStringConverter implements Converter<com.everrefine.elms.domain.model.lesson.Title, String> {
+    @Override
+    public String convert(com.everrefine.elms.domain.model.lesson.Title source) {
+      return source.getValue();
+    }
+  }
+
+  @ReadingConverter
+  static class StringToLessonTitleConverter implements Converter<String, com.everrefine.elms.domain.model.lesson.Title> {
+    @Override
+    public com.everrefine.elms.domain.model.lesson.Title convert(String source) {
+      return new com.everrefine.elms.domain.model.lesson.Title(source);
+    }
+  }
+
+  @WritingConverter
+  static class LessonDescriptionToStringConverter implements Converter<com.everrefine.elms.domain.model.lesson.Description, String> {
+    @Override
+    public String convert(com.everrefine.elms.domain.model.lesson.Description source) {
+      return source != null ? source.getValue() : null;
+    }
+  }
+
+  @ReadingConverter
+  static class StringToLessonDescriptionConverter implements Converter<String, com.everrefine.elms.domain.model.lesson.Description> {
+    @Override
+    public com.everrefine.elms.domain.model.lesson.Description convert(String source) {
+      return source != null ? new com.everrefine.elms.domain.model.lesson.Description(source) : null;
     }
   }
 }
