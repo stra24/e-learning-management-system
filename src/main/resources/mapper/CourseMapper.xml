@@ -8,22 +8,30 @@
     id = #{id}
   </delete>
 
-  <insert id="createCourse" parameterType="com.everrefine.elms.domain.model.course.Course">
-    INSERT INTO courses (
-    id,
-    thumbnail_url,
-    title,
-    description,
-    created_at,
-    updated_at
-    ) VALUES (
-    #{id},
-    #{thumbnailUrl.value},
-    #{title.value},
-    #{description.value},
-    #{createdAt},
-    #{updatedAt}
+  <insert id="createCourse" parameterType="com.everrefine.elms.domain.model.course.CourseForCreateRequest">
+    <!-- courseOrderが同じレコードのINSERTを防ぎ、順番待ちさせる。 -->
+    WITH lock AS (
+      SELECT pg_advisory_xact_lock(hashtext('courses_insert'))
     )
+    INSERT INTO courses (
+      id,
+      course_order,
+      thumbnail_url,
+      title,
+      description,
+      created_at,
+      updated_at
+    )
+    SELECT
+      #{id},
+      COALESCE(MAX(course_order), 0) + 1024,
+      #{thumbnailUrl},
+      #{title},
+      #{description},
+      #{createdAt},
+      #{updatedAt}
+    FROM
+      courses;
   </insert>
 
   <select id="findCourseById" resultType="com.everrefine.elms.domain.model.course.Course">
@@ -44,17 +52,23 @@
   </select>
 
   <select id="countCourses" resultType="int">
-    SELECT COUNT(*) FROM courses
+    SELECT COUNT(*)
+    FROM courses
   </select>
 
-  <update id="updateCourse"
-    parameterType="com.everrefine.elms.domain.model.course.CourseForUpdateRequest">
-    UPDATE courses
+  <update
+    id="updateCourse"
+    parameterType="com.everrefine.elms.domain.model.course.CourseForUpdateRequest"
+  >
+    UPDATE
+      courses
     SET
-    title = #{title.value},
-    description = #{description.value},
-    thumbnail_url = #{thumbnailUrl},
-    updated_at = now()
-    WHERE id = #{id};
+      title = #{title.value},
+      course_order = #{courseOrder}
+      description = #{description.value},
+      thumbnail_url = #{thumbnailUrl},
+      updated_at = now()
+    WHERE
+      id = #{id};
   </update>
 </mapper>

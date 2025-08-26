@@ -1,8 +1,9 @@
 package com.everrefine.elms.infrastructure.mapper;
 
-import com.everrefine.elms.domain.model.course.Course;
-import com.everrefine.elms.domain.model.course.CourseForUpdateRequest;
 import com.everrefine.elms.domain.model.PagerForRequest;
+import com.everrefine.elms.domain.model.course.Course;
+import com.everrefine.elms.domain.model.course.CourseForCreateRequest;
+import com.everrefine.elms.domain.model.course.CourseForUpdateRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,7 +14,7 @@ public interface CourseMapper {
 
   int updateCourse(CourseForUpdateRequest course);
 
-  int createCourse(Course course);
+  int createCourse(CourseForCreateRequest course);
 
   int deleteCourseById(UUID id);
 

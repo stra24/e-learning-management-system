@@ -22,6 +22,7 @@ CREATE TABLE user_login_histories (
 -- コース情報
 CREATE TABLE courses (
     id UUID PRIMARY KEY,                             -- コースID
+    course_order NUMERIC(10,4) NOT NULL UNIQUE,      -- コース内での並び順
     thumbnail_url TEXT,                              -- サムネイル画像のURL
     title VARCHAR(255) NOT NULL,                     -- コースタイトル
     description TEXT,                                -- コース説明
@@ -31,23 +32,27 @@ CREATE TABLE courses (
 
 -- レッスングループ（複数レッスンをまとめる）
 CREATE TABLE lesson_groups (
-    id UUID PRIMARY KEY,                             -- グループID
-    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE, -- 所属コース
-    name VARCHAR(255) NOT NULL,                      -- グループ名
+    id UUID PRIMARY KEY,                             -- レッスングループID
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE, -- コースID
+    lesson_group_order NUMERIC(10,4) NOT NULL,       -- レッスングループ内での並び順
+    name VARCHAR(255) NOT NULL,                      -- レッスングループ名
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 作成日時
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  -- 更新日時
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 更新日時
+    CONSTRAINT course_id_and_lesson_group_order_constraint UNIQUE (course_id, lesson_group_order)
 );
 
 -- レッスン情報
 CREATE TABLE lessons (
     id UUID PRIMARY KEY,                             -- レッスンID
-    lesson_group_id UUID NOT NULL REFERENCES lesson_groups(id) ON DELETE CASCADE, -- 所属グループ
-    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE, -- 所属コース
+    lesson_group_id UUID NOT NULL REFERENCES lesson_groups(id) ON DELETE CASCADE, -- レッスングループID
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE, -- コースID
+    lesson_order NUMERIC(10,4) NOT NULL,             -- レッスン内での並び順
     title VARCHAR(255) NOT NULL,                     -- レッスンタイトル
     description TEXT,                                -- レッスンの説明
     video_url TEXT,                                  -- 動画のURL
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 作成日時
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  -- 更新日時
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 更新日時
+    CONSTRAINT lesson_group_id_and_lesson_order_constraint UNIQUE (lesson_group_id, lesson_order)
 );
 
 -- お知らせ

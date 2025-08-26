@@ -3,6 +3,7 @@ package com.everrefine.elms.domain.model.course;
 import com.everrefine.elms.domain.model.Url;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,8 @@ public class CourseForUpdateRequest {
 
   @NotNull
   private final UUID id;
+  @NotNull
+  private final BigDecimal courseOrder;
   @NotNull
   private Title title;
   @NotNull

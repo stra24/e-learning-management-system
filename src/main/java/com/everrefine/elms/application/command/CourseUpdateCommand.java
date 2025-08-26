@@ -18,6 +18,8 @@ public class CourseUpdateCommand {
   @NotNull
   private UUID id;
   @NotNull
+  private String courseOrder;
+  @NotNull
   private String title;
   @NotNull
   private String description;
@@ -28,12 +30,14 @@ public class CourseUpdateCommand {
 
   public static CourseUpdateCommand create(
       UUID id,
+      String courseOrder,
       String title,
       String description,
       String thumbnailUrl
   ) {
     return new CourseUpdateCommand(
         id,
+        courseOrder,
         title,
         description,
         thumbnailUrl,

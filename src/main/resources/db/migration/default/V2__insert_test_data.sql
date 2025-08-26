@@ -21,17 +21,28 @@ INSERT INTO public.news (id, title, "content", created_at, updated_at) VALUES
 (gen_random_uuid(), '年末年始の授業スケジュールについて', '12月29日〜1月3日は年末年始休講となります。年明けの授業再開は1月4日からを予定しています。振替授業については別途ご案内します。', '2025-12-01 11:45:00', '2025-12-01 11:45:00');
 
 -- コース
-INSERT INTO public.courses (id, thumbnail_url, title, description, created_at, updated_at) VALUES('0a0313c2-bb1e-8c58-d458-a8a884bf899a', '/uploads/course_thumbnail_sample.png', '1章:Java', 'Javaの基本文法、条件分岐・繰り返し処理、オブジェクト指向、例外処理までを体系的に学び、開発の基礎を固めます。', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO public.courses (id, thumbnail_url, title, description, created_at, updated_at) VALUES('e83d6d3b-02e1-040e-b912-f401746a01e2', '/uploads/course_thumbnail_sample.png', '2章:SQL', 'リレーショナルデータベースの基礎から、SELECT文・JOIN・サブクエリ・集計関数など実務で必要なSQLスキルを習得します。', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO public.courses (id, thumbnail_url, title, description, created_at, updated_at) VALUES('f9f3c9d2-062c-b97c-f0b7-f141e81bdf1a', '/uploads/course_thumbnail_sample.png', '3章:HTML&CSS', 'Webページの構造を作るHTMLと、見た目を整えるCSSの基本からレスポンシブ対応まで、Web制作の土台を学びます。', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO public.courses (id, thumbnail_url, title, description, created_at, updated_at) VALUES('c8c7429a-08b0-578b-6482-23090d5b4aef', '/uploads/course_thumbnail_sample.png', '4章:JavaScript', '変数・関数・制御構文などの基本から、DOM操作やイベント処理、非同期通信まで動的Web開発の基礎を習得します。', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO public.courses (id, thumbnail_url, title, description, created_at, updated_at) VALUES('0f197212-45b6-3e56-54ce-01f600e38ca1', '/uploads/course_thumbnail_sample.png', '5章:Git', 'Gitによるバージョン管理の基本操作から、ブランチ運用、マージ、GitHubでのチーム開発までを実践的に学びます。', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO public.courses (id, thumbnail_url, title, description, created_at, updated_at) VALUES('add6e203-9557-aebb-59a9-52cda9b9ef5b', '/uploads/course_thumbnail_sample.png', '6章:Spring', 'Spring Bootを使ったアプリ開発を通じて、MVCモデル、DI、REST APIなどのJavaバックエンド技術を体系的に学習します。', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO public.courses (id, thumbnail_url, title, description, created_at, updated_at) VALUES('f6a51c4f-91bc-1df5-3880-723754ae7089', '/uploads/course_thumbnail_sample.png', '7章:Docker', 'Dockerの仕組みや基本コマンドから、開発環境のコンテナ化、本番環境へのデプロイ方法まで幅広く学びます。', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO public.courses (id, thumbnail_url, title, description, created_at, updated_at) VALUES('d51a780e-09a6-56d3-15e5-43df65aba790', '/uploads/course_thumbnail_sample.png', '8章:AWS', 'AWSの基本概念を理解し、EC2やS3、RDSなど主要サービスを使って、クラウド上にアプリを構築・運用する方法を学びます。', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO public.courses (id, thumbnail_url, title, description, created_at, updated_at) VALUES('1db4661a-cd40-3724-edf7-0a059d4bcebe', '/uploads/course_thumbnail_sample.png', '9章:CI/CD', 'GitHub Actionsを用いて、ソースコードの自動テスト、ビルド、デプロイまでを自動化するCI/CD環境の構築を学びます。', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.courses (id, course_order, thumbnail_url, title, description) VALUES('0a0313c2-bb1e-8c58-d458-a8a884bf899a', 1024.0000, '/uploads/course_thumbnail_sample.png', '1章:Java', 'Javaの基本文法、条件分岐・繰り返し処理、オブジェクト指向、例外処理までを体系的に学び、開発の基礎を固めます。');
+INSERT INTO public.courses (id, course_order, thumbnail_url, title, description) VALUES('e83d6d3b-02e1-040e-b912-f401746a01e2', 2048.0000, '/uploads/course_thumbnail_sample.png', '2章:SQL', 'リレーショナルデータベースの基礎から、SELECT文・JOIN・サブクエリ・集計関数など実務で必要なSQLスキルを習得します。');
+INSERT INTO public.courses (id, course_order, thumbnail_url, title, description) VALUES('f9f3c9d2-062c-b97c-f0b7-f141e81bdf1a', 3072.0000, '/uploads/course_thumbnail_sample.png', '3章:HTML&CSS', 'Webページの構造を作るHTMLと、見た目を整えるCSSの基本からレスポンシブ対応まで、Web制作の土台を学びます。');
+INSERT INTO public.courses (id, course_order, thumbnail_url, title, description) VALUES('c8c7429a-08b0-578b-6482-23090d5b4aef', 4096.0000, '/uploads/course_thumbnail_sample.png', '4章:JavaScript', '変数・関数・制御構文などの基本から、DOM操作やイベント処理、非同期通信まで動的Web開発の基礎を習得します。');
+INSERT INTO public.courses (id, course_order, thumbnail_url, title, description) VALUES('0f197212-45b6-3e56-54ce-01f600e38ca1', 5120.0000, '/uploads/course_thumbnail_sample.png', '5章:Git', 'Gitによるバージョン管理の基本操作から、ブランチ運用、マージ、GitHubでのチーム開発までを実践的に学びます。');
+INSERT INTO public.courses (id, course_order, thumbnail_url, title, description) VALUES('add6e203-9557-aebb-59a9-52cda9b9ef5b', 6144.0000, '/uploads/course_thumbnail_sample.png', '6章:Spring', 'Spring Bootを使ったアプリ開発を通じて、MVCモデル、DI、REST APIなどのJavaバックエンド技術を体系的に学習します。');
+INSERT INTO public.courses (id, course_order, thumbnail_url, title, description) VALUES('f6a51c4f-91bc-1df5-3880-723754ae7089', 7168.0000, '/uploads/course_thumbnail_sample.png', '7章:Docker', 'Dockerの仕組みや基本コマンドから、開発環境のコンテナ化、本番環境へのデプロイ方法まで幅広く学びます。');
+INSERT INTO public.courses (id, course_order, thumbnail_url, title, description) VALUES('d51a780e-09a6-56d3-15e5-43df65aba790', 8192.0000, '/uploads/course_thumbnail_sample.png', '8章:AWS', 'AWSの基本概念を理解し、EC2やS3、RDSなど主要サービスを使って、クラウド上にアプリを構築・運用する方法を学びます。');
+INSERT INTO public.courses (id, course_order, thumbnail_url, title, description) VALUES('1db4661a-cd40-3724-edf7-0a059d4bcebe', 9216.0000, '/uploads/course_thumbnail_sample.png', '9章:CI/CD', 'GitHub Actionsを用いて、ソースコードの自動テスト、ビルド、デプロイまでを自動化するCI/CD環境の構築を学びます。');
 
 -- レッスングループ
-INSERT INTO lesson_groups (id, course_id, name, created_at, updated_at) VALUES ('d081057a-d7ab-4d07-b9b9-9bf396d53c66', '0a0313c2-bb1e-8c58-d458-a8a884bf899a', 'Java導入', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO lesson_groups (id, course_id, name, created_at, updated_at) VALUES ('29fb64ec-2f99-4a52-89f3-8d1f19f4a2fe', '0a0313c2-bb1e-8c58-d458-a8a884bf899a', 'Java基礎', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO lesson_groups (id, course_id, name, created_at, updated_at) VALUES ('73208444-4419-42c8-bd0b-22ee7096e210', '0a0313c2-bb1e-8c58-d458-a8a884bf899a', 'Java応用', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.lesson_groups (id, course_id, lesson_group_order, name) VALUES ('d081057a-d7ab-4d07-b9b9-9bf396d53c66', '0a0313c2-bb1e-8c58-d458-a8a884bf899a', 1024.0000, 'Java導入');
+INSERT INTO public.lesson_groups (id, course_id, lesson_group_order, name) VALUES ('29fb64ec-2f99-4a52-89f3-8d1f19f4a2fe', '0a0313c2-bb1e-8c58-d458-a8a884bf899a', 2048.0000, 'Java基礎');
+INSERT INTO public.lesson_groups (id, course_id, lesson_group_order, name) VALUES ('73208444-4419-42c8-bd0b-22ee7096e210', '0a0313c2-bb1e-8c58-d458-a8a884bf899a', 3072.0000, 'Java応用');
+
+-- レッスン
+INSERT INTO public.lessons (id, lesson_group_id, course_id, lesson_order, title, description, video_url) VALUES (
+  '1d7bbcb0-3f87-48c7-a987-00de264b70d9',
+  'd081057a-d7ab-4d07-b9b9-9bf396d53c66',
+  '0a0313c2-bb1e-8c58-d458-a8a884bf899a',
+  1024.0000,
+  '導入',
+  'この講座について、およびJavaとは何かといった概要について説明します。',
+  'https://drive.google.com/drive/u/0/folders/19ZdmlH_Mc1d668_QtT2IUCr3wkeJRP02?ths=true'
+);

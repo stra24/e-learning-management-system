@@ -60,13 +60,13 @@
         AND user_role = #{userRole}
       </if>
       <if test="realName != null and realName != ''">
-        AND real_name = #{realName}
+        AND real_name LIKE CONCAT('%', #{realName}, '%')
       </if>
       <if test="userName != null and userName != ''">
-        AND user_name = #{userName}
+        AND user_name LIKE CONCAT('%', #{userName}, '%')
       </if>
       <if test="emailAddress != null and emailAddress != ''">
-        AND email_address = #{emailAddress}
+        AND email_address LIKE CONCAT('%', #{emailAddress}, '%')
       </if>
       <if test="createdDateFrom != null">
         <![CDATA[
@@ -114,13 +114,13 @@
         AND user_role = #{userRole}
       </if>
       <if test="realName != null and realName != ''">
-        AND real_name = #{realName}
+        AND real_name LIKE CONCAT('%', #{realName}, '%')
       </if>
       <if test="userName != null and userName != ''">
-        AND user_name = #{userName}
+        AND user_name LIKE CONCAT('%', #{userName}, '%')
       </if>
       <if test="emailAddress != null and emailAddress != ''">
-        AND email_address = #{emailAddress}
+        AND email_address LIKE CONCAT('%', #{emailAddress}, '%')
       </if>
       <if test="createdDateFrom != null">
         <![CDATA[

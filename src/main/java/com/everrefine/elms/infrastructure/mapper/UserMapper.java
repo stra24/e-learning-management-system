@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
+  Optional<User> findUsers(UUID id);
 
   Optional<User> findUserById(UUID id);
 

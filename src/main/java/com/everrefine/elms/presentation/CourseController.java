@@ -40,6 +40,7 @@ public class CourseController {
   ) {
     CourseUpdateCommand courseUpdateCommand = CourseUpdateCommand.create(
         UUID.fromString(courseId),
+        courseUpdateRequest.getCourseOrder(),
         courseUpdateRequest.getTitle(),
         courseUpdateRequest.getDescription(),
         courseUpdateRequest.getThumbnailUrl()
@@ -53,7 +54,7 @@ public class CourseController {
    *
    * @param courseCreateRequest コースの新規作成リクエスト（リクエストボディ）
    */
-  @PostMapping()
+  @PostMapping
   public ResponseEntity<Void> createCourse(@RequestBody CourseCreateRequest courseCreateRequest) {
     CourseCreateCommand courseCreateCommand = CourseCreateCommand.create(
         courseCreateRequest.getTitle(),
@@ -74,7 +75,7 @@ public class CourseController {
     courseApplicationService.deleteCourseById(courseId);
     return ResponseEntity.noContent().build();
   }
-  
+
   /**
    * 指定したコースIDでコースを取得する。
    *
@@ -94,7 +95,7 @@ public class CourseController {
    * @param pageSize 1ページ当たりの件数
    * @return コースのページ情報を表すDTO
    */
-  @GetMapping()
+  @GetMapping
   public ResponseEntity<CoursePageDto> findCourses(
       @RequestParam(defaultValue = "1") int pageNum,
       @RequestParam(defaultValue = "10") int pageSize
