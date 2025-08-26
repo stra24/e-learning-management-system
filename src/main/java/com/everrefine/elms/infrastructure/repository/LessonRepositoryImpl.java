@@ -1,7 +1,7 @@
 package com.everrefine.elms.infrastructure.repository;
 
 import com.everrefine.elms.domain.repository.LessonRepository;
-import com.everrefine.elms.infrastructure.mapper.LessonMapper;
+import com.everrefine.elms.infrastructure.dao.LessonDao;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
 @AllArgsConstructor
 public class LessonRepositoryImpl implements LessonRepository {
 
-  private final LessonMapper lessonMapper;
+  private final LessonDao lessonDao;
 
   @Override
   public Optional<UUID> findFirstLessonIdByCourseId(UUID courseId) {
-    return lessonMapper.findFirstLessonIdByCourseId(courseId);
+    return lessonDao.findFirstLessonIdByCourseId(courseId);
   }
 }

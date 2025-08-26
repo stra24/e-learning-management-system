@@ -2,6 +2,7 @@ package com.everrefine.elms.application.command;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -18,7 +19,7 @@ public class CourseUpdateCommand {
   @NotNull
   private UUID id;
   @NotNull
-  private String courseOrder;
+  private BigDecimal courseOrder;
   @NotNull
   private String title;
   @NotNull
@@ -30,7 +31,7 @@ public class CourseUpdateCommand {
 
   public static CourseUpdateCommand create(
       UUID id,
-      String courseOrder,
+      BigDecimal courseOrder,
       String title,
       String description,
       String thumbnailUrl

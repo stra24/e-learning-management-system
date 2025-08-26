@@ -54,7 +54,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     List<User> users = userRepository.findUsersByIds(userIds);
     List<UserDto> userDtos = users.stream()
         .map(UserDtoConverter::toDto)
-        .collect(Collectors.toList());
+        .toList();
     int totalSize = userRepository.countUsers(userSearchCondition);
     return new UserPageDto(
         userDtos,
@@ -73,7 +73,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
     LocalDateTime now = LocalDateTime.now();
     User user = new User(
-        userCreateCommand.getId(),
+        null,
         new EmailAddress(userCreateCommand.getEmailAddress()),
         Password.encryptAndCreate(userCreateCommand.getPassword()),
         new RealName(userCreateCommand.getRealName()),

@@ -7,23 +7,29 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * お知らせのエンティティ。
  */
 @Getter
 @AllArgsConstructor
+@Table("news")
 public class News {
 
-  @NotNull
+  @Id
   private final UUID id;
   @NotNull
   private Title title;
   @NotNull
   private Content content;
   @NotNull
+  @Column("created_at")
   private LocalDateTime createdAt;
   @NotNull
+  @Column("updated_at")
   private LocalDateTime updatedAt;
 
   public void changeTitle(Title newTitle) {

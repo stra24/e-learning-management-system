@@ -3,9 +3,8 @@ package com.everrefine.elms.infrastructure.repository;
 import com.everrefine.elms.domain.model.news.News;
 import com.everrefine.elms.domain.model.news.NewsForUpdateRequest;
 import com.everrefine.elms.domain.model.news.NewsSearchCondition;
-import com.everrefine.elms.domain.model.PagerForRequest;
 import com.everrefine.elms.domain.repository.NewsRepository;
-import com.everrefine.elms.infrastructure.mapper.NewsMapper;
+import com.everrefine.elms.infrastructure.dao.NewsDao;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -17,44 +16,58 @@ import org.springframework.stereotype.Repository;
 @AllArgsConstructor
 public class NewsRepositoryImpl implements NewsRepository {
 
-  private final NewsMapper newsMapper;
+  private final NewsDao newsDao;
 
   @Override
   public List<News> findNewsByIds(List<UUID> newsIds) {
     if (newsIds.isEmpty()) {
       return Collections.emptyList();
     }
-    return newsMapper.findNewsByIds(newsIds);
+    return newsDao.findByIdIn(newsIds);
   }
 
   @Override
   public int countNews(NewsSearchCondition newsSearchCondition) {
-    return newsMapper.countNews(newsSearchCondition);
+    return newsDao.countNewsBySearchConditions(
+        newsSearchCondition.getTitle(),
+        newsSearchCondition.getCreatedDateFrom() != null ? newsSearchCondition.getCreatedDateFrom().toString() : null,
+        newsSearchCondition.getCreatedDateTo() != null ? newsSearchCondition.getCreatedDateTo().toString() : null
+    );
   }
 
   @Override
   public void createNews(News news) {
-    newsMapper.createNews(news);
+    newsDao.save(news);
   }
 
   @Override
   public void deleteNewsById(UUID id) {
-    newsMapper.deleteNewsById(id);
+    newsDao.deleteById(id);
   }
 
   @Override
   public void updateNews(NewsForUpdateRequest news) {
-    newsMapper.updateNews(news);
+    newsDao.updateNewsFields(
+        news.getId(),
+        news.getTitle().getValue(),
+        news.getContent().getValue()
+    );
   }
 
   @Override
   public List<UUID> findNewsIdsBySearchConditions(
       NewsSearchCondition newsSearchCondition) {
-    return newsMapper.findNewsIdsBySearchConditions(newsSearchCondition);
+    return newsDao.findNewsBySearchConditions(
+        newsSearchCondition.getTitle(),
+        newsSearchCondition.getCreatedDateFrom() != null ? newsSearchCondition.getCreatedDateFrom().toString() : null,
+        newsSearchCondition.getCreatedDateTo() != null ? newsSearchCondition.getCreatedDateTo().toString() : null,
+        newsSearchCondition.getPagerForRequest().getPageSize(),
+        newsSearchCondition.getPagerForRequest().getOffset()
+    );
   }
 
   @Override
   public Optional<News> findNewsById(UUID id) {
-    return newsMapper.findNewsById(id);
+    return newsDao.findById(id);
   }
 }

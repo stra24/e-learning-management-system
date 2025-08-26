@@ -15,7 +15,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CourseForCreateRequest {
 
-  @NotNull
   private final UUID id;
   @NotNull
   private Title title;

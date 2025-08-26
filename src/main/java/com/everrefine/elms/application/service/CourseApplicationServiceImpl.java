@@ -5,6 +5,7 @@ import com.everrefine.elms.application.command.CourseUpdateCommand;
 import com.everrefine.elms.application.dto.CourseDto;
 import com.everrefine.elms.application.dto.CoursePageDto;
 import com.everrefine.elms.application.dto.converter.CourseDtoConverter;
+import com.everrefine.elms.domain.model.Order;
 import com.everrefine.elms.domain.model.PagerForRequest;
 import com.everrefine.elms.domain.model.Url;
 import com.everrefine.elms.domain.model.course.Course;
@@ -49,7 +50,7 @@ public class CourseApplicationServiceImpl implements CourseApplicationService {
   public void createCourse(CourseCreateCommand courseCreateCommand) {
     LocalDateTime now = LocalDateTime.now();
     CourseForCreateRequest course = new CourseForCreateRequest(
-        courseCreateCommand.getId(),
+        null,
         new Title(courseCreateCommand.getTitle()),
         new Description(courseCreateCommand.getDescription()),
         new Url(courseCreateCommand.getThumbnailUrl()),
@@ -64,7 +65,7 @@ public class CourseApplicationServiceImpl implements CourseApplicationService {
     CourseDto courseDto = findCourseById(courseUpdateCommand.getId().toString());
     CourseForUpdateRequest course = new CourseForUpdateRequest(
         courseDto.getId(),
-        new BigDecimal(courseUpdateCommand.getCourseOrder()),
+        new Order(courseUpdateCommand.getCourseOrder()),
         new Title(courseUpdateCommand.getTitle()),
         new Description(courseUpdateCommand.getDescription()),
         new Url(courseUpdateCommand.getThumbnailUrl())

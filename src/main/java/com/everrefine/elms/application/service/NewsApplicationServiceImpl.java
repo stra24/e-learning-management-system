@@ -59,7 +59,8 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   @Override
   public void createNews(NewsCreateCommand newsCreateCommand) {
     LocalDateTime now = LocalDateTime.now();
-    News news = new News(newsCreateCommand.getId(),
+    News news = new News(
+        null,
         new Title(newsCreateCommand.getTitle()),
         new Content(newsCreateCommand.getContent()),
         now,

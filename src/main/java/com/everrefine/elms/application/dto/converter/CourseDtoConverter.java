@@ -8,7 +8,7 @@ public class CourseDtoConverter {
   public static CourseDto toDto(Course course) {
     return new CourseDto(
         course.getId(),
-        course.getCourseOrder(),
+        course.getCourseOrder().getValue(),
         (course.getThumbnailUrl() != null)
             ? course.getThumbnailUrl().getValue()
             : null,

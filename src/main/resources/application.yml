@@ -1,18 +1,22 @@
 spring:
   profiles:
     active: default
+  data:
+    jdbc:
+      dialect: postgresql
 
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  type-handlers-package: com.everrefine.elms.infrastructure.typehandler
-  configuration:
-    map-underscore-to-camel-case: true
+# MyBatis設定をコメントアウト（Spring Data JDBCに移行）
+# mybatis:
+#   mapper-locations: classpath:mapper/*.xml
+#   type-handlers-package: com.everrefine.elms.infrastructure.typehandler
+#   configuration:
+#     map-underscore-to-camel-case: true
 
 logging:
   level:
     root: INFO
     org.springframework.boot.autoconfigure: DEBUG
-    org.mybatis.spring: DEBUG
+    # org.mybatis.spring: DEBUG
     com.zaxxer.hikari: DEBUG
     org.springframework.beans.factory: DEBUG
     com.everrefine.elms: DEBUG

@@ -1,5 +1,6 @@
 package com.everrefine.elms.domain.model.course;
 
+import com.everrefine.elms.domain.model.Order;
 import com.everrefine.elms.domain.model.Url;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +19,7 @@ public class CourseForUpdateRequest {
   @NotNull
   private final UUID id;
   @NotNull
-  private final BigDecimal courseOrder;
+  private final Order courseOrder;
   @NotNull
   private Title title;
   @NotNull
