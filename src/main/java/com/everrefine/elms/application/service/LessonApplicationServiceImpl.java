@@ -23,16 +23,16 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
   @Override
   public FirstLessonDto findFirstLessonIdByCourseId(String courseId) {
     if (StringUtils.isBlank(courseId)) {
-      return new FirstLessonDto(false, null);
+      return new FirstLessonDto(false, null, null);
     }
 
     try {
       UUID courseUuid = UUID.fromString(courseId);
-      return lessonRepository.findFirstLessonIdByCourseId(courseUuid)
-          .map(uuid -> new FirstLessonDto(true, uuid))
-          .orElseGet(() -> new FirstLessonDto(false, null));
+      return lessonRepository.findFirstLessonByCourseId(courseUuid)
+          .map(lesson -> new FirstLessonDto(true, lesson.getLessonGroupId(), lesson.getId()))
+          .orElseGet(() -> new FirstLessonDto(false, null, null));
     } catch (IllegalArgumentException e) {
-      return new FirstLessonDto(false, null);
+      return new FirstLessonDto(false, null, null);
     }
   }
 

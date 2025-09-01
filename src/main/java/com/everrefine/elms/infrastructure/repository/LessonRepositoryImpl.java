@@ -30,8 +30,8 @@ public class LessonRepositoryImpl implements LessonRepository {
   private final LessonGroupDao lessonGroupDao;
 
   @Override
-  public Optional<UUID> findFirstLessonIdByCourseId(UUID courseId) {
-    return lessonDao.findTop1ByCourseIdOrderByLessonOrderDesc(courseId).map(Lesson::getId);
+  public Optional<Lesson> findFirstLessonByCourseId(UUID courseId) {
+    return lessonDao.findTop1ByCourseIdOrderByLessonOrderDesc(courseId);
   }
 
   @Override

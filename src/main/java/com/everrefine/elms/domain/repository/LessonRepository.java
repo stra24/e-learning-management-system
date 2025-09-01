@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface LessonRepository {
 
-  Optional<UUID> findFirstLessonIdByCourseId(UUID courseId);
+  Optional<Lesson> findFirstLessonByCourseId(UUID courseId);
 
   Optional<Lesson> findById(UUID lessonId);
 
