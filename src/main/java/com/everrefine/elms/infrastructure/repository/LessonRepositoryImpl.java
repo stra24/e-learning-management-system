@@ -16,6 +16,11 @@ public class LessonRepositoryImpl implements LessonRepository {
 
   @Override
   public Optional<UUID> findFirstLessonIdByCourseId(UUID courseId) {
-    return lessonDao.findTop1ByCourseIdOrderByLessonOrderDesc(courseId).map(Lesson::getCourseId);
+    return lessonDao.findTop1ByCourseIdOrderByLessonOrderDesc(courseId).map(Lesson::getId);
+  }
+
+  @Override
+  public Optional<Lesson> findById(UUID lessonId) {
+    return lessonDao.findById(lessonId);
   }
 }

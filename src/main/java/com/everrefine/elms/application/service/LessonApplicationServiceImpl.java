@@ -1,6 +1,8 @@
 package com.everrefine.elms.application.service;
 
 import com.everrefine.elms.application.dto.FirstLessonDto;
+import com.everrefine.elms.application.dto.LessonDto;
+import com.everrefine.elms.domain.model.lesson.Lesson;
 import com.everrefine.elms.domain.repository.LessonRepository;
 import io.micrometer.common.util.StringUtils;
 import java.util.UUID;
@@ -27,5 +29,31 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
     } catch (IllegalArgumentException e) {
       return new FirstLessonDto(false, null);
     }
+  }
+
+  @Override
+  public LessonDto findLessonById(String courseId, String lessonId) {
+    UUID courseUuid = UUID.fromString(courseId);
+    UUID lessonUuid = UUID.fromString(lessonId);
+
+    Lesson lesson = lessonRepository.findById(lessonUuid)
+        .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
+
+    // コースIDが一致するかチェック
+    if (!lesson.getCourseId().equals(courseUuid)) {
+      throw new IllegalArgumentException("Lesson does not belong to the specified course");
+    }
+
+    return new LessonDto(
+        lesson.getId(),
+        lesson.getLessonGroupId(),
+        lesson.getCourseId(),
+        lesson.getLessonOrder().getValue(),
+        lesson.getTitle().getValue(),
+        lesson.getDescription() != null ? lesson.getDescription().getValue() : null,
+        lesson.getVideoUrl() != null ? lesson.getVideoUrl().getValue() : null,
+        lesson.getCreatedAt(),
+        lesson.getUpdatedAt()
+    );
   }
 }

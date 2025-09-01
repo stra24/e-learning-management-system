@@ -1,7 +1,9 @@
 package com.everrefine.elms.presentation;
 
 import com.everrefine.elms.application.dto.FirstLessonDto;
+import com.everrefine.elms.application.dto.LessonDto;
 import com.everrefine.elms.application.service.LessonApplicationService;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,5 +28,21 @@ public class LessonController {
   public ResponseEntity<FirstLessonDto> findFirstLessonIdByCourseId(@PathVariable String courseId) {
     FirstLessonDto dto = lessonApplicationService.findFirstLessonIdByCourseId(courseId);
     return ResponseEntity.ok(dto);
+  }
+
+  /**
+   * 指定したコースIDとレッスンIDでレッスンを取得する。
+   *
+   * @param courseId コースID
+   * @param lessonId レッスンID
+   * @return レッスンDTO
+   */
+  @GetMapping("/{lessonId}")
+  public ResponseEntity<LessonDto> findLessonById(
+      @PathVariable @NotBlank String courseId,
+      @PathVariable @NotBlank String lessonId
+  ) {
+    LessonDto lessonDto = lessonApplicationService.findLessonById(courseId, lessonId);
+    return ResponseEntity.ok(lessonDto);
   }
 }

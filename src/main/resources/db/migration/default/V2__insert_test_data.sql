@@ -44,5 +44,5 @@ INSERT INTO public.lessons (id, lesson_group_id, course_id, lesson_order, title,
   1024.0000,
   '導入',
   'この講座について、およびJavaとは何かといった概要について説明します。',
-  'https://drive.google.com/drive/u/0/folders/19ZdmlH_Mc1d668_QtT2IUCr3wkeJRP02?ths=true'
+  'https://drive.google.com/file/d/1NO83lbAkhlDD6h3xbX0CX8rUbdUcInuD/view'
 );
