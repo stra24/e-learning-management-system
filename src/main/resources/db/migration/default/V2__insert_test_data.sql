@@ -32,9 +32,7 @@ INSERT INTO public.courses (id, course_order, thumbnail_url, title, description)
 INSERT INTO public.courses (id, course_order, thumbnail_url, title, description) VALUES('1db4661a-cd40-3724-edf7-0a059d4bcebe', 9216.0000, '/uploads/course_thumbnail_sample.png', '9章:CI/CD', 'GitHub Actionsを用いて、ソースコードの自動テスト、ビルド、デプロイまでを自動化するCI/CD環境の構築を学びます。');
 
 -- レッスングループ
-INSERT INTO public.lesson_groups (id, course_id, lesson_group_order, name) VALUES ('d081057a-d7ab-4d07-b9b9-9bf396d53c66', '0a0313c2-bb1e-8c58-d458-a8a884bf899a', 1024.0000, 'Java導入');
-INSERT INTO public.lesson_groups (id, course_id, lesson_group_order, name) VALUES ('29fb64ec-2f99-4a52-89f3-8d1f19f4a2fe', '0a0313c2-bb1e-8c58-d458-a8a884bf899a', 2048.0000, 'Java基礎');
-INSERT INTO public.lesson_groups (id, course_id, lesson_group_order, name) VALUES ('73208444-4419-42c8-bd0b-22ee7096e210', '0a0313c2-bb1e-8c58-d458-a8a884bf899a', 3072.0000, 'Java応用');
+INSERT INTO public.lesson_groups (id, course_id, lesson_group_order, title) VALUES ('d081057a-d7ab-4d07-b9b9-9bf396d53c66', '0a0313c2-bb1e-8c58-d458-a8a884bf899a', 1024.0000, 'Java導入');
 
 -- レッスン
 INSERT INTO public.lessons (id, lesson_group_id, course_id, lesson_order, title, description, video_url) VALUES (

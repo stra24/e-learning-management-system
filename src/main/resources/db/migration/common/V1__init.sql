@@ -35,7 +35,7 @@ CREATE TABLE lesson_groups (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),   -- レッスングループID
     course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE, -- コースID
     lesson_group_order NUMERIC(10,4) NOT NULL,       -- レッスングループ内での並び順
-    name VARCHAR(255) NOT NULL,                      -- レッスングループ名
+    title VARCHAR(255) NOT NULL,                      -- レッスングループタイトル
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 作成日時
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 更新日時
     CONSTRAINT course_id_and_lesson_group_order_constraint UNIQUE (course_id, lesson_group_order)

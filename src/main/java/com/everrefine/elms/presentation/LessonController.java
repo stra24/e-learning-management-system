@@ -1,8 +1,12 @@
 package com.everrefine.elms.presentation;
 
+import com.everrefine.elms.application.command.LessonSearchCommand;
+import com.everrefine.elms.application.dto.CourseLessonsDto;
 import com.everrefine.elms.application.dto.FirstLessonDto;
 import com.everrefine.elms.application.dto.LessonDto;
+import com.everrefine.elms.application.dto.LessonPageDto;
 import com.everrefine.elms.application.service.LessonApplicationService;
+import com.everrefine.elms.presentation.request.LessonSearchRequest;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +48,19 @@ public class LessonController {
   ) {
     LessonDto lessonDto = lessonApplicationService.findLessonById(courseId, lessonId);
     return ResponseEntity.ok(lessonDto);
+  }
+
+  /**
+   * 指定したコースIDに紐づくレッスンをレッスングループ単位でグループ分けして取得する。
+   *
+   * @param courseId コースID
+   * @return レッスングループ単位でグループ分けされたレッスン一覧
+   */
+  @GetMapping
+  public ResponseEntity<CourseLessonsDto> findLessonsGroupedByLessonGroup(
+      @PathVariable @NotBlank String courseId
+  ) {
+    CourseLessonsDto courseLessonsDto = lessonApplicationService.findLessonsGroupedByLessonGroup(courseId);
+    return ResponseEntity.ok(courseLessonsDto);
   }
 }
