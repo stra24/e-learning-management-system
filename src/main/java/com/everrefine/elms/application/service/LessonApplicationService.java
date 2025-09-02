@@ -1,5 +1,6 @@
 package com.everrefine.elms.application.service;
 
+import com.everrefine.elms.application.command.LessonCreateCommand;
 import com.everrefine.elms.application.command.LessonSearchCommand;
 import com.everrefine.elms.application.dto.CourseLessonsDto;
 import com.everrefine.elms.application.dto.FirstLessonDto;
@@ -15,4 +16,6 @@ public interface LessonApplicationService {
   LessonPageDto findLessons(LessonSearchCommand lessonSearchCommand);
   
   CourseLessonsDto findLessonsGroupedByLessonGroup(String courseId);
+  
+  LessonDto createLesson(LessonCreateCommand lessonCreateCommand);
 }

@@ -4,6 +4,7 @@ import com.everrefine.elms.application.command.LessonSearchCommand;
 import com.everrefine.elms.application.dto.CourseLessonsDto;
 import com.everrefine.elms.application.dto.LessonDto;
 import com.everrefine.elms.application.dto.LessonGroupDto;
+import com.everrefine.elms.application.command.LessonCreateCommand;
 import com.everrefine.elms.domain.model.lesson.Lesson;
 import com.everrefine.elms.domain.model.lesson.LessonGroup;
 import com.everrefine.elms.domain.model.lesson.LessonGroupWithLesson;
@@ -95,6 +96,33 @@ public class LessonRepositoryImpl implements LessonRepository {
         .toList();
     
     return new CourseLessonsDto(courseId, lessonGroups);
+  }
+
+  @Override
+  public Lesson createLesson(LessonCreateCommand lessonCreateCommand) {
+    UUID lessonId = UUID.randomUUID();
+    LocalDateTime now = LocalDateTime.now();
+    
+    lessonDao.insertLesson(
+        lessonId,
+        lessonCreateCommand.getLessonGroupId(),
+        lessonCreateCommand.getCourseId(),
+        lessonCreateCommand.getLessonOrder(),
+        lessonCreateCommand.getTitle(),
+        lessonCreateCommand.getDescription(),
+        lessonCreateCommand.getVideoUrl(),
+        now,
+        now
+    );
+    
+    // 作成されたレッスンを取得して返す
+    return lessonDao.findById(lessonId)
+        .orElseThrow(() -> new RuntimeException("Failed to create lesson"));
+  }
+
+  @Override
+  public Optional<BigDecimal> findMaxLessonOrderByLessonGroupId(UUID lessonGroupId) {
+    return lessonDao.findMaxLessonOrderByLessonGroupId(lessonGroupId);
   }
   
   private LessonGroupDto createLessonGroupDto(List<LessonGroupWithLesson> lessons) {

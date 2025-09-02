@@ -2,10 +2,12 @@ package com.everrefine.elms.infrastructure.dao;
 
 import com.everrefine.elms.application.command.LessonSearchCommand;
 import com.everrefine.elms.domain.model.lesson.Lesson;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -57,4 +59,27 @@ public interface LessonDao extends CrudRepository<Lesson, UUID> {
     ORDER BY lesson_order ASC
     """)
   List<Lesson> findLessonsByLessonGroupId(@Param("lessonGroupId") UUID lessonGroupId);
+
+  @Query("""
+    SELECT MAX(lesson_order) FROM lessons 
+    WHERE lesson_group_id = :lessonGroupId
+    """)
+  Optional<BigDecimal> findMaxLessonOrderByLessonGroupId(@Param("lessonGroupId") UUID lessonGroupId);
+
+  @Modifying
+  @Query("""
+    INSERT INTO lessons (id, lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at)
+    VALUES (:id, :lessonGroupId, :courseId, :lessonOrder, :title, :description, :videoUrl, :createdAt, :updatedAt)
+    """)
+  int insertLesson(
+      @Param("id") UUID id,
+      @Param("lessonGroupId") UUID lessonGroupId,
+      @Param("courseId") UUID courseId,
+      @Param("lessonOrder") BigDecimal lessonOrder,
+      @Param("title") String title,
+      @Param("description") String description,
+      @Param("videoUrl") String videoUrl,
+      @Param("createdAt") java.time.LocalDateTime createdAt,
+      @Param("updatedAt") java.time.LocalDateTime updatedAt
+  );
 }

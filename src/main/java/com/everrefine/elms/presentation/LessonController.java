@@ -1,22 +1,29 @@
 package com.everrefine.elms.presentation;
 
+import com.everrefine.elms.application.command.LessonCreateCommand;
 import com.everrefine.elms.application.command.LessonSearchCommand;
 import com.everrefine.elms.application.dto.CourseLessonsDto;
 import com.everrefine.elms.application.dto.FirstLessonDto;
 import com.everrefine.elms.application.dto.LessonDto;
 import com.everrefine.elms.application.dto.LessonPageDto;
 import com.everrefine.elms.application.service.LessonApplicationService;
+import com.everrefine.elms.presentation.request.LessonCreateRequest;
 import com.everrefine.elms.presentation.request.LessonSearchRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
-@RequestMapping("/api/courses/{courseId}/lessons")
+@RequestMapping("/api/courses/{courseId}")
 @RequiredArgsConstructor
 public class LessonController {
 
@@ -28,7 +35,7 @@ public class LessonController {
    * @param courseId コースID
    * @return 該当コースの先頭のレッスン
    */
-  @GetMapping("/first")
+  @GetMapping("/lessons/first")
   public ResponseEntity<FirstLessonDto> findFirstLessonIdByCourseId(@PathVariable String courseId) {
     FirstLessonDto dto = lessonApplicationService.findFirstLessonIdByCourseId(courseId);
     return ResponseEntity.ok(dto);
@@ -41,7 +48,7 @@ public class LessonController {
    * @param lessonId レッスンID
    * @return レッスンDTO
    */
-  @GetMapping("/{lessonId}")
+  @GetMapping("/lessons/{lessonId}")
   public ResponseEntity<LessonDto> findLessonById(
       @PathVariable @NotBlank String courseId,
       @PathVariable @NotBlank String lessonId
@@ -56,11 +63,37 @@ public class LessonController {
    * @param courseId コースID
    * @return レッスングループ単位でグループ分けされたレッスン一覧
    */
-  @GetMapping
+  @GetMapping("/lessons")
   public ResponseEntity<CourseLessonsDto> findLessonsGroupedByLessonGroup(
       @PathVariable @NotBlank String courseId
   ) {
     CourseLessonsDto courseLessonsDto = lessonApplicationService.findLessonsGroupedByLessonGroup(courseId);
     return ResponseEntity.ok(courseLessonsDto);
+  }
+
+  /**
+   * レッスンを新規作成する。
+   *
+   * @param courseId コースID
+   * @param lessonGroupId レッスングループID
+   * @param lessonCreateRequest レッスン作成リクエスト
+   * @return 作成されたレッスンDTO
+   */
+  @PostMapping("/lesson-groups/{lessonGroupId}/lessons")
+  public ResponseEntity<LessonDto> createLesson(
+      @PathVariable @NotBlank String courseId,
+      @PathVariable @NotBlank String lessonGroupId,
+      @RequestBody @Valid LessonCreateRequest lessonCreateRequest
+  ) {
+    LessonCreateCommand lessonCreateCommand = LessonCreateCommand.create(
+        UUID.fromString(courseId),
+        UUID.fromString(lessonGroupId),
+        lessonCreateRequest.getTitle(),
+        lessonCreateRequest.getDescription(),
+        lessonCreateRequest.getVideoUrl()
+    );
+    
+    LessonDto createdLessonDto = lessonApplicationService.createLesson(lessonCreateCommand);
+    return ResponseEntity.ok(createdLessonDto);
   }
 }

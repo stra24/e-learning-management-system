@@ -1,29 +1,17 @@
 package com.everrefine.elms.domain.service;
 
-import org.springframework.stereotype.Component;
-
+import java.math.BigDecimal;
 import java.util.UUID;
 
-@Component
-public class LessonDomainService {
-
+public interface LessonDomainService {
+  
   /**
-   * レッスンが有効かどうかをチェックします。
-   * 
-   * @param lessonId レッスンID
-   * @return 有効な場合はtrue、そうでなければfalse
+   * レッスンの並び順を発番する。
+   * 指定されたレッスングループ内で最大のlesson_order + 1を返す。
+   * レッスンが存在しない場合は1を返す。
+   *
+   * @param lessonGroupId レッスングループID
+   * @return 発番されたレッスンの並び順
    */
-  public static boolean isValidLesson(UUID lessonId) {
-    return lessonId != null;
-  }
-
-  /**
-   * コースIDが有効かどうかをチェックします。
-   * 
-   * @param courseId コースID
-   * @return 有効な場合はtrue、そうでなければfalse
-   */
-  public static boolean isValidCourseId(UUID courseId) {
-    return courseId != null;
-  }
+  BigDecimal issueLessonOrder(UUID lessonGroupId);
 }

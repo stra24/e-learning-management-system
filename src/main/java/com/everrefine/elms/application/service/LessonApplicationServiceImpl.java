@@ -1,5 +1,6 @@
 package com.everrefine.elms.application.service;
 
+import com.everrefine.elms.application.command.LessonCreateCommand;
 import com.everrefine.elms.application.command.LessonSearchCommand;
 import com.everrefine.elms.application.dto.CourseLessonsDto;
 import com.everrefine.elms.application.dto.FirstLessonDto;
@@ -7,7 +8,9 @@ import com.everrefine.elms.application.dto.LessonDto;
 import com.everrefine.elms.application.dto.LessonPageDto;
 import com.everrefine.elms.domain.model.lesson.Lesson;
 import com.everrefine.elms.domain.repository.LessonRepository;
+import com.everrefine.elms.domain.service.LessonDomainService;
 import io.micrometer.common.util.StringUtils;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class LessonApplicationServiceImpl implements LessonApplicationService {
 
   private final LessonRepository lessonRepository;
+  private final LessonDomainService lessonDomainService;
 
   @Override
   public FirstLessonDto findFirstLessonIdByCourseId(String courseId) {
@@ -97,5 +101,28 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException("Invalid course ID format");
     }
+  }
+
+  @Override
+  public LessonDto createLesson(LessonCreateCommand lessonCreateCommand) {
+    // レッスンの並び順を自動発番
+    BigDecimal lessonOrder = lessonDomainService.issueLessonOrder(lessonCreateCommand.getLessonGroupId());
+    
+    // 発番した並び順をコマンドにセットする
+    LessonCreateCommand commandWithOrder = lessonCreateCommand.updateLessonOrder(lessonOrder);
+    
+    Lesson createdLesson = lessonRepository.createLesson(commandWithOrder);
+    
+    return new LessonDto(
+        createdLesson.getId(),
+        createdLesson.getLessonGroupId(),
+        createdLesson.getCourseId(),
+        lessonOrder, // 発番された並び順を使用
+        createdLesson.getTitle().getValue(),
+        createdLesson.getDescription() != null ? createdLesson.getDescription().getValue() : null,
+        createdLesson.getVideoUrl() != null ? createdLesson.getVideoUrl().getValue() : null,
+        createdLesson.getCreatedAt(),
+        createdLesson.getUpdatedAt()
+    );
   }
 }
