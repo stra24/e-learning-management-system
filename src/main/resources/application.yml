@@ -15,11 +15,11 @@ spring:
 logging:
   level:
     root: INFO
-    org.springframework.boot.autoconfigure: DEBUG
+#    org.springframework.boot.autoconfigure: DEBUG
     # org.mybatis.spring: DEBUG
-    com.zaxxer.hikari: DEBUG
-    org.springframework.beans.factory: DEBUG
-    com.everrefine.elms: DEBUG
+#    com.zaxxer.hikari: DEBUG
+#    org.springframework.beans.factory: DEBUG
+#    com.everrefine.elms: DEBUG
 
 upload:
   directory: uploads # ファイルアップロード先ディレクトリ

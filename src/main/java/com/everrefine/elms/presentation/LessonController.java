@@ -42,22 +42,6 @@ public class LessonController {
   }
 
   /**
-   * 指定したコースIDとレッスンIDでレッスンを取得する。
-   *
-   * @param courseId コースID
-   * @param lessonId レッスンID
-   * @return レッスンDTO
-   */
-  @GetMapping("/lessons/{lessonId}")
-  public ResponseEntity<LessonDto> findLessonById(
-      @PathVariable @NotBlank String courseId,
-      @PathVariable @NotBlank String lessonId
-  ) {
-    LessonDto lessonDto = lessonApplicationService.findLessonById(courseId, lessonId);
-    return ResponseEntity.ok(lessonDto);
-  }
-
-  /**
    * 指定したコースIDに紐づくレッスンをレッスングループ単位でグループ分けして取得する。
    *
    * @param courseId コースID
@@ -95,5 +79,22 @@ public class LessonController {
     
     LessonDto createdLessonDto = lessonApplicationService.createLesson(lessonCreateCommand);
     return ResponseEntity.ok(createdLessonDto);
+  }
+
+  /**
+   * 指定したコースIDとレッスンIDでレッスンを取得する。
+   *
+   * @param courseId コースID
+   * @param lessonId レッスンID
+   * @return レッスンDTO
+   */
+  @GetMapping("/lesson-groups/{lessonGroupId}/lessons/{lessonId}")
+  public ResponseEntity<LessonDto> findLessonById(
+      @PathVariable @NotBlank String courseId,
+      @PathVariable @NotBlank String lessonGroupId,
+      @PathVariable @NotBlank String lessonId
+  ) {
+    LessonDto lessonDto = lessonApplicationService.findLessonById(courseId, lessonId);
+    return ResponseEntity.ok(lessonDto);
   }
 }

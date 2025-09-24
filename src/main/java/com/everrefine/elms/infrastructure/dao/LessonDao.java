@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,7 +14,15 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LessonDao extends CrudRepository<Lesson, UUID> {
-  Optional<Lesson> findTop1ByCourseIdOrderByLessonOrderDesc(UUID courseId);
+  @Query("""
+    SELECT l.*
+    FROM lessons l
+    JOIN lesson_groups g ON g.id = l.lesson_group_id
+    WHERE l.course_id = :courseId
+    ORDER BY g.lesson_group_order ASC, l.lesson_order ASC
+    LIMIT 1
+  """)
+  Optional<Lesson> findFirstLessonByCourseId(UUID courseId);
 
   @Query("""
     SELECT * FROM lessons WHERE 

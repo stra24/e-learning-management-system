@@ -32,7 +32,7 @@ public class LessonRepositoryImpl implements LessonRepository {
 
   @Override
   public Optional<Lesson> findFirstLessonByCourseId(UUID courseId) {
-    return lessonDao.findTop1ByCourseIdOrderByLessonOrderDesc(courseId);
+    return lessonDao.findFirstLessonByCourseId(courseId);
   }
 
   @Override
