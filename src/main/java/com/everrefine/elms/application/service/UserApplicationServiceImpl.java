@@ -18,7 +18,6 @@ import com.everrefine.elms.domain.repository.UserRepository;
 import com.everrefine.elms.domain.service.UserDomainService;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,9 +29,8 @@ public class UserApplicationServiceImpl implements UserApplicationService {
   private final UserRepository userRepository;
 
   @Override
-  public UserDto findUserById(String userId) {
-    UUID uuid = UUID.fromString(userId);
-    User user = userRepository.findUserById(uuid)
+  public UserDto findUserById(Integer userId) {
+    User user = userRepository.findUserById(userId)
         .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
     return UserDtoConverter.toDto(user);
   }
@@ -50,7 +48,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
         userSearchCommand.getCreatedDateFrom(),
         userSearchCommand.getCreatedDateTo()
     );
-    List<UUID> userIds = userRepository.findUserIdsBySearchConditions(userSearchCondition);
+    List<Integer> userIds = userRepository.findUserIdsBySearchConditions(userSearchCondition);
     List<User> users = userRepository.findUsersByIds(userIds);
     List<UserDto> userDtos = users.stream()
         .map(UserDtoConverter::toDto)
@@ -71,40 +69,38 @@ public class UserApplicationServiceImpl implements UserApplicationService {
       throw new IllegalArgumentException("Password confirmation does not match");
     }
 
-    LocalDateTime now = LocalDateTime.now();
-    User user = new User(
-        null,
-        new EmailAddress(userCreateCommand.getEmailAddress()),
-        Password.encryptAndCreate(userCreateCommand.getPassword()),
-        new RealName(userCreateCommand.getRealName()),
-        new UserName(userCreateCommand.getUserName()),
-        new Url(userCreateCommand.getThumbnailUrl()),
-        userCreateCommand.getUserRole(),
-        now,
-        now
+    User user = User.create(
+        userCreateCommand.getEmailAddress(),
+        userCreateCommand.getPassword(),
+        userCreateCommand.getRealName(),
+        userCreateCommand.getUserName(),
+        userCreateCommand.getThumbnailUrl(),
+        userCreateCommand.getUserRole()
     );
+
     userRepository.createUser(user);
   }
 
   @Override
   public void updateUser(UserUpdateCommand userUpdateCommand) {
-    UserDto userDto = findUserById(userUpdateCommand.getId().toString());
-    UserForUpdateRequest user = new UserForUpdateRequest(
-        userDto.getId(),
-        new EmailAddress(userUpdateCommand.getEmailAddress()),
-        new RealName(userUpdateCommand.getRealName()),
-        new UserName(userUpdateCommand.getUserName()),
-        new Url(userUpdateCommand.getThumbnailUrl())
+    User user = userRepository.findUserById(userUpdateCommand.getId())
+        .orElseThrow(() -> new RuntimeException("User not found with ID: " + userUpdateCommand.getId()));
+    User updatedUser = user.update(
+        userUpdateCommand.getEmailAddress(),
+        null,
+        userUpdateCommand.getRealName(),
+        userUpdateCommand.getUserName(),
+        userUpdateCommand.getThumbnailUrl(),
+        null
     );
-    userRepository.updateUser(user);
+    userRepository.updateUser(updatedUser);
   }
 
   @Override
-  public void deleteUserById(String userId) {
-    UUID uuid = UUID.fromString(userId);
+  public void deleteUserById(Integer userId) {
     // ユーザーが存在しなくてもエラーにはしない。
-    userRepository.findUserById(uuid).ifPresent(user ->
-        userRepository.deleteUserById(uuid)
+    userRepository.findUserById(userId).ifPresent(user ->
+        userRepository.deleteUserById(userId)
     );
   }
 }

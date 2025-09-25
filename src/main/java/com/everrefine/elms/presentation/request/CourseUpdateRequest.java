@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class CourseUpdateRequest {
 
-  private String courseId;
+  private Integer courseId;
   private BigDecimal courseOrder;
   private String title;
   private String description;

@@ -9,7 +9,6 @@ import com.everrefine.elms.application.service.NewsApplicationService;
 import com.everrefine.elms.presentation.request.NewsCreateRequest;
 import com.everrefine.elms.presentation.request.NewsSearchRequest;
 import com.everrefine.elms.presentation.request.NewsUpdateRequest;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,10 +34,10 @@ public class NewsController {
    */
   @PutMapping("/{newsId}")
   public ResponseEntity<Void> updateNews(
-      @PathVariable String newsId,
+      @PathVariable Integer newsId,
       @RequestBody NewsUpdateRequest newsUpdateRequest) {
     NewsUpdateCommand newsUpdateCommand = NewsUpdateCommand.create(
-        UUID.fromString(newsId),
+        newsId,
         newsUpdateRequest.getTitle(),
         newsUpdateRequest.getContent()
     );
@@ -67,7 +66,7 @@ public class NewsController {
    * @param newsId newsID(UUID形式の文字列）
    */
   @DeleteMapping("/{newsId}")
-  public ResponseEntity<Void> deleteNewsById(@PathVariable String newsId) {
+  public ResponseEntity<Void> deleteNewsById(@PathVariable Integer newsId) {
     newsApplicationService.deleteNewsById(newsId);
     return ResponseEntity.noContent().build();
   }
@@ -79,7 +78,7 @@ public class NewsController {
    * @return お知らせDTO
    */
   @GetMapping("/{newsId}")
-  public ResponseEntity<NewsDto> findNewsById(@PathVariable String newsId) {
+  public ResponseEntity<NewsDto> findNewsById(@PathVariable Integer newsId) {
     NewsDto newsDto = newsApplicationService.findNewsById(newsId);
     return ResponseEntity.ok(newsDto);
   }

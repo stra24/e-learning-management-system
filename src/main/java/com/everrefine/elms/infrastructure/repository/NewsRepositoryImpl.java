@@ -8,7 +8,6 @@ import com.everrefine.elms.infrastructure.dao.NewsDao;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +18,7 @@ public class NewsRepositoryImpl implements NewsRepository {
   private final NewsDao newsDao;
 
   @Override
-  public List<News> findNewsByIds(List<UUID> newsIds) {
+  public List<News> findNewsByIds(List<Integer> newsIds) {
     if (newsIds.isEmpty()) {
       return Collections.emptyList();
     }
@@ -30,8 +29,8 @@ public class NewsRepositoryImpl implements NewsRepository {
   public int countNews(NewsSearchCondition newsSearchCondition) {
     return newsDao.countNewsBySearchConditions(
         newsSearchCondition.getTitle(),
-        newsSearchCondition.getCreatedDateFrom() != null ? newsSearchCondition.getCreatedDateFrom().toString() : null,
-        newsSearchCondition.getCreatedDateTo() != null ? newsSearchCondition.getCreatedDateTo().toString() : null
+        newsSearchCondition.getCreatedDateFrom() == null ? null : newsSearchCondition.getCreatedDateFrom(),
+        newsSearchCondition.getCreatedDateTo() == null ? null : newsSearchCondition.getCreatedDateTo()
     );
   }
 
@@ -41,33 +40,30 @@ public class NewsRepositoryImpl implements NewsRepository {
   }
 
   @Override
-  public void deleteNewsById(UUID id) {
+  public void deleteNewsById(Integer id) {
     newsDao.deleteById(id);
   }
 
   @Override
-  public void updateNews(NewsForUpdateRequest news) {
-    newsDao.updateNewsFields(
-        news.getId(),
-        news.getTitle().getValue(),
-        news.getContent().getValue()
-    );
+  public void updateNews(News news) {
+    newsDao.save(news);
   }
 
   @Override
-  public List<UUID> findNewsIdsBySearchConditions(
-      NewsSearchCondition newsSearchCondition) {
+  public List<Integer> findNewsIdsBySearchConditions(
+      NewsSearchCondition newsSearchCondition
+  ) {
     return newsDao.findNewsBySearchConditions(
         newsSearchCondition.getTitle(),
-        newsSearchCondition.getCreatedDateFrom() != null ? newsSearchCondition.getCreatedDateFrom().toString() : null,
-        newsSearchCondition.getCreatedDateTo() != null ? newsSearchCondition.getCreatedDateTo().toString() : null,
+        newsSearchCondition.getCreatedDateFrom() == null ? null : newsSearchCondition.getCreatedDateFrom(),
+        newsSearchCondition.getCreatedDateTo() == null ? null : newsSearchCondition.getCreatedDateTo(),
         newsSearchCondition.getPagerForRequest().getPageSize(),
         newsSearchCondition.getPagerForRequest().getOffset()
     );
   }
 
   @Override
-  public Optional<News> findNewsById(UUID id) {
+  public Optional<News> findNewsById(Integer id) {
     return newsDao.findById(id);
   }
 }

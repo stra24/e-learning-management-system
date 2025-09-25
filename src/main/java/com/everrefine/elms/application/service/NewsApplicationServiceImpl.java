@@ -14,7 +14,6 @@ import com.everrefine.elms.domain.model.news.Title;
 import com.everrefine.elms.domain.repository.NewsRepository;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,9 +25,8 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   private final NewsRepository newsRepository;
 
   @Override
-  public NewsDto findNewsById(String newsId) {
-    UUID uuid = UUID.fromString(newsId);
-    News news = newsRepository.findNewsById(uuid)
+  public NewsDto findNewsById(Integer newsId) {
+    News news = newsRepository.findNewsById(newsId)
         .orElseThrow(() -> new RuntimeException("News not found with ID: " + newsId));
     return NewsDtoConverter.toDto(news);
   }
@@ -42,7 +40,7 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
         newsSearchCommand.getCreatedDateFrom(),
         newsSearchCommand.getCreatedDateTo()
     );
-    List<UUID> newsIds = newsRepository.findNewsIdsBySearchConditions(newsSearchCondition);
+    List<Integer> newsIds = newsRepository.findNewsIdsBySearchConditions(newsSearchCondition);
     List<News> news = newsRepository.findNewsByIds(newsIds);
     List<NewsDto> newsDtos = news.stream()
         .map(NewsDtoConverter::toDto)
@@ -58,29 +56,20 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
 
   @Override
   public void createNews(NewsCreateCommand newsCreateCommand) {
-    LocalDateTime now = LocalDateTime.now();
-    News news = new News(
-        null,
-        new Title(newsCreateCommand.getTitle()),
-        new Content(newsCreateCommand.getContent()),
-        now,
-        now);
+    News news = News.create(newsCreateCommand.getTitle(), newsCreateCommand.getContent());
     newsRepository.createNews(news);
   }
 
   @Override
   public void updateNews(NewsUpdateCommand newsUpdateCommand) {
-    NewsDto newsDto = findNewsById(newsUpdateCommand.getId().toString());
-    NewsForUpdateRequest news = new NewsForUpdateRequest(
-        newsDto.getId(),
-        new Title(newsUpdateCommand.getTitle()),
-        new Content(newsUpdateCommand.getContent()));
-    newsRepository.updateNews(news);
+    News currentNews = newsRepository.findNewsById(newsUpdateCommand.getId())
+        .orElseThrow(() -> new RuntimeException("News not found with ID: " + newsUpdateCommand.getId()));
+    News updatedNews = currentNews.update(newsUpdateCommand.getTitle(), newsUpdateCommand.getContent());
+    newsRepository.updateNews(updatedNews);
   }
 
   @Override
-  public void deleteNewsById(String newsId) {
-    UUID uuid = UUID.fromString(newsId);
-    newsRepository.findNewsById(uuid).ifPresent(news -> newsRepository.deleteNewsById(uuid));
+  public void deleteNewsById(Integer newsId) {
+    newsRepository.findNewsById(newsId).ifPresent(news -> newsRepository.deleteNewsById(newsId));
   }
 }

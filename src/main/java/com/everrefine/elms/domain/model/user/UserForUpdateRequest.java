@@ -3,7 +3,6 @@ package com.everrefine.elms.domain.model.user;
 import com.everrefine.elms.domain.model.Url;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,7 +14,7 @@ import lombok.Getter;
 public class UserForUpdateRequest {
 
   @NotNull
-  private final UUID id;
+  private final Integer id;
   @NotNull
   private EmailAddress emailAddress;
   @NotNull

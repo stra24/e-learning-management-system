@@ -9,7 +9,6 @@ import com.everrefine.elms.application.service.UserApplicationService;
 import com.everrefine.elms.presentation.request.UserCreateRequest;
 import com.everrefine.elms.presentation.request.UserSearchRequest;
 import com.everrefine.elms.presentation.request.UserUpdateRequest;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,11 +35,11 @@ public class UserController {
    */
   @PutMapping("/{userId}")
   public ResponseEntity<Void> updateUser(
-      @PathVariable String userId,
+      @PathVariable Integer userId,
       @RequestBody UserUpdateRequest userUpdateRequest
   ) {
     UserUpdateCommand userUpdateCommand = UserUpdateCommand.create(
-        UUID.fromString(userId),
+        userId,
         userUpdateRequest.getRealName(),
         userUpdateRequest.getUserName(),
         userUpdateRequest.getEmailAddress(),
@@ -76,7 +75,7 @@ public class UserController {
    * @param userId ユーザーID（UUID形式の文字列）
    */
   @DeleteMapping("/{userId}")
-  public ResponseEntity<Void> deleteUserById(@PathVariable String userId) {
+  public ResponseEntity<Void> deleteUserById(@PathVariable Integer userId) {
     userApplicationService.deleteUserById(userId);
     return ResponseEntity.noContent().build();
   }
@@ -88,7 +87,7 @@ public class UserController {
    * @return ユーザーDTO
    */
   @GetMapping("/{userId}")
-  public ResponseEntity<UserDto> findUserById(@PathVariable String userId) {
+  public ResponseEntity<UserDto> findUserById(@PathVariable Integer userId) {
     UserDto userDto = userApplicationService.findUserById(userId);
     return ResponseEntity.ok(userDto);
   }

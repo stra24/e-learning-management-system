@@ -3,7 +3,6 @@ package com.everrefine.elms.application.command;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +15,7 @@ import lombok.Getter;
 public class UserUpdateCommand {
 
   @NotNull
-  private UUID id;
+  private Integer id;
   @NotNull
   private String realName;
   @NotNull
@@ -29,7 +28,7 @@ public class UserUpdateCommand {
   private LocalDateTime updatedAt;
 
   public static UserUpdateCommand create(
-      UUID id,
+      Integer id,
       String realName,
       String userName,
       String emailAddress,

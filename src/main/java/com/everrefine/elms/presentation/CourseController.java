@@ -7,7 +7,6 @@ import com.everrefine.elms.application.dto.CoursePageDto;
 import com.everrefine.elms.application.service.CourseApplicationService;
 import com.everrefine.elms.presentation.request.CourseCreateRequest;
 import com.everrefine.elms.presentation.request.CourseUpdateRequest;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,11 +36,11 @@ public class CourseController {
    */
   @PutMapping("/{courseId}")
   public ResponseEntity<Void> updateCourse(
-      @PathVariable String courseId,
+      @PathVariable Integer courseId,
       @RequestBody CourseUpdateRequest courseUpdateRequest
   ) {
     CourseUpdateCommand courseUpdateCommand = CourseUpdateCommand.create(
-        UUID.fromString(courseId),
+        courseId,
         courseUpdateRequest.getCourseOrder(),
         courseUpdateRequest.getTitle(),
         courseUpdateRequest.getDescription(),
@@ -59,9 +58,9 @@ public class CourseController {
   @PostMapping
   public ResponseEntity<Void> createCourse(@RequestBody CourseCreateRequest courseCreateRequest) {
     CourseCreateCommand courseCreateCommand = CourseCreateCommand.create(
+        courseCreateRequest.getThumbnailUrl(),
         courseCreateRequest.getTitle(),
-        courseCreateRequest.getDescription(),
-        courseCreateRequest.getThumbnailUrl()
+        courseCreateRequest.getDescription()
     );
     courseApplicationService.createCourse(courseCreateCommand);
     return ResponseEntity.ok().build();
@@ -73,7 +72,7 @@ public class CourseController {
    * @param courseId コースID（UUID形式の文字列）
    */
   @DeleteMapping("/{courseId}")
-  public ResponseEntity<Void> deleteCourseById(@PathVariable String courseId) {
+  public ResponseEntity<Void> deleteCourseById(@PathVariable Integer courseId) {
     courseApplicationService.deleteCourseById(courseId);
     return ResponseEntity.noContent().build();
   }
@@ -85,7 +84,7 @@ public class CourseController {
    * @return コースDTO
    */
   @GetMapping("/{courseId}")
-  public ResponseEntity<CourseDto> findCourseById(@PathVariable String courseId) {
+  public ResponseEntity<CourseDto> findCourseById(@PathVariable Integer courseId) {
     CourseDto courseDto = courseApplicationService.findCourseById(courseId);
     return ResponseEntity.ok(courseDto);
   }

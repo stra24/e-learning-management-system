@@ -1,22 +1,21 @@
 package com.everrefine.elms.application.command;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 import lombok.Data;
 
 @Data
 public class LessonCreateCommand {
   
-  private final UUID courseId;
-  private final UUID lessonGroupId;
+  private final Integer courseId;
+  private final Integer lessonGroupId;
   private final String title;
   private final String description;
   private final String videoUrl;
   private final BigDecimal lessonOrder;
   
   public static LessonCreateCommand create(
-      UUID courseId,
-      UUID lessonGroupId,
+      Integer courseId,
+      Integer lessonGroupId,
       String title,
       String description,
       String videoUrl

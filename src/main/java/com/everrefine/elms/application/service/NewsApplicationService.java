@@ -8,7 +8,7 @@ import com.everrefine.elms.application.dto.NewsPageDto;
 
 public interface NewsApplicationService {
 
-  NewsDto findNewsById(String id);
+  NewsDto findNewsById(Integer id);
 
   NewsPageDto findNews(NewsSearchCommand newsSearchCommands);
 
@@ -16,5 +16,5 @@ public interface NewsApplicationService {
 
   void updateNews(NewsUpdateCommand newsUpdateCommand);
 
-  void deleteNewsById(String newsId);
+  void deleteNewsById(Integer newsId);
 }

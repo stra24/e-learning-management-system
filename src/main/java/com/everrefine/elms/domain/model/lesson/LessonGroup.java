@@ -4,7 +4,6 @@ import com.everrefine.elms.domain.model.Order;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -20,11 +19,11 @@ import org.springframework.data.relational.core.mapping.Table;
 public class LessonGroup {
 
   @Id
-  private final UUID id;
+  private final Integer id;
   
   @NotNull
   @Column("course_id")
-  private UUID courseId;
+  private Integer courseId;
   
   @NotNull
   @Column("lesson_group_order")

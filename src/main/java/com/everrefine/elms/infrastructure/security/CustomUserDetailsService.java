@@ -4,7 +4,6 @@ import com.everrefine.elms.domain.model.user.EmailAddress;
 import com.everrefine.elms.domain.model.user.User;
 import com.everrefine.elms.domain.repository.UserRepository;
 import java.util.List;
-import java.util.UUID;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
   }
 
   public UserDetails loadUserById(String userId) {
-    User user = userRepository.findUserById(UUID.fromString(userId))
+    User user = userRepository.findUserById(Integer.valueOf(userId))
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
     return new org.springframework.security.core.userdetails.User(

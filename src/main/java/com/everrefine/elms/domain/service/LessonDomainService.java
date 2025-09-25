@@ -1,7 +1,6 @@
 package com.everrefine.elms.domain.service;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public interface LessonDomainService {
   
@@ -13,5 +12,5 @@ public interface LessonDomainService {
    * @param lessonGroupId レッスングループID
    * @return 発番されたレッスンの並び順
    */
-  BigDecimal issueLessonOrder(UUID lessonGroupId);
+  BigDecimal issueLessonOrder(Integer lessonGroupId);
 }

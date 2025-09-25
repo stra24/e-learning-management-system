@@ -2,7 +2,6 @@ package com.everrefine.elms.application.command;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +11,7 @@ import lombok.Getter;
 public class NewsUpdateCommand {
 
   @NotNull
-  private UUID id;
+  private Integer id;
   @NotNull
   private String title;
   @NotNull
@@ -21,7 +20,7 @@ public class NewsUpdateCommand {
   private LocalDateTime updatedAt;
 
   public static NewsUpdateCommand create(
-      UUID id,
+      Integer id,
       String title,
       String content
   ) {

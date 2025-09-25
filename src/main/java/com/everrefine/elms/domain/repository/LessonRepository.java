@@ -6,21 +6,20 @@ import com.everrefine.elms.application.dto.CourseLessonsDto;
 import com.everrefine.elms.domain.model.lesson.Lesson;
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface LessonRepository {
 
-  Optional<Lesson> findFirstLessonByCourseId(UUID courseId);
+  Optional<Lesson> findFirstLessonByCourseId(Integer courseId);
 
-  Optional<Lesson> findById(UUID lessonId);
+  Optional<Lesson> findById(Integer lessonId);
 
   java.util.List<Lesson> findLessons(LessonSearchCommand lessonSearchCommand);
 
   int countLessons(LessonSearchCommand lessonSearchCommand);
   
-  CourseLessonsDto findLessonsGroupedByLessonGroup(UUID courseId);
+  CourseLessonsDto findLessonsGroupedByLessonGroup(Integer courseId);
   
-  Lesson createLesson(LessonCreateCommand lessonCreateCommand);
+  Lesson createLesson(Lesson lesson);
   
-  Optional<BigDecimal> findMaxLessonOrderByLessonGroupId(UUID lessonGroupId);
+  Optional<BigDecimal> findMaxLessonOrderByLessonGroupId(Integer lessonGroupId);
 }

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/courses/{courseId}")
@@ -36,7 +35,7 @@ public class LessonController {
    * @return 該当コースの先頭のレッスン
    */
   @GetMapping("/lessons/first")
-  public ResponseEntity<FirstLessonDto> findFirstLessonIdByCourseId(@PathVariable String courseId) {
+  public ResponseEntity<FirstLessonDto> findFirstLessonIdByCourseId(@PathVariable Integer courseId) {
     FirstLessonDto dto = lessonApplicationService.findFirstLessonIdByCourseId(courseId);
     return ResponseEntity.ok(dto);
   }
@@ -49,7 +48,7 @@ public class LessonController {
    */
   @GetMapping("/lessons")
   public ResponseEntity<CourseLessonsDto> findLessonsGroupedByLessonGroup(
-      @PathVariable @NotBlank String courseId
+      @PathVariable Integer courseId
   ) {
     CourseLessonsDto courseLessonsDto = lessonApplicationService.findLessonsGroupedByLessonGroup(courseId);
     return ResponseEntity.ok(courseLessonsDto);
@@ -65,13 +64,13 @@ public class LessonController {
    */
   @PostMapping("/lesson-groups/{lessonGroupId}/lessons")
   public ResponseEntity<LessonDto> createLesson(
-      @PathVariable @NotBlank String courseId,
-      @PathVariable @NotBlank String lessonGroupId,
+      @PathVariable Integer courseId,
+      @PathVariable Integer lessonGroupId,
       @RequestBody @Valid LessonCreateRequest lessonCreateRequest
   ) {
     LessonCreateCommand lessonCreateCommand = LessonCreateCommand.create(
-        UUID.fromString(courseId),
-        UUID.fromString(lessonGroupId),
+        courseId,
+        lessonGroupId,
         lessonCreateRequest.getTitle(),
         lessonCreateRequest.getDescription(),
         lessonCreateRequest.getVideoUrl()
@@ -90,9 +89,9 @@ public class LessonController {
    */
   @GetMapping("/lesson-groups/{lessonGroupId}/lessons/{lessonId}")
   public ResponseEntity<LessonDto> findLessonById(
-      @PathVariable @NotBlank String courseId,
-      @PathVariable @NotBlank String lessonGroupId,
-      @PathVariable @NotBlank String lessonId
+      @PathVariable Integer courseId,
+      @PathVariable Integer lessonGroupId,
+      @PathVariable Integer lessonId
   ) {
     LessonDto lessonDto = lessonApplicationService.findLessonById(courseId, lessonId);
     return ResponseEntity.ok(lessonDto);

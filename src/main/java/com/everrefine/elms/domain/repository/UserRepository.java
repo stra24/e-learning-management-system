@@ -6,14 +6,13 @@ import com.everrefine.elms.domain.model.user.UserForUpdateRequest;
 import com.everrefine.elms.domain.model.user.UserSearchCondition;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface UserRepository {
-  Optional<User> findUserById(UUID id);
+  Optional<User> findUserById(Integer id);
 
-  List<User> findUsersByIds(List<UUID> ids);
+  List<User> findUsersByIds(List<Integer> ids);
 
-  List<UUID> findUserIdsBySearchConditions(UserSearchCondition userSearchCondition);
+  List<Integer> findUserIdsBySearchConditions(UserSearchCondition userSearchCondition);
 
   Optional<User> findUserByEmailAddress(EmailAddress emailAddress);
 
@@ -21,7 +20,7 @@ public interface UserRepository {
 
   User createUser(User user);
 
-  int updateUser(UserForUpdateRequest user);
+  User updateUser(User user);
 
-  void deleteUserById(UUID id);
+  void deleteUserById(Integer id);
 }

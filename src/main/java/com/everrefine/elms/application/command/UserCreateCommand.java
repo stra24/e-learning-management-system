@@ -3,7 +3,6 @@ package com.everrefine.elms.application.command;
 import com.everrefine.elms.domain.model.user.UserRole;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,8 +14,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserCreateCommand {
 
-  @NotNull
-  private UUID id;
+  private Integer id;
   @NotNull
   private String realName;
   @NotNull
@@ -42,7 +40,7 @@ public class UserCreateCommand {
       UserRole userRole
   ) {
     return new UserCreateCommand(
-        UUID.randomUUID(),
+        null,
         realName,
         userName,
         emailAddress,

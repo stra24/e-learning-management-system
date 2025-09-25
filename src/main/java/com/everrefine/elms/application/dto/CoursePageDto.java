@@ -13,6 +13,7 @@ public class CoursePageDto {
    * コースDTOリスト
    */
   private final List<CourseDto> courseDtos;
+
   /**
    * ページ番号
    */

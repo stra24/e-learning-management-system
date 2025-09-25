@@ -3,7 +3,6 @@ package com.everrefine.elms.domain.model.user;
 import com.everrefine.elms.domain.model.Url;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -20,7 +19,7 @@ import org.springframework.lang.Nullable;
 public class User {
 
   @Id
-  private final UUID id;
+  private final Integer id;
   @NotNull
   @Column("email_address")
   private EmailAddress emailAddress;
@@ -45,44 +44,68 @@ public class User {
   @Column("updated_at")
   private LocalDateTime updatedAt;
 
-  public void changeEmailAddress(EmailAddress newEmailAddress) {
-    this.emailAddress = newEmailAddress;
-    this.updatedAt = LocalDateTime.now();
+  /**
+   * 新規作成用のユーザーを作成する。
+   *
+   * @param emailAddress メールアドレス
+   * @param password パスワード
+   * @param realName 本名
+   * @param userName ユーザー名
+   * @param thumbnailUrl サムネイル画像のURL
+   * @param userRole 権限
+   * @return 新規作成用のユーザー
+   */
+  public static User create(
+      String emailAddress,
+      String password,
+      String realName,
+      String userName,
+      String thumbnailUrl,
+      UserRole userRole
+  ) {
+    LocalDateTime now = LocalDateTime.now();
+    return new User(
+        null,
+        new EmailAddress(emailAddress),
+        Password.encryptAndCreate(password),
+        new RealName(realName),
+        new UserName(userName),
+        thumbnailUrl == null ? null : new Url(thumbnailUrl),
+        userRole,
+        now,
+        now
+    );
   }
 
-  public void changePassword(Password newPassword) {
-    this.password = newPassword;
-    this.updatedAt = LocalDateTime.now();
-  }
-
-  public void changeRealName(RealName newRealName) {
-    this.realName = newRealName;
-    this.updatedAt = LocalDateTime.now();
-  }
-
-  public void changeUserName(UserName newUserName) {
-    this.userName = newUserName;
-    this.updatedAt = LocalDateTime.now();
-  }
-
-  public void changeThumbnailUrl(Url newThumbnailUrl) {
-    this.thumbnailUrl = newThumbnailUrl;
-    this.updatedAt = LocalDateTime.now();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof User other)) {
-      return false;
-    }
-    return id.equals(other.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return id.hashCode();
+  /**
+   * 更新用のユーザーを作成する。
+   *
+   * @param emailAddress メールアドレス
+   * @param password パスワード
+   * @param realName 本名
+   * @param userName ユーザー名
+   * @param thumbnailUrl サムネイル画像のURL
+   * @param userRole 権限
+   * @return 更新用のユーザー
+   */
+  public User update(
+      String emailAddress,
+      String password,
+      String realName,
+      String userName,
+      String thumbnailUrl,
+      UserRole userRole
+  ) {
+    return new User(
+        this.id,
+        emailAddress == null ? this.emailAddress : new EmailAddress(emailAddress),
+        password == null ? this.password : Password.encryptAndCreate(password),
+        realName == null ? this.realName : new RealName(realName),
+        userName == null ? this.userName : new UserName(userName),
+        thumbnailUrl == null ? this.thumbnailUrl : new Url(thumbnailUrl),
+        userRole == null ? this.userRole : userRole,
+        this.createdAt,
+        LocalDateTime.now()
+    );
   }
 }

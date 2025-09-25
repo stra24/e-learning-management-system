@@ -10,9 +10,9 @@ public class UserDtoConverter {
                 user.getEmailAddress().getValue(),
                 user.getRealName().getValue(),
                 user.getUserName().getValue(),
-                (user.getThumbnailUrl() != null)
-                        ? user.getThumbnailUrl().getValue()
-                        : null,
+                user.getThumbnailUrl() == null
+                        ? null
+                        : user.getThumbnailUrl().getValue(),
                 user.getUserRole().getRoleName(),
                 user.getCreatedAt()
         );

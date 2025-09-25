@@ -1,7 +1,6 @@
 package com.everrefine.elms.application.dto;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class UserDto {
-  private final UUID id;
+  private final Integer id;
   private final String emailAddress;
   private final String realName;
   private final String userName;

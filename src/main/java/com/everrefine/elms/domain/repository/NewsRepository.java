@@ -5,22 +5,21 @@ import com.everrefine.elms.domain.model.news.NewsForUpdateRequest;
 import com.everrefine.elms.domain.model.news.NewsSearchCondition;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface NewsRepository {
 
-  List<News> findNewsByIds(List<UUID> newsIds);
+  List<News> findNewsByIds(List<Integer> newsIds);
 
   int countNews(NewsSearchCondition newsSearchCondition);
 
   void createNews(News news);
 
-  void deleteNewsById(UUID id);
+  void deleteNewsById(Integer id);
 
-  void updateNews(NewsForUpdateRequest news);
+  void updateNews(News news);
 
-  List<UUID> findNewsIdsBySearchConditions(NewsSearchCondition newsSearchCondition);
+  List<Integer> findNewsIdsBySearchConditions(NewsSearchCondition newsSearchCondition);
 
-  Optional<News> findNewsById(UUID id);
+  Optional<News> findNewsById(Integer id);
 
 }

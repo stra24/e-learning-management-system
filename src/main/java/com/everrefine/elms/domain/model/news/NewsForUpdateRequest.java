@@ -1,7 +1,6 @@
 package com.everrefine.elms.domain.model.news;
 
 import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +9,7 @@ import lombok.Getter;
 public class NewsForUpdateRequest {
 
   @NotNull
-  private final UUID id;
+  private final Integer id;
   @NotNull
   private Title title;
   @NotNull

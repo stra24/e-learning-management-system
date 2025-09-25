@@ -1,7 +1,6 @@
 package com.everrefine.elms.application.command;
 
 import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,8 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class NewsCreateCommand {
 
-  @NotNull
-  private UUID id;
+  private Integer id;
   @NotNull
   private String title;
   @NotNull
@@ -22,7 +20,7 @@ public class NewsCreateCommand {
       String content
   ) {
     return new NewsCreateCommand(
-        UUID.randomUUID(),
+        null,
         title,
         content
     );

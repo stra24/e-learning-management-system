@@ -9,13 +9,15 @@ public class CourseDtoConverter {
     return new CourseDto(
         course.getId(),
         course.getCourseOrder().getValue(),
-        (course.getThumbnailUrl() != null)
+        course.getThumbnailUrl() != null
             ? course.getThumbnailUrl().getValue()
             : null,
         course.getTitle().getValue(),
-        (course.getDescription() != null)
+        course.getDescription() != null
             ? course.getDescription().getValue()
-            : null
+            : null,
+        course.getCreatedAt(),
+        course.getUpdatedAt()
     );
   }
 }

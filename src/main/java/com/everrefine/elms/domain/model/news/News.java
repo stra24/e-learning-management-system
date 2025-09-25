@@ -2,9 +2,7 @@ package com.everrefine.elms.domain.model.news;
 
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -20,7 +18,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class News {
 
   @Id
-  private final UUID id;
+  private final Integer id;
   @NotNull
   private Title title;
   @NotNull
@@ -32,29 +30,38 @@ public class News {
   @Column("updated_at")
   private LocalDateTime updatedAt;
 
-  public void changeTitle(Title newTitle) {
-    this.title = newTitle;
-    this.updatedAt = LocalDateTime.now();
+  /**
+   * 新規作成用のお知らせを作成する。
+   *
+   * @param title   タイトル
+   * @param content 内容
+   * @return 新規作成用のお知らせ
+   */
+  public static News create(String title, String content) {
+    LocalDateTime now = LocalDateTime.now();
+    return new News(
+        null,
+        new Title(title),
+        new Content(content),
+        now,
+        now
+    );
   }
 
-  public void changeContent(Content newContent) {
-    this.content = newContent;
-    this.updatedAt = LocalDateTime.now();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof News other)) {
-      return false;
-    }
-    return id.equals(other.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return id.hashCode();
+  /**
+   * 更新用のお知らせを作成する。
+   *
+   * @param title   タイトル
+   * @param content 内容
+   * @return 更新用のお知らせ
+   */
+  public News update(String title, String content) {
+    return new News(
+        this.id,
+        title == null ? this.title : new Title(title),
+        content == null ? this.content : new Content(content),
+        this.createdAt,
+        LocalDateTime.now()
+    );
   }
 }

@@ -1,11 +1,10 @@
 package com.everrefine.elms.application.command;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.lang.Nullable;
 
 /**
  * 新規作成用コースのコマンド。
@@ -14,25 +13,25 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CourseCreateCommand {
 
-  @NotNull
-  private UUID id;
-  @NotNull
-  private String title;
-  @NotNull
-  private String description;
+  @Nullable
+  private Integer id;
   @Nullable
   private String thumbnailUrl;
+  @NotNull
+  private String title;
+  @Nullable
+  private String description;
 
   public static CourseCreateCommand create(
+      String thumbnailUrl,
       String title,
-      String description,
-      String thumbnailUrl
+      String description
   ) {
     return new CourseCreateCommand(
-        UUID.randomUUID(),
+        null,
+        thumbnailUrl,
         title,
-        description,
-        thumbnailUrl
+        description
     );
   }
 }

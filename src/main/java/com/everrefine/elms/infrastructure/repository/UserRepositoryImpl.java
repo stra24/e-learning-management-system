@@ -9,7 +9,6 @@ import com.everrefine.elms.infrastructure.dao.UserDao;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
   private final UserDao userDao;
 
   @Override
-  public List<User> findUsersByIds(List<UUID> userIds) {
+  public List<User> findUsersByIds(List<Integer> userIds) {
     if (userIds.isEmpty()) {
       return Collections.emptyList();
     }
@@ -28,14 +27,8 @@ public class UserRepositoryImpl implements UserRepository {
   }
 
   @Override
-  public int updateUser(UserForUpdateRequest user) {
-    return userDao.updateUserFields(
-        user.getId(),
-        user.getEmailAddress().getValue(),
-        user.getRealName().getValue(), 
-        user.getUserName().getValue(),
-        user.getThumbnailUrl() != null ? user.getThumbnailUrl().getValue() : null
-    );
+  public User updateUser(User user) {
+    return userDao.save(user);
   }
 
   @Override
@@ -44,12 +37,12 @@ public class UserRepositoryImpl implements UserRepository {
   }
 
   @Override
-  public void deleteUserById(UUID id) {
+  public void deleteUserById(Integer id) {
     userDao.deleteById(id);
   }
 
   @Override
-  public Optional<User> findUserById(UUID id) {
+  public Optional<User> findUserById(Integer id) {
     return userDao.findById(id);
   }
 
@@ -59,15 +52,19 @@ public class UserRepositoryImpl implements UserRepository {
   }
 
   @Override
-  public List<UUID> findUserIdsBySearchConditions(UserSearchCondition userSearchCondition) {
+  public List<Integer> findUserIdsBySearchConditions(UserSearchCondition userSearchCondition) {
     return userDao.findUserIdsBySearchConditions(
         userSearchCondition.getUserId(),
         userSearchCondition.getUserRole(),
         userSearchCondition.getRealName(),
         userSearchCondition.getUserName(),
         userSearchCondition.getEmailAddress(),
-        userSearchCondition.getCreatedDateFrom() != null ? userSearchCondition.getCreatedDateFrom().toString() : null,
-        userSearchCondition.getCreatedDateTo() != null ? userSearchCondition.getCreatedDateTo().toString() : null,
+        userSearchCondition.getCreatedDateFrom() == null
+            ? null
+            : userSearchCondition.getCreatedDateFrom(),
+        userSearchCondition.getCreatedDateTo() == null
+            ? null
+            : userSearchCondition.getCreatedDateTo(),
         userSearchCondition.getPageSize(),
         userSearchCondition.getOffset()
     );
@@ -81,8 +78,12 @@ public class UserRepositoryImpl implements UserRepository {
         userSearchCondition.getRealName(),
         userSearchCondition.getUserName(),
         userSearchCondition.getEmailAddress(),
-        userSearchCondition.getCreatedDateFrom() != null ? userSearchCondition.getCreatedDateFrom().toString() : null,
-        userSearchCondition.getCreatedDateTo() != null ? userSearchCondition.getCreatedDateTo().toString() : null
+        userSearchCondition.getCreatedDateFrom() == null
+            ? null
+            : userSearchCondition.getCreatedDateFrom(),
+        userSearchCondition.getCreatedDateTo() == null
+            ? null
+            : userSearchCondition.getCreatedDateTo()
     );
   }
 }

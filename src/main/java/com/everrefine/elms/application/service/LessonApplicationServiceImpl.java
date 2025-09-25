@@ -12,7 +12,6 @@ import com.everrefine.elms.domain.service.LessonDomainService;
 import io.micrometer.common.util.StringUtils;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,33 +24,20 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
   private final LessonDomainService lessonDomainService;
 
   @Override
-  public FirstLessonDto findFirstLessonIdByCourseId(String courseId) {
-    if (StringUtils.isBlank(courseId)) {
+  public FirstLessonDto findFirstLessonIdByCourseId(Integer courseId) {
+    if (courseId == null) {
       return new FirstLessonDto(false, null, null);
     }
 
-    try {
-      UUID courseUuid = UUID.fromString(courseId);
-      return lessonRepository.findFirstLessonByCourseId(courseUuid)
-          .map(lesson -> new FirstLessonDto(true, lesson.getLessonGroupId(), lesson.getId()))
-          .orElseGet(() -> new FirstLessonDto(false, null, null));
-    } catch (IllegalArgumentException e) {
-      return new FirstLessonDto(false, null, null);
-    }
+    return lessonRepository.findFirstLessonByCourseId(courseId)
+        .map(lesson -> new FirstLessonDto(true, lesson.getLessonGroupId(), lesson.getId()))
+        .orElseGet(() -> new FirstLessonDto(false, null, null));
   }
 
   @Override
-  public LessonDto findLessonById(String courseId, String lessonId) {
-    UUID courseUuid = UUID.fromString(courseId);
-    UUID lessonUuid = UUID.fromString(lessonId);
-
-    Lesson lesson = lessonRepository.findById(lessonUuid)
+  public LessonDto findLessonById(Integer courseId, Integer lessonId) {
+    Lesson lesson = lessonRepository.findById(lessonId)
         .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
-
-    // コースIDが一致するかチェック
-    if (!lesson.getCourseId().equals(courseUuid)) {
-      throw new IllegalArgumentException("Lesson does not belong to the specified course");
-    }
 
     return new LessonDto(
         lesson.getId(),
@@ -94,30 +80,32 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
   }
 
   @Override
-  public CourseLessonsDto findLessonsGroupedByLessonGroup(String courseId) {
-    try {
-      UUID courseUuid = UUID.fromString(courseId);
-      return lessonRepository.findLessonsGroupedByLessonGroup(courseUuid);
-    } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Invalid course ID format");
-    }
+  public CourseLessonsDto findLessonsGroupedByLessonGroup(Integer courseId) {
+    return lessonRepository.findLessonsGroupedByLessonGroup(courseId);
   }
 
   @Override
   public LessonDto createLesson(LessonCreateCommand lessonCreateCommand) {
     // レッスンの並び順を自動発番
-    BigDecimal lessonOrder = lessonDomainService.issueLessonOrder(lessonCreateCommand.getLessonGroupId());
-    
-    // 発番した並び順をコマンドにセットする
-    LessonCreateCommand commandWithOrder = lessonCreateCommand.updateLessonOrder(lessonOrder);
-    
-    Lesson createdLesson = lessonRepository.createLesson(commandWithOrder);
-    
+    BigDecimal lessonOrder = lessonDomainService.issueLessonOrder(
+        lessonCreateCommand.getLessonGroupId());
+
+    Lesson lesson = Lesson.create(
+        lessonCreateCommand.getLessonGroupId(),
+        lessonCreateCommand.getCourseId(),
+        lessonOrder,
+        lessonCreateCommand.getTitle(),
+        lessonCreateCommand.getDescription(),
+        lessonCreateCommand.getVideoUrl()
+    );
+
+    Lesson createdLesson = lessonRepository.createLesson(lesson);
+
     return new LessonDto(
         createdLesson.getId(),
         createdLesson.getLessonGroupId(),
         createdLesson.getCourseId(),
-        lessonOrder, // 発番された並び順を使用
+        lessonOrder,
         createdLesson.getTitle().getValue(),
         createdLesson.getDescription() != null ? createdLesson.getDescription().getValue() : null,
         createdLesson.getVideoUrl() != null ? createdLesson.getVideoUrl().getValue() : null,

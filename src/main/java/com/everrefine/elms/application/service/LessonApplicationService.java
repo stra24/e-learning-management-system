@@ -9,13 +9,13 @@ import com.everrefine.elms.application.dto.LessonPageDto;
 
 public interface LessonApplicationService {
 
-  FirstLessonDto findFirstLessonIdByCourseId(String courseId);
+  FirstLessonDto findFirstLessonIdByCourseId(Integer courseId);
 
-  LessonDto findLessonById(String courseId, String lessonId);
+  LessonDto findLessonById(Integer courseId, Integer lessonId);
 
   LessonPageDto findLessons(LessonSearchCommand lessonSearchCommand);
   
-  CourseLessonsDto findLessonsGroupedByLessonGroup(String courseId);
+  CourseLessonsDto findLessonsGroupedByLessonGroup(Integer courseId);
   
   LessonDto createLesson(LessonCreateCommand lessonCreateCommand);
 }

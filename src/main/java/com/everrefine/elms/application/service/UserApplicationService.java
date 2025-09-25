@@ -7,7 +7,7 @@ import com.everrefine.elms.application.dto.UserDto;
 import com.everrefine.elms.application.dto.UserPageDto;
 
 public interface UserApplicationService {
-  UserDto findUserById(String userId);
+  UserDto findUserById(Integer userId);
 
   UserPageDto findUsers(UserSearchCommand userSearchCommand);
 
@@ -15,5 +15,5 @@ public interface UserApplicationService {
 
   void updateUser(UserUpdateCommand userUpdateCommand);
 
-  void deleteUserById(String userId);
+  void deleteUserById(Integer userId);
 }

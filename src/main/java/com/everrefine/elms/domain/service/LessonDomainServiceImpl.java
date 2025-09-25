@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
 
 @Component
 @AllArgsConstructor
@@ -15,7 +14,7 @@ public class LessonDomainServiceImpl implements LessonDomainService {
   private final LessonRepository lessonRepository;
 
   @Override
-  public BigDecimal issueLessonOrder(UUID lessonGroupId) {
+  public BigDecimal issueLessonOrder(Integer lessonGroupId) {
     return lessonRepository.findMaxLessonOrderByLessonGroupId(lessonGroupId)
         .map(maxOrder -> maxOrder.add(Order.INTERVAL_ORDER))
         .orElse(BigDecimal.ONE);

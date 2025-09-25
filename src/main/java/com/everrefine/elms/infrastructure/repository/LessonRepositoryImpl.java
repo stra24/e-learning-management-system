@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -31,21 +30,21 @@ public class LessonRepositoryImpl implements LessonRepository {
   private final LessonGroupDao lessonGroupDao;
 
   @Override
-  public Optional<Lesson> findFirstLessonByCourseId(UUID courseId) {
+  public Optional<Lesson> findFirstLessonByCourseId(Integer courseId) {
     return lessonDao.findFirstLessonByCourseId(courseId);
   }
 
   @Override
-  public Optional<Lesson> findById(UUID lessonId) {
+  public Optional<Lesson> findById(Integer lessonId) {
     return lessonDao.findById(lessonId);
   }
 
   @Override
   public List<Lesson> findLessons(LessonSearchCommand lessonSearchCommand) {
-    UUID courseId = lessonSearchCommand.getCourseId() != null ? 
-        UUID.fromString(lessonSearchCommand.getCourseId()) : null;
-    UUID lessonGroupId = lessonSearchCommand.getLessonGroupId() != null ? 
-        UUID.fromString(lessonSearchCommand.getLessonGroupId()) : null;
+    Integer courseId = lessonSearchCommand.getCourseId() != null ? 
+        Integer.valueOf(lessonSearchCommand.getCourseId()) : null;
+    Integer lessonGroupId = lessonSearchCommand.getLessonGroupId() != null ? 
+        Integer.valueOf(lessonSearchCommand.getLessonGroupId()) : null;
     String createdDateFrom = lessonSearchCommand.getCreatedDateFrom() != null ? 
         lessonSearchCommand.getCreatedDateFrom().toString() : null;
     String createdDateTo = lessonSearchCommand.getCreatedDateTo() != null ? 
@@ -66,10 +65,10 @@ public class LessonRepositoryImpl implements LessonRepository {
 
   @Override
   public int countLessons(LessonSearchCommand lessonSearchCommand) {
-    UUID courseId = lessonSearchCommand.getCourseId() != null ? 
-        UUID.fromString(lessonSearchCommand.getCourseId()) : null;
-    UUID lessonGroupId = lessonSearchCommand.getLessonGroupId() != null ? 
-        UUID.fromString(lessonSearchCommand.getLessonGroupId()) : null;
+    Integer courseId = lessonSearchCommand.getCourseId() != null ? 
+        Integer.valueOf(lessonSearchCommand.getCourseId()) : null;
+    Integer lessonGroupId = lessonSearchCommand.getLessonGroupId() != null ? 
+        Integer.valueOf(lessonSearchCommand.getLessonGroupId()) : null;
     String createdDateFrom = lessonSearchCommand.getCreatedDateFrom() != null ? 
         lessonSearchCommand.getCreatedDateFrom().toString() : null;
     String createdDateTo = lessonSearchCommand.getCreatedDateTo() != null ? 
@@ -85,10 +84,10 @@ public class LessonRepositoryImpl implements LessonRepository {
   }
 
   @Override
-  public CourseLessonsDto findLessonsGroupedByLessonGroup(UUID courseId) {
+  public CourseLessonsDto findLessonsGroupedByLessonGroup(Integer courseId) {
     List<LessonGroupWithLesson> results = lessonGroupDao.findLessonGroupsByCourseId(courseId);
     
-    Map<UUID, List<LessonGroupWithLesson>> lessonGroupIdAndLessonsMap = results.stream()
+    Map<Integer, List<LessonGroupWithLesson>> lessonGroupIdAndLessonsMap = results.stream()
         .collect(Collectors.groupingBy(LessonGroupWithLesson::getLessonGroupId));
     
     List<LessonGroupDto> lessonGroups = lessonGroupIdAndLessonsMap.values().stream()
@@ -99,29 +98,12 @@ public class LessonRepositoryImpl implements LessonRepository {
   }
 
   @Override
-  public Lesson createLesson(LessonCreateCommand lessonCreateCommand) {
-    UUID lessonId = UUID.randomUUID();
-    LocalDateTime now = LocalDateTime.now();
-    
-    lessonDao.insertLesson(
-        lessonId,
-        lessonCreateCommand.getLessonGroupId(),
-        lessonCreateCommand.getCourseId(),
-        lessonCreateCommand.getLessonOrder(),
-        lessonCreateCommand.getTitle(),
-        lessonCreateCommand.getDescription(),
-        lessonCreateCommand.getVideoUrl(),
-        now,
-        now
-    );
-    
-    // 作成されたレッスンを取得して返す
-    return lessonDao.findById(lessonId)
-        .orElseThrow(() -> new RuntimeException("Failed to create lesson"));
+  public Lesson createLesson(Lesson lesson) {
+    return lessonDao.save(lesson);
   }
 
   @Override
-  public Optional<BigDecimal> findMaxLessonOrderByLessonGroupId(UUID lessonGroupId) {
+  public Optional<BigDecimal> findMaxLessonOrderByLessonGroupId(Integer lessonGroupId) {
     return lessonDao.findMaxLessonOrderByLessonGroupId(lessonGroupId);
   }
   

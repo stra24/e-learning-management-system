@@ -3,14 +3,13 @@ package com.everrefine.elms.infrastructure.dao;
 import com.everrefine.elms.domain.model.lesson.LessonGroup;
 import com.everrefine.elms.domain.model.lesson.LessonGroupWithLesson;
 import java.util.List;
-import java.util.UUID;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LessonGroupDao extends CrudRepository<LessonGroup, UUID> {
+public interface LessonGroupDao extends CrudRepository<LessonGroup, Integer> {
   
   @Query("""
     SELECT 
@@ -32,5 +31,5 @@ public interface LessonGroupDao extends CrudRepository<LessonGroup, UUID> {
     WHERE lg.course_id = :courseId 
     ORDER BY lg.lesson_group_order ASC, l.lesson_order ASC
     """)
-  List<LessonGroupWithLesson> findLessonGroupsByCourseId(@Param("courseId") UUID courseId);
+  List<LessonGroupWithLesson> findLessonGroupsByCourseId(@Param("courseId") Integer courseId);
 }

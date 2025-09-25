@@ -4,7 +4,6 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,12 +16,12 @@ import lombok.Getter;
 public class CourseUpdateCommand {
 
   @NotNull
-  private UUID id;
+  private Integer id;
   @NotNull
   private BigDecimal courseOrder;
   @NotNull
   private String title;
-  @NotNull
+  @Nullable
   private String description;
   @Nullable
   private String thumbnailUrl;
@@ -30,7 +29,7 @@ public class CourseUpdateCommand {
   private LocalDateTime updatedAt;
 
   public static CourseUpdateCommand create(
-      UUID id,
+      Integer id,
       BigDecimal courseOrder,
       String title,
       String description,
