@@ -24,8 +24,8 @@ public interface NewsDao extends CrudRepository<News, Integer> {
       SELECT id 
       FROM news
       WHERE (:newsTitle IS NULL OR :newsTitle = '' OR title LIKE CONCAT('%', :newsTitle, '%'))
-        AND (:createdDateFrom IS NULL OR created_at >= CAST(:createdDateFrom AS DATE))
-        AND (:createdDateTo IS NULL OR created_at < CAST(:createdDateTo AS DATE) + INTERVAL '1 day')
+        AND (CAST(:createdDateFrom AS DATE) IS NULL OR created_at >= CAST(:createdDateFrom AS DATE))
+        AND (CAST(:createdDateTo AS DATE) IS NULL OR created_at < CAST(:createdDateTo AS DATE) + INTERVAL '1 day')
       ORDER BY created_at DESC
       LIMIT :pageSize OFFSET :offset
       """)
@@ -41,8 +41,8 @@ public interface NewsDao extends CrudRepository<News, Integer> {
       SELECT COUNT(*) 
       FROM news
       WHERE (:newsTitle IS NULL OR :newsTitle = '' OR title LIKE CONCAT('%', :newsTitle, '%'))
-        AND (:createdDateFrom IS NULL OR created_at >= CAST(:createdDateFrom AS DATE))
-        AND (:createdDateTo IS NULL OR created_at < CAST(:createdDateTo AS DATE) + INTERVAL '1 day')
+        AND (CAST(:createdDateFrom AS DATE) IS NULL OR created_at >= CAST(:createdDateFrom AS DATE))
+        AND (CAST(:createdDateTo AS DATE) IS NULL OR created_at < CAST(:createdDateTo AS DATE) + INTERVAL '1 day')
       """)
   int countNewsBySearchConditions(
       @Param("newsTitle") String newsTitle,

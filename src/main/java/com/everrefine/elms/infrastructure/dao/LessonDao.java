@@ -27,8 +27,8 @@ public interface LessonDao extends CrudRepository<Lesson, Integer> {
     (:courseId IS NULL OR course_id = :courseId) AND 
     (:lessonGroupId IS NULL OR lesson_group_id = :lessonGroupId) AND 
     (:title IS NULL OR title LIKE CONCAT('%', :title, '%')) AND 
-    (:createdDateFrom IS NULL OR created_at >= CAST(:createdDateFrom AS DATE)) AND 
-    (:createdDateTo IS NULL OR created_at < CAST(:createdDateTo AS DATE) + INTERVAL '1 day') 
+    (CAST(:createdDateFrom AS DATE) IS NULL OR created_at >= CAST(:createdDateFrom AS DATE)) AND 
+    (CAST(:createdDateTo AS DATE) IS NULL OR created_at < CAST(:createdDateTo AS DATE) + INTERVAL '1 day') 
     ORDER BY lesson_order ASC 
     LIMIT :limit OFFSET :offset
     """)
@@ -47,8 +47,8 @@ public interface LessonDao extends CrudRepository<Lesson, Integer> {
     (:courseId IS NULL OR course_id = :courseId) AND 
     (:lessonGroupId IS NULL OR lesson_group_id = :lessonGroupId) AND 
     (:title IS NULL OR title LIKE CONCAT('%', :title, '%')) AND 
-    (:createdDateFrom IS NULL OR created_at >= CAST(:createdDateFrom AS DATE)) AND 
-    (:createdDateTo IS NULL OR created_at < CAST(:createdDateTo AS DATE) + INTERVAL '1 day')
+    (CAST(:createdDateFrom AS DATE) IS NULL OR created_at >= CAST(:createdDateFrom AS DATE)) AND 
+    (CAST(:createdDateTo AS DATE) IS NULL OR created_at < CAST(:createdDateTo AS DATE) + INTERVAL '1 day')
     """)
   int countLessons(
       @Param("courseId") Integer courseId,
