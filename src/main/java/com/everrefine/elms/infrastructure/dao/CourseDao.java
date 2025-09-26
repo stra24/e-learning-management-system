@@ -20,24 +20,16 @@ public interface CourseDao extends CrudRepository<Course, Integer> {
         LIMIT :pageSize 
         OFFSET :offset
       """)
-  List<Course> findCoursesWithPagination(@Param("pageSize") int pageSize,
-      @Param("offset") int offset);
+  List<Course> findCoursesWithPagination(
+      @Param("pageSize") int pageSize,
+      @Param("offset") int offset
+  );
 
   @Query("""
         SELECT COUNT(*) 
         FROM courses
       """)
   int countAllCourses();
-
-  @Modifying
-  @Query("UPDATE courses SET course_order = :courseOrder, title = :title, description = :description, thumbnail_url = :thumbnailUrl, updated_at = now() WHERE id = :id")
-  int updateCourseFields(
-      @Param("id") Integer id,
-      @Param("courseOrder") BigDecimal courseOrder,
-      @Param("title") String title,
-      @Param("description") String description,
-      @Param("thumbnailUrl") String thumbnailUrl
-  );
 
   Optional<Course> findTop1ByOrderByCourseOrderDesc();
 }

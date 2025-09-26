@@ -35,8 +35,8 @@ public interface UserDao extends CrudRepository<User, Integer> {
         AND (:realName IS NULL OR :realName = '' OR real_name LIKE CONCAT('%', :realName, '%'))
         AND (:userName IS NULL OR :userName = '' OR user_name LIKE CONCAT('%', :userName, '%'))
         AND (:emailAddress IS NULL OR :emailAddress = '' OR email_address LIKE CONCAT('%', :emailAddress, '%'))
-        AND (:createdDateFrom IS NULL OR created_at >= :createdDateFrom)
-        AND (:createdDateTo IS NULL OR created_at < :createdDateTo + INTERVAL '1 day')
+        AND (:createdDateFrom IS NULL OR created_at >=  CAST(:createdDateFrom AS DATE))
+        AND (:createdDateTo IS NULL OR created_at < CAST(:createdDateTo AS DATE) + INTERVAL '1 day')
       ORDER BY created_at DESC
       LIMIT :pageSize 
       OFFSET :offset
@@ -61,8 +61,8 @@ public interface UserDao extends CrudRepository<User, Integer> {
         AND (:realName IS NULL OR :realName = '' OR real_name LIKE CONCAT('%', :realName, '%'))
         AND (:userName IS NULL OR :userName = '' OR user_name LIKE CONCAT('%', :userName, '%'))
         AND (:emailAddress IS NULL OR :emailAddress = '' OR email_address LIKE CONCAT('%', :emailAddress, '%'))
-        AND (:createdDateFrom IS NULL OR created_at >= :createdDateFrom)
-        AND (:createdDateTo IS NULL OR created_at < :createdDateTo + INTERVAL '1 day')
+        AND (:createdDateFrom IS NULL OR created_at >= CAST(:createdDateFrom AS DATE))
+        AND (:createdDateTo IS NULL OR created_at < CAST(:createdDateTo AS DATE) + INTERVAL '1 day')
       """)
   int countUsersBySearchConditions(
       @Param("userId") String userId,

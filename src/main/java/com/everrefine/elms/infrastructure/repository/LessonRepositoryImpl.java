@@ -12,6 +12,7 @@ import com.everrefine.elms.domain.repository.LessonRepository;
 import com.everrefine.elms.infrastructure.dao.LessonDao;
 import com.everrefine.elms.infrastructure.dao.LessonGroupDao;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,10 +46,10 @@ public class LessonRepositoryImpl implements LessonRepository {
         Integer.valueOf(lessonSearchCommand.getCourseId()) : null;
     Integer lessonGroupId = lessonSearchCommand.getLessonGroupId() != null ? 
         Integer.valueOf(lessonSearchCommand.getLessonGroupId()) : null;
-    String createdDateFrom = lessonSearchCommand.getCreatedDateFrom() != null ? 
-        lessonSearchCommand.getCreatedDateFrom().toString() : null;
-    String createdDateTo = lessonSearchCommand.getCreatedDateTo() != null ? 
-        lessonSearchCommand.getCreatedDateTo().toString() : null;
+    LocalDate createdDateFrom = lessonSearchCommand.getCreatedDateFrom() != null ?
+        lessonSearchCommand.getCreatedDateFrom() : null;
+    LocalDate createdDateTo = lessonSearchCommand.getCreatedDateTo() != null ?
+        lessonSearchCommand.getCreatedDateTo() : null;
     
     int offset = (lessonSearchCommand.getPageNum() - 1) * lessonSearchCommand.getPageSize();
     
@@ -69,10 +70,10 @@ public class LessonRepositoryImpl implements LessonRepository {
         Integer.valueOf(lessonSearchCommand.getCourseId()) : null;
     Integer lessonGroupId = lessonSearchCommand.getLessonGroupId() != null ? 
         Integer.valueOf(lessonSearchCommand.getLessonGroupId()) : null;
-    String createdDateFrom = lessonSearchCommand.getCreatedDateFrom() != null ? 
-        lessonSearchCommand.getCreatedDateFrom().toString() : null;
-    String createdDateTo = lessonSearchCommand.getCreatedDateTo() != null ? 
-        lessonSearchCommand.getCreatedDateTo().toString() : null;
+    LocalDate createdDateFrom = lessonSearchCommand.getCreatedDateFrom() != null ?
+        lessonSearchCommand.getCreatedDateFrom() : null;
+    LocalDate createdDateTo = lessonSearchCommand.getCreatedDateTo() != null ?
+        lessonSearchCommand.getCreatedDateTo() : null;
     
     return lessonDao.countLessons(
         courseId,
