@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +25,7 @@ public class CourseApplicationServiceImpl implements CourseApplicationService {
   private final CourseRepository courseRepository;
 
   @Override
+  @Transactional(readOnly = true)
   public CourseDto findCourseById(Integer courseId) {
     Course course = courseRepository.findCourseById(courseId)
         .orElseThrow(() -> new RuntimeException("Course not found with ID: " + courseId));
@@ -31,6 +33,7 @@ public class CourseApplicationServiceImpl implements CourseApplicationService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public CoursePageDto findCourses(int pageNum, int pageSize) {
     PagerForRequest pagerForRequest = new PagerForRequest(pageNum, pageSize);
     List<Course> courses = courseRepository.findCourses(pagerForRequest);
@@ -42,6 +45,7 @@ public class CourseApplicationServiceImpl implements CourseApplicationService {
   }
 
   @Override
+  @Transactional
   public void createCourse(CourseCreateCommand courseCreateCommand) {
     Order courseOrder = courseRepository.issueCourseOrder();
     Course course = Course.create(
@@ -54,6 +58,7 @@ public class CourseApplicationServiceImpl implements CourseApplicationService {
   }
 
   @Override
+  @Transactional
   public void updateCourse(CourseUpdateCommand courseUpdateCommand) {
     Course course = courseRepository.findCourseById(courseUpdateCommand.getId())
         .orElseThrow(() -> new RuntimeException("Course not found with ID: " + courseUpdateCommand.getId()));
@@ -67,6 +72,7 @@ public class CourseApplicationServiceImpl implements CourseApplicationService {
   }
 
   @Override
+  @Transactional
   public void deleteCourseById(Integer courseId) {
     // コースが存在しなくてもエラーにはしない。
     courseRepository.findCourseById(courseId).ifPresent(course ->

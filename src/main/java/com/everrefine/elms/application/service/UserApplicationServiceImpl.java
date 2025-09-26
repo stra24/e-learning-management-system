@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -29,6 +30,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
   private final UserRepository userRepository;
 
   @Override
+  @Transactional(readOnly = true)
   public UserDto findUserById(Integer userId) {
     User user = userRepository.findUserById(userId)
         .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
@@ -36,6 +38,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public UserPageDto findUsers(UserSearchCommand userSearchCommand) {
     UserSearchCondition userSearchCondition = new UserSearchCondition(
         userSearchCommand.getPageNum(),
@@ -63,6 +66,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
   }
 
   @Override
+  @Transactional
   public void createUser(UserCreateCommand userCreateCommand) {
     if (!UserDomainService.matchesPassword(userCreateCommand.getPassword(),
         userCreateCommand.getConfirmPassword())) {
@@ -82,6 +86,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
   }
 
   @Override
+  @Transactional
   public void updateUser(UserUpdateCommand userUpdateCommand) {
     User user = userRepository.findUserById(userUpdateCommand.getId())
         .orElseThrow(() -> new RuntimeException("User not found with ID: " + userUpdateCommand.getId()));
@@ -97,6 +102,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
   }
 
   @Override
+  @Transactional
   public void deleteUserById(Integer userId) {
     // ユーザーが存在しなくてもエラーにはしない。
     userRepository.findUserById(userId).ifPresent(user ->

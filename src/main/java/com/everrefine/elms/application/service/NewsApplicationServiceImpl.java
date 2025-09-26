@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -25,6 +26,7 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   private final NewsRepository newsRepository;
 
   @Override
+  @Transactional(readOnly = true)
   public NewsDto findNewsById(Integer newsId) {
     News news = newsRepository.findNewsById(newsId)
         .orElseThrow(() -> new RuntimeException("News not found with ID: " + newsId));
@@ -32,6 +34,7 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public NewsPageDto findNews(NewsSearchCommand newsSearchCommand) {
     NewsSearchCondition newsSearchCondition = new NewsSearchCondition(
         newsSearchCommand.getPageNum(),
@@ -55,12 +58,14 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   }
 
   @Override
+  @Transactional
   public void createNews(NewsCreateCommand newsCreateCommand) {
     News news = News.create(newsCreateCommand.getTitle(), newsCreateCommand.getContent());
     newsRepository.createNews(news);
   }
 
   @Override
+  @Transactional
   public void updateNews(NewsUpdateCommand newsUpdateCommand) {
     News currentNews = newsRepository.findNewsById(newsUpdateCommand.getId())
         .orElseThrow(() -> new RuntimeException("News not found with ID: " + newsUpdateCommand.getId()));
@@ -69,6 +74,7 @@ public class NewsApplicationServiceImpl implements NewsApplicationService {
   }
 
   @Override
+  @Transactional
   public void deleteNewsById(Integer newsId) {
     newsRepository.findNewsById(newsId).ifPresent(news -> newsRepository.deleteNewsById(newsId));
   }

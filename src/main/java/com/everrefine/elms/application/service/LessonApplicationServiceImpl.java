@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +25,7 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
   private final LessonDomainService lessonDomainService;
 
   @Override
+  @Transactional(readOnly = true)
   public FirstLessonDto findFirstLessonIdByCourseId(Integer courseId) {
     if (courseId == null) {
       return new FirstLessonDto(false, null, null);
@@ -35,6 +37,7 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public LessonDto findLessonById(Integer courseId, Integer lessonId) {
     Lesson lesson = lessonRepository.findById(lessonId)
         .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
@@ -53,6 +56,7 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public LessonPageDto findLessons(LessonSearchCommand lessonSearchCommand) {
     List<Lesson> lessons = lessonRepository.findLessons(lessonSearchCommand);
     int totalSize = lessonRepository.countLessons(lessonSearchCommand);
@@ -80,11 +84,13 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public CourseLessonsDto findLessonsGroupedByLessonGroup(Integer courseId) {
     return lessonRepository.findLessonsGroupedByLessonGroup(courseId);
   }
 
   @Override
+  @Transactional
   public LessonDto createLesson(LessonCreateCommand lessonCreateCommand) {
     // レッスンの並び順を自動発番
     BigDecimal lessonOrder = lessonDomainService.issueLessonOrder(
