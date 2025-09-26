@@ -2,7 +2,6 @@ package com.everrefine.elms.infrastructure.repository;
 
 import com.everrefine.elms.domain.model.user.EmailAddress;
 import com.everrefine.elms.domain.model.user.User;
-import com.everrefine.elms.domain.model.user.UserForUpdateRequest;
 import com.everrefine.elms.domain.model.user.UserSearchCondition;
 import com.everrefine.elms.domain.repository.UserRepository;
 import com.everrefine.elms.infrastructure.dao.UserDao;

@@ -32,14 +32,41 @@ INSERT INTO public.courses (course_order, thumbnail_url, title, description) VAL
 INSERT INTO public.courses (course_order, thumbnail_url, title, description) VALUES(9216.0000, '/uploads/course_thumbnail_sample.png', '9章:CI/CD', 'GitHub Actionsを用いて、ソースコードの自動テスト、ビルド、デプロイまでを自動化するCI/CD環境の構築を学びます。');
 
 -- レッスングループ
-INSERT INTO public.lesson_groups (course_id, lesson_group_order, title) VALUES (1, 1024.0000, 'Java導入');
+-- '1章:Java' の実IDを使って lesson_groups を挿入
+INSERT INTO public.lesson_groups (course_id, lesson_group_order, title)
+SELECT c.id, x.lesson_group_order, x.title
+FROM (VALUES
+  (1024.0000, 'Java導入'),
+  (2048.0000, 'Java基礎')
+) AS x(lesson_group_order, title)
+JOIN public.courses c ON c.title = '1章:Java';
 
 -- レッスン
-INSERT INTO public.lessons (lesson_group_id, course_id, lesson_order, title, description, video_url) VALUES (
-  1,
-  1,
-  1024.0000,
-  '導入',
-  'この講座について、およびJavaとは何かといった概要について説明します。',
-  'https://drive.google.com/file/d/1NO83lbAkhlDD6h3xbX0CX8rUbdUcInuD/view'
-);
+-- lessons を “グループ名 + コース名” で正しく紐付けて一括投入
+INSERT INTO public.lessons
+  (lesson_group_id, course_id, lesson_order, title, description, video_url)
+SELECT
+  lg.id,                 -- 実在する lesson_groups.id
+  lg.course_id,          -- グループが属する courses.id をそのまま採用（安全）
+  v.lesson_order,
+  v.title,
+  v.description,
+  v.video_url
+FROM (
+  VALUES
+    ('Java導入',  1024.0000, '導入', 'この講座について…', 'https://drive.google.com/file/d/1NO83lbAkhlDD6h3xbX0CX8rUbdUcInuD/view'),
+    ('Java導入',  2048.0000, 'Javaの環境構築（Windowsの方向け）', 'Windowsの方向け…', 'https://drive.google.com/file/d/1oB-bdDTvFxwRk5kRaRXBxC4myaHd_pc1/view'),
+    ('Java導入',  3072.0000, 'Javaの環境構築（Macの方向け）', 'Macの方向け…', 'https://drive.google.com/file/d/1th6GZ_gIRMYMr0pjFogT10-B5KeZFjag/view'),
+    ('Java導入',  4096.0000, 'Javaプログラムの基本構造', NULL, 'https://drive.google.com/file/d/17wGI6m0hMm7zertYhGIH0FIZWXfBHyOg/view'),
+    ('Java導入',  5120.0000, 'IntelliJにCodeStyleを導入しよう', NULL, 'https://drive.google.com/file/d/1W5titzRPeqKc3dHFxgPZF5Y9MxiG1aeu/view'),
+    ('Java基礎',  6144.0000, '変数と定数', NULL, 'https://drive.google.com/file/d/1Hx9WUAEJaKYuXcDjCAWx7nDOy8_Pi-qx/view'),
+    ('Java基礎',  7168.0000, '演算子', NULL, 'https://drive.google.com/file/d/1imRO53zerY11A5LgHOYgrTavzKhT9G_I/view'),
+    ('Java基礎',  8192.0000, '条件分岐（if文、switch文）', NULL, 'https://drive.google.com/file/d/1mPjuZLDlsHUckfJLXfJB7Cv2KxTJhE1p/view'),
+    ('Java基礎',  9216.0000, '配列', NULL, 'https://drive.google.com/file/d/1L_IZr_LdtAKkH4_DVk_cItz_sGnOP-D6/view'),
+    ('Java基礎', 10240.0000, '繰り返し処理（for文、while文、do while文、拡張for文、break、continue）', NULL, 'https://drive.google.com/file/d/13K2pJn1G1lAkstGVkaSo8Vp-NPEGsNO-/view')
+) AS v(lesson_group_title, lesson_order, title, description, video_url)
+JOIN public.lesson_groups lg
+  ON lg.title = v.lesson_group_title
+JOIN public.courses c
+  ON c.id = lg.course_id
+ AND c.title = '1章:Java';  -- 念のためコースも固定（他コースの同名グループと誤結合しない

@@ -2,7 +2,6 @@ package com.everrefine.elms.domain.repository;
 
 import com.everrefine.elms.domain.model.user.EmailAddress;
 import com.everrefine.elms.domain.model.user.User;
-import com.everrefine.elms.domain.model.user.UserForUpdateRequest;
 import com.everrefine.elms.domain.model.user.UserSearchCondition;
 import java.util.List;
 import java.util.Optional;
