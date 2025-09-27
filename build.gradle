@@ -36,7 +36,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    // implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
     // コメントアウトなし→パスワード生成される。起動に成功する。コメントアウトあり→起動に成功する。
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
@@ -60,9 +59,14 @@ dependencies {
 
     // テスト
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    // testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation("org.flywaydb:flyway-core")
+
+    // Testcontainers
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
 }
 
 tasks.named('test') {

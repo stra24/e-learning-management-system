@@ -1,0 +1,8 @@
+spring:
+  flyway:
+    enabled: true
+    locations:
+      - classpath:db/migration/common
+
+jwt:
+  secret: 0dTIXBDkSbhltNOJX8M3oMuN5K+vDG4Z7ZaY8rpg8kQ=

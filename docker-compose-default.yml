@@ -2,7 +2,7 @@ version: '3.8' # Docker Compose のバージョン
 
 services:
   elms-db: # PostgreSQL データベースのサービス定義
-    image: postgres:15 # PostgreSQL の公式イメージ（バージョン15を使用）
+    image: postgres:17 # PostgreSQL の公式イメージ（バージョン17を使用）
     container_name: elms-db # コンテナ名
     ports:
       - "5433:5432" # ホストの指定ポートとコンテナ内の5432（PostgreSQLのデフォルト）を接続
