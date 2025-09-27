@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @AllArgsConstructor
 public class LessonDomainServiceImpl implements LessonDomainService {
