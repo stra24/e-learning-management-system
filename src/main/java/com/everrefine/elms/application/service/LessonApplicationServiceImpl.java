@@ -121,6 +121,7 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
   }
 
   @Override
+  @Transactional
   public LessonDto updateLesson(LessonUpdateCommand lessonUpdateCommand) {
     Lesson currentLesson = lessonRepository.findById(lessonUpdateCommand.getId())
         .orElseThrow(

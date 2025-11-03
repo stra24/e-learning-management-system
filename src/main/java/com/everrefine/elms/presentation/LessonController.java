@@ -100,16 +100,16 @@ public class LessonController {
   }
 
   /**
-   * レッスンを編集する。
+   * レッスンを更新する。
    *
    * @param courseId            コースID
    * @param lessonGroupId       レッスングループID
    * @param lessonId            レッスンID
    * @param lessonUpdateRequest レッスン更新リクエスト
-   * @return 作成されたレッスンDTO
+   * @return 更新されたレッスンDTO
    */
   @PutMapping("/lesson-groups/{lessonGroupId}/lessons/{lessonId}")
-  public ResponseEntity<LessonDto> createLesson(
+  public ResponseEntity<LessonDto> updateLesson(
       @PathVariable Integer courseId,
       @PathVariable Integer lessonGroupId,
       @PathVariable Integer lessonId,
