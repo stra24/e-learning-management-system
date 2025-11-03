@@ -2,7 +2,6 @@ package com.everrefine.elms.domain.model.lesson;
 
 import com.everrefine.elms.domain.model.Order;
 import com.everrefine.elms.domain.model.Url;
-import com.everrefine.elms.domain.model.course.Course;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -50,11 +49,11 @@ public class Lesson {
    * 新規作成用のレッスンを作成する。
    *
    * @param lessonGroupId レッスングループID
-   * @param courseId コースID
-   * @param lessonOrder レッスンの並び順
-   * @param title レッスンタイトル
-   * @param description レッスンの説明
-   * @param videoUrl レッスンの動画URL
+   * @param courseId      コースID
+   * @param lessonOrder   レッスンの並び順
+   * @param title         レッスンタイトル
+   * @param description   レッスンの説明
+   * @param videoUrl      レッスンの動画URL
    * @return 新規作成用のレッスン
    */
   public static Lesson create(
@@ -74,6 +73,28 @@ public class Lesson {
         description == null ? null : new Description(description),
         videoUrl == null ? null : new Url(videoUrl),
         LocalDateTime.now(),
+        LocalDateTime.now()
+    );
+  }
+
+  /**
+   * 更新用のレッスンを作成する。
+   *
+   * @param title       レッスンタイトル
+   * @param description レッスンの説明
+   * @param videoUrl    レッスンの動画URL
+   * @return 更新用のレッスン
+   */
+  public Lesson update(String title, String description, String videoUrl) {
+    return new Lesson(
+        this.id,
+        this.lessonGroupId,
+        this.courseId,
+        this.lessonOrder,
+        title == null ? this.title : new Title(title),
+        description == null ? this.description : new Description(description),
+        videoUrl == null ? this.videoUrl : new Url(videoUrl),
+        this.createdAt,
         LocalDateTime.now()
     );
   }

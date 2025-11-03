@@ -4,18 +4,13 @@ import com.everrefine.elms.application.command.LessonSearchCommand;
 import com.everrefine.elms.application.dto.CourseLessonsDto;
 import com.everrefine.elms.application.dto.LessonDto;
 import com.everrefine.elms.application.dto.LessonGroupDto;
-import com.everrefine.elms.application.command.LessonCreateCommand;
 import com.everrefine.elms.domain.model.lesson.Lesson;
-import com.everrefine.elms.domain.model.lesson.LessonGroup;
 import com.everrefine.elms.domain.model.lesson.LessonGroupWithLesson;
 import com.everrefine.elms.domain.repository.LessonRepository;
 import com.everrefine.elms.infrastructure.dao.LessonDao;
 import com.everrefine.elms.infrastructure.dao.LessonGroupDao;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,17 +37,17 @@ public class LessonRepositoryImpl implements LessonRepository {
 
   @Override
   public List<Lesson> findLessons(LessonSearchCommand lessonSearchCommand) {
-    Integer courseId = lessonSearchCommand.getCourseId() != null ? 
+    Integer courseId = lessonSearchCommand.getCourseId() != null ?
         Integer.valueOf(lessonSearchCommand.getCourseId()) : null;
-    Integer lessonGroupId = lessonSearchCommand.getLessonGroupId() != null ? 
+    Integer lessonGroupId = lessonSearchCommand.getLessonGroupId() != null ?
         Integer.valueOf(lessonSearchCommand.getLessonGroupId()) : null;
     LocalDate createdDateFrom = lessonSearchCommand.getCreatedDateFrom() != null ?
         lessonSearchCommand.getCreatedDateFrom() : null;
     LocalDate createdDateTo = lessonSearchCommand.getCreatedDateTo() != null ?
         lessonSearchCommand.getCreatedDateTo() : null;
-    
+
     int offset = (lessonSearchCommand.getPageNum() - 1) * lessonSearchCommand.getPageSize();
-    
+
     return lessonDao.findLessons(
         courseId,
         lessonGroupId,
@@ -66,15 +61,15 @@ public class LessonRepositoryImpl implements LessonRepository {
 
   @Override
   public int countLessons(LessonSearchCommand lessonSearchCommand) {
-    Integer courseId = lessonSearchCommand.getCourseId() != null ? 
+    Integer courseId = lessonSearchCommand.getCourseId() != null ?
         Integer.valueOf(lessonSearchCommand.getCourseId()) : null;
-    Integer lessonGroupId = lessonSearchCommand.getLessonGroupId() != null ? 
+    Integer lessonGroupId = lessonSearchCommand.getLessonGroupId() != null ?
         Integer.valueOf(lessonSearchCommand.getLessonGroupId()) : null;
     LocalDate createdDateFrom = lessonSearchCommand.getCreatedDateFrom() != null ?
         lessonSearchCommand.getCreatedDateFrom() : null;
     LocalDate createdDateTo = lessonSearchCommand.getCreatedDateTo() != null ?
         lessonSearchCommand.getCreatedDateTo() : null;
-    
+
     return lessonDao.countLessons(
         courseId,
         lessonGroupId,
@@ -87,14 +82,14 @@ public class LessonRepositoryImpl implements LessonRepository {
   @Override
   public CourseLessonsDto findLessonsGroupedByLessonGroup(Integer courseId) {
     List<LessonGroupWithLesson> results = lessonGroupDao.findLessonGroupsByCourseId(courseId);
-    
+
     Map<Integer, List<LessonGroupWithLesson>> lessonGroupIdAndLessonsMap = results.stream()
         .collect(Collectors.groupingBy(LessonGroupWithLesson::getLessonGroupId));
-    
+
     List<LessonGroupDto> lessonGroups = lessonGroupIdAndLessonsMap.values().stream()
         .map(this::createLessonGroupDto)
         .toList();
-    
+
     return new CourseLessonsDto(courseId, lessonGroups);
   }
 
@@ -104,18 +99,23 @@ public class LessonRepositoryImpl implements LessonRepository {
   }
 
   @Override
+  public Lesson updateLesson(Lesson lesson) {
+    return lessonDao.save(lesson);
+  }
+
+  @Override
   public Optional<BigDecimal> findMaxLessonOrderByLessonGroupId(Integer lessonGroupId) {
     return lessonDao.findMaxLessonOrderByLessonGroupId(lessonGroupId);
   }
-  
+
   private LessonGroupDto createLessonGroupDto(List<LessonGroupWithLesson> lessons) {
     LessonGroupWithLesson first = lessons.getFirst();
-    
+
     List<LessonDto> lessonDtos = lessons.stream()
         .filter(lesson -> lesson.getLessonId() != null)
         .map(this::createLessonDto)
         .toList();
-    
+
     return new LessonGroupDto(
         first.getLessonGroupId(),
         first.getCourseId(),
@@ -126,7 +126,7 @@ public class LessonRepositoryImpl implements LessonRepository {
         lessonDtos
     );
   }
-  
+
   private LessonDto createLessonDto(LessonGroupWithLesson lesson) {
     return new LessonDto(
         lesson.getLessonId(),
