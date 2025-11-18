@@ -20,7 +20,7 @@ public class LessonGroupApplicationServiceImpl implements LessonGroupApplication
   @Override
   @Transactional
   public LessonGroupDto createLessonGroup(LessonGroupCreateCommand lessonGroupCreateCommand) {
-    // レッスンの並び順を自動発番
+    // レッスングループの並び順を自動発番
     BigDecimal lessonGroupOrder = lessonGroupDomainService.issueLessonGroupOrder(
         lessonGroupCreateCommand.getCourseId());
 
