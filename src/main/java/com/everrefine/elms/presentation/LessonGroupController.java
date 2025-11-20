@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/courses/{courseId}")
+@RequestMapping("/api/courses/{courseId}/lesson-groups")
 @RequiredArgsConstructor
 public class LessonGroupController {
 
@@ -28,7 +28,7 @@ public class LessonGroupController {
    * @param lessonGroupCreateRequest レッスングループ作成リクエスト
    * @return 作成されたレッスンDTO
    */
-  @PostMapping("/lesson-groups")
+  @PostMapping
   public ResponseEntity<LessonGroupDto> createLessonGroup(
       @PathVariable Integer courseId,
       @RequestBody @Valid LessonGroupCreateRequest lessonGroupCreateRequest
