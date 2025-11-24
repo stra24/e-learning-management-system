@@ -7,6 +7,7 @@ import com.everrefine.elms.presentation.request.LessonGroupCreateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,5 +42,20 @@ public class LessonGroupController {
     LessonGroupDto createdLessonGroupDto = lessonGroupApplicationService.createLessonGroup(
         lessonGroupCreateCommand);
     return ResponseEntity.ok(createdLessonGroupDto);
+  }
+
+  /**
+   * 指定したユーザーグループを削除する。
+   *
+   * @param courseId      コースID
+   * @param lessonGroupId レッスングループID
+   */
+  @DeleteMapping("/{lessonGroupId}")
+  public ResponseEntity<Void> deleteLessonGroup(
+      @PathVariable Integer courseId,
+      @PathVariable Integer lessonGroupId
+  ) {
+    lessonGroupApplicationService.deleteLessonGroupById(lessonGroupId);
+    return ResponseEntity.noContent().build();
   }
 }
