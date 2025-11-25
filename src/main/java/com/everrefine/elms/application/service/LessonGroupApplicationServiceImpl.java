@@ -42,4 +42,13 @@ public class LessonGroupApplicationServiceImpl implements LessonGroupApplication
         null
     );
   }
+
+  @Override
+  @Transactional
+  public void deleteLessonGroupById(Integer lessonGroupId) {
+    // ユーザーが存在しなくてもエラーにはしない。
+    lessonGroupRepository.findLessonGroupById(lessonGroupId).ifPresent(LessonGroup ->
+        lessonGroupRepository.deleteLessonGroupById(lessonGroupId)
+    );
+  }
 }
