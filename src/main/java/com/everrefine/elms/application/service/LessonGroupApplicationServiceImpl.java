@@ -46,7 +46,7 @@ public class LessonGroupApplicationServiceImpl implements LessonGroupApplication
   @Override
   @Transactional
   public void deleteLessonGroupById(Integer lessonGroupId) {
-    // ユーザーが存在しなくてもエラーにはしない。
+    // レッスングループが存在しなくてもエラーにはしない。
     lessonGroupRepository.findLessonGroupById(lessonGroupId).ifPresent(LessonGroup ->
         lessonGroupRepository.deleteLessonGroupById(lessonGroupId)
     );

@@ -45,7 +45,7 @@ public class LessonGroupController {
   }
 
   /**
-   * 指定したユーザーグループを削除する。
+   * 指定したレッスングループを削除する。
    *
    * @param courseId      コースID
    * @param lessonGroupId レッスングループID
