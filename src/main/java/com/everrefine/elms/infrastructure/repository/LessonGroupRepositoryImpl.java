@@ -23,4 +23,14 @@ public class LessonGroupRepositoryImpl implements LessonGroupRepository {
   public Optional<BigDecimal> findMaxLessonGroupOrderByCourseId(Integer courseId) {
     return lessonGroupDao.findMaxLessonGroupOrderByCourseId(courseId);
   }
+
+  @Override
+  public Optional<LessonGroup> findLessonGroupById(Integer id) {
+    return lessonGroupDao.findById(id);
+  }
+
+  @Override
+  public void deleteLessonGroupById(Integer id) {
+    lessonGroupDao.deleteById(id);
+  }
 }
