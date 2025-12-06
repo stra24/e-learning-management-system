@@ -6,4 +6,6 @@ import com.everrefine.elms.application.dto.LessonGroupDto;
 public interface LessonGroupApplicationService {
 
   LessonGroupDto createLessonGroup(LessonGroupCreateCommand lessonGroupCreateCommand);
+
+  void deleteLessonGroupById(Integer lessonGroupId);
 }

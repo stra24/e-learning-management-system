@@ -4,7 +4,6 @@ import com.everrefine.elms.domain.model.Order;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -41,9 +40,6 @@ public class LessonGroup {
   @Column("updated_at")
   private LocalDateTime updatedAt;
 
-  // レッスンリスト（JOINで取得する場合に使用）
-  private List<Lesson> lessons;
-
   /**
    * 新規作成用のレッスングループを作成する。
    *
@@ -63,8 +59,7 @@ public class LessonGroup {
         new Order(lessonGroupOrder),
         new Title(title),
         LocalDateTime.now(),
-        LocalDateTime.now(),
-        null
+        LocalDateTime.now()
     );
   }
 }
