@@ -8,20 +8,30 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.everrefine.elms.application.service.LessonApplicationService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@WebMvcTest(LessonController.class)
+@ExtendWith(MockitoExtension.class)
 class LessonControllerTest {
 
-  @Autowired
   private MockMvc mockMvc;
 
-  @MockBean
+  @Mock
   private LessonApplicationService lessonApplicationService;
+
+  @InjectMocks
+  private LessonController lessonController;
+
+  @BeforeEach
+  void setUp() {
+    mockMvc = MockMvcBuilders.standaloneSetup(lessonController).build();
+  }
 
   @Test
   void 正常系_レッスン削除リクエストで204が返されサービスが呼ばれること() throws Exception {
