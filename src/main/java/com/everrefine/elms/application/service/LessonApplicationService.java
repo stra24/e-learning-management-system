@@ -21,5 +21,6 @@ public interface LessonApplicationService {
   LessonDto createLesson(LessonCreateCommand lessonCreateCommand);
 
   LessonDto updateLesson(LessonUpdateCommand lessonUpdateCommand);
-
+ 
+  void deleteLessonById(Integer lessonId);
 }

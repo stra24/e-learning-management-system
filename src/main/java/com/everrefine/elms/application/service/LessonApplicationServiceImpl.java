@@ -147,4 +147,11 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
         updatedLesson.getUpdatedAt()
     );
   }
+
+  @Override
+  @Transactional
+  public void deleteLessonById(Integer lessonId) {
+    lessonRepository.findById(lessonId)
+        .ifPresent(lesson -> lessonRepository.deleteLessonById(lessonId));
+  }
 }

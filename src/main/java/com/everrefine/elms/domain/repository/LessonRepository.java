@@ -23,4 +23,6 @@ public interface LessonRepository {
   Lesson updateLesson(Lesson lesson);
 
   Optional<BigDecimal> findMaxLessonOrderByLessonGroupId(Integer lessonGroupId);
+
+  void deleteLessonById(Integer lessonId);
 }
