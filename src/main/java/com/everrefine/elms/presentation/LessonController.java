@@ -11,6 +11,7 @@ import com.everrefine.elms.presentation.request.LessonUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LessonController {
 
+  /**
+   * レッスンアプリケーションサービス。
+   */
   private final LessonApplicationService lessonApplicationService;
 
   /**
@@ -124,5 +128,22 @@ public class LessonController {
 
     LessonDto updatedLessonDto = lessonApplicationService.updateLesson(lessonUpdateCommand);
     return ResponseEntity.ok(updatedLessonDto);
+  }
+
+  /**
+   * レッスンを削除する。
+   *
+   * @param courseId      コースID
+   * @param lessonGroupId レッスングループID
+   * @param lessonId      レッスンID
+   */
+  @DeleteMapping("/lesson-groups/{lessonGroupId}/lessons/{lessonId}")
+  public ResponseEntity<Void> deleteLessonById(
+      @PathVariable Integer courseId,
+      @PathVariable Integer lessonGroupId,
+      @PathVariable Integer lessonId
+  ) {
+    lessonApplicationService.deleteLessonById(lessonId);
+    return ResponseEntity.noContent().build();
   }
 }

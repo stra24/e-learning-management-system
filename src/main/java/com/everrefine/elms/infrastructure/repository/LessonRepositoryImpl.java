@@ -108,6 +108,11 @@ public class LessonRepositoryImpl implements LessonRepository {
     return lessonDao.findMaxLessonOrderByLessonGroupId(lessonGroupId);
   }
 
+  @Override
+  public void deleteLessonById(Integer lessonId) {
+    lessonDao.deleteById(lessonId);
+  }
+
   private LessonGroupDto createLessonGroupDto(List<LessonGroupWithLesson> lessons) {
     LessonGroupWithLesson first = lessons.getFirst();
 
