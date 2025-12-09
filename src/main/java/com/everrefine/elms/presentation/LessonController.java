@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LessonController {
 
   /**
-   * レッスンアプリケーションサービス。 Lombok が生成するコンストラクタ経由で Spring により注入される。
+   * レッスンアプリケーションサービス。
    */
   private final LessonApplicationService lessonApplicationService;
 
