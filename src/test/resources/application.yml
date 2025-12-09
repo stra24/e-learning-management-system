@@ -1,4 +1,7 @@
 spring:
+  datasource:
+    url: jdbc:tc:postgresql:17:///elms_db
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
   flyway:
     enabled: true
     locations:
