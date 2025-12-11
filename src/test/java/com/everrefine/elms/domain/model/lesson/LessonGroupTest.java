@@ -3,6 +3,7 @@ package com.everrefine.elms.domain.model.lesson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -94,7 +95,8 @@ class LessonGroupTest {
 
     // Assert - 新しいインスタンスが作成されていること
     assertNotEquals(original, updated);
-    assertEquals(original.getUpdatedAt(), updated.getUpdatedAt());
+    // Assert - updatedAtは更新されること（LocalDateTime.now()が呼ばれるため）
+    assertNotEquals(original.getUpdatedAt(), updated.getUpdatedAt());
   }
 
   @Test
@@ -117,7 +119,7 @@ class LessonGroupTest {
   }
 
   @Test
-  void 正常系_updateでnullを設定できること() {
+  void 異常系_updateでnullを設定すると例外がスローされること() {
     // Arrange
     LessonGroup original = new LessonGroup(
         1,
@@ -128,10 +130,7 @@ class LessonGroupTest {
         LocalDateTime.now()
     );
 
-    // Act
-    LessonGroup updated = original.update(null);
-
-    // Assert
-    assertEquals(null, updated.getTitle().getValue());
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> original.update(null));
   }
 }
