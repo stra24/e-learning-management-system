@@ -20,6 +20,11 @@ public class LessonGroupRepositoryImpl implements LessonGroupRepository {
   }
 
   @Override
+  public LessonGroup updateLessonGroup(LessonGroup lessonGroup) {
+    return lessonGroupDao.save(lessonGroup);
+  }
+
+  @Override
   public Optional<BigDecimal> findMaxLessonGroupOrderByCourseId(Integer courseId) {
     return lessonGroupDao.findMaxLessonGroupOrderByCourseId(courseId);
   }

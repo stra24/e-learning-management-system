@@ -1,7 +1,9 @@
 package com.everrefine.elms.application.service;
 
 import com.everrefine.elms.application.command.LessonGroupCreateCommand;
+import com.everrefine.elms.application.command.LessonGroupUpdateCommand;
 import com.everrefine.elms.application.dto.LessonGroupDto;
+import com.everrefine.elms.domain.exception.ResourceNotFoundException;
 import com.everrefine.elms.domain.model.lesson.LessonGroup;
 import com.everrefine.elms.domain.repository.LessonGroupRepository;
 import com.everrefine.elms.domain.service.LessonGroupDomainService;
@@ -39,6 +41,31 @@ public class LessonGroupApplicationServiceImpl implements LessonGroupApplication
         createdLessonGroup.getTitle().getValue(),
         createdLessonGroup.getCreatedAt(),
         createdLessonGroup.getUpdatedAt(),
+        null
+    );
+  }
+
+  @Override
+  @Transactional
+  public LessonGroupDto updateLessonGroup(LessonGroupUpdateCommand lessonGroupUpdateCommand, Integer courseId) {
+    LessonGroup lessonGroup = lessonGroupRepository.findLessonGroupById(lessonGroupUpdateCommand.getId())
+        .orElseThrow(() -> new ResourceNotFoundException("LessonGroup not found"));
+
+    // Validate that the lesson group belongs to the specified course
+    if (!lessonGroup.getCourseId().equals(courseId)) {
+      throw new ResourceNotFoundException("LessonGroup does not belong to the specified course");
+    }
+
+    LessonGroup updatedLessonGroup = lessonGroupDomainService.updateLessonGroup(
+        lessonGroup, lessonGroupUpdateCommand.getTitle());
+
+    return new LessonGroupDto(
+        updatedLessonGroup.getId(),
+        updatedLessonGroup.getCourseId(),
+        updatedLessonGroup.getLessonGroupOrder().getValue(),
+        updatedLessonGroup.getTitle().getValue(),
+        updatedLessonGroup.getCreatedAt(),
+        updatedLessonGroup.getUpdatedAt(),
         null
     );
   }

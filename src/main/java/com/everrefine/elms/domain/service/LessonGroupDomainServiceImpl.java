@@ -1,6 +1,7 @@
 package com.everrefine.elms.domain.service;
 
 import com.everrefine.elms.domain.model.Order;
+import com.everrefine.elms.domain.model.lesson.LessonGroup;
 import com.everrefine.elms.domain.repository.LessonGroupRepository;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
@@ -17,5 +18,11 @@ public class LessonGroupDomainServiceImpl implements LessonGroupDomainService {
     return lessonGroupRepository.findMaxLessonGroupOrderByCourseId(courseId)
         .map(maxOrder -> maxOrder.add(Order.INTERVAL_ORDER))
         .orElse(BigDecimal.ONE);
+  }
+
+  @Override
+  public LessonGroup updateLessonGroup(LessonGroup lessonGroup, String title) {
+    LessonGroup updatedLessonGroup = lessonGroup.update(title);
+    return lessonGroupRepository.updateLessonGroup(updatedLessonGroup);
   }
 }
