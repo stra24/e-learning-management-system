@@ -1,15 +1,18 @@
 package com.everrefine.elms.presentation;
 
 import com.everrefine.elms.application.command.LessonGroupCreateCommand;
+import com.everrefine.elms.application.command.LessonGroupUpdateCommand;
 import com.everrefine.elms.application.dto.LessonGroupDto;
 import com.everrefine.elms.application.service.LessonGroupApplicationService;
 import com.everrefine.elms.presentation.request.LessonGroupCreateRequest;
+import com.everrefine.elms.presentation.request.LessonGroupUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +45,30 @@ public class LessonGroupController {
     LessonGroupDto createdLessonGroupDto = lessonGroupApplicationService.createLessonGroup(
         lessonGroupCreateCommand);
     return ResponseEntity.ok(createdLessonGroupDto);
+  }
+
+  /**
+   * レッスングループを更新する。
+   *
+   * @param courseId                 コースID
+   * @param lessonGroupId            レッスングループID
+   * @param lessonGroupUpdateRequest レッスングループ更新リクエスト
+   * @return 更新されたレッスングループDTO
+   */
+  @PutMapping("/{lessonGroupId}")
+  public ResponseEntity<LessonGroupDto> updateLessonGroup(
+      @PathVariable Integer courseId,
+      @PathVariable Integer lessonGroupId,
+      @RequestBody @Valid LessonGroupUpdateRequest lessonGroupUpdateRequest
+  ) {
+    LessonGroupUpdateCommand lessonGroupUpdateCommand = LessonGroupUpdateCommand.create(
+        lessonGroupId,
+        lessonGroupUpdateRequest.getTitle()
+    );
+
+    LessonGroupDto updatedLessonGroupDto = lessonGroupApplicationService.updateLessonGroup(
+        lessonGroupUpdateCommand, courseId);
+    return ResponseEntity.ok(updatedLessonGroupDto);
   }
 
   /**

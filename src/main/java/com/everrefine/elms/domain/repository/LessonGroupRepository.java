@@ -8,6 +8,8 @@ public interface LessonGroupRepository {
 
   LessonGroup createLessonGroup(LessonGroup lessonGroup);
 
+  LessonGroup updateLessonGroup(LessonGroup lessonGroup);
+
   Optional<BigDecimal> findMaxLessonGroupOrderByCourseId(Integer courseId);
 
   Optional<LessonGroup> findLessonGroupById(Integer id);
