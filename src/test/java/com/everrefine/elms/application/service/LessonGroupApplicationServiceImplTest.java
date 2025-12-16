@@ -67,7 +67,7 @@ class LessonGroupApplicationServiceImplTest {
     LessonGroupUpdateCommand command = LessonGroupUpdateCommand.create(1, "新しいタイトル");
     when(lessonGroupRepository.findLessonGroupById(1))
         .thenReturn(Optional.of(existingLessonGroup));
-    when(lessonGroupDomainService.updateLessonGroup(existingLessonGroup, "新しいタイトル"))
+    when(lessonGroupRepository.updateLessonGroup(any(LessonGroup.class)))
         .thenReturn(updatedLessonGroup);
 
     // Act
@@ -82,7 +82,7 @@ class LessonGroupApplicationServiceImplTest {
     assertEquals(LocalDateTime.of(2025, 12, 11, 11, 0), result.updatedAt());
 
     verify(lessonGroupRepository, times(1)).findLessonGroupById(1);
-    verify(lessonGroupDomainService, times(1)).updateLessonGroup(existingLessonGroup, "新しいタイトル");
+    verify(lessonGroupRepository, times(1)).updateLessonGroup(any(LessonGroup.class));
   }
 
   @Test
@@ -100,7 +100,7 @@ class LessonGroupApplicationServiceImplTest {
     assertEquals("LessonGroup not found", exception.getMessage());
 
     verify(lessonGroupRepository, times(1)).findLessonGroupById(999);
-    verify(lessonGroupDomainService, never()).updateLessonGroup(any(), any());
+    verify(lessonGroupRepository, never()).updateLessonGroup(any(LessonGroup.class));
   }
 
   @Test

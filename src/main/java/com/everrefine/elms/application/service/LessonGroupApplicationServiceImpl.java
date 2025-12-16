@@ -51,16 +51,16 @@ public class LessonGroupApplicationServiceImpl implements LessonGroupApplication
     LessonGroup lessonGroup = lessonGroupRepository.findLessonGroupById(lessonGroupUpdateCommand.getId())
         .orElseThrow(() -> new ResourceNotFoundException("LessonGroup not found"));
 
-    LessonGroup updatedLessonGroup = lessonGroupDomainService.updateLessonGroup(
-        lessonGroup, lessonGroupUpdateCommand.getTitle());
+    LessonGroup updatedLessonGroup = lessonGroup.update(lessonGroupUpdateCommand.getTitle());
+    LessonGroup persistedLessonGroup = lessonGroupRepository.updateLessonGroup(updatedLessonGroup);
 
     return new LessonGroupDto(
-        updatedLessonGroup.getId(),
-        updatedLessonGroup.getCourseId(),
-        updatedLessonGroup.getLessonGroupOrder().getValue(),
-        updatedLessonGroup.getTitle().getValue(),
-        updatedLessonGroup.getCreatedAt(),
-        updatedLessonGroup.getUpdatedAt(),
+        persistedLessonGroup.getId(),
+        persistedLessonGroup.getCourseId(),
+        persistedLessonGroup.getLessonGroupOrder().getValue(),
+        persistedLessonGroup.getTitle().getValue(),
+        persistedLessonGroup.getCreatedAt(),
+        persistedLessonGroup.getUpdatedAt(),
         null
     );
   }
