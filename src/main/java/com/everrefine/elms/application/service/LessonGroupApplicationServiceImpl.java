@@ -47,15 +47,9 @@ public class LessonGroupApplicationServiceImpl implements LessonGroupApplication
 
   @Override
   @Transactional
-  public LessonGroupDto updateLessonGroup(LessonGroupUpdateCommand lessonGroupUpdateCommand,
-      Integer courseId) {
+  public LessonGroupDto updateLessonGroup(LessonGroupUpdateCommand lessonGroupUpdateCommand) {
     LessonGroup lessonGroup = lessonGroupRepository.findLessonGroupById(lessonGroupUpdateCommand.getId())
         .orElseThrow(() -> new ResourceNotFoundException("LessonGroup not found"));
-
-    // Validate that the lesson group belongs to the specified course
-    if (!lessonGroup.getCourseId().equals(courseId)) {
-      throw new ResourceNotFoundException("LessonGroup does not belong to the specified course");
-    }
 
     LessonGroup updatedLessonGroup = lessonGroupDomainService.updateLessonGroup(
         lessonGroup, lessonGroupUpdateCommand.getTitle());

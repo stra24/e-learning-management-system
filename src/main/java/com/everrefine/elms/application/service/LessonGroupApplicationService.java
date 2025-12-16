@@ -8,7 +8,7 @@ public interface LessonGroupApplicationService {
 
   LessonGroupDto createLessonGroup(LessonGroupCreateCommand lessonGroupCreateCommand);
 
-  LessonGroupDto updateLessonGroup(LessonGroupUpdateCommand lessonGroupUpdateCommand, Integer courseId);
+  LessonGroupDto updateLessonGroup(LessonGroupUpdateCommand lessonGroupUpdateCommand);
 
   void deleteLessonGroupById(Integer lessonGroupId);
 }

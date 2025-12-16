@@ -67,7 +67,7 @@ public class LessonGroupController {
     );
 
     LessonGroupDto updatedLessonGroupDto = lessonGroupApplicationService.updateLessonGroup(
-        lessonGroupUpdateCommand, courseId);
+        lessonGroupUpdateCommand);
     return ResponseEntity.ok(updatedLessonGroupDto);
   }
 

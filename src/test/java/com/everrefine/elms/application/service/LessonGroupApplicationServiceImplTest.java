@@ -3,7 +3,6 @@ package com.everrefine.elms.application.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -72,7 +71,7 @@ class LessonGroupApplicationServiceImplTest {
         .thenReturn(updatedLessonGroup);
 
     // Act
-    LessonGroupDto result = lessonGroupApplicationService.updateLessonGroup(command, 100);
+    LessonGroupDto result = lessonGroupApplicationService.updateLessonGroup(command);
 
     // Assert
     assertEquals(1, result.id());
@@ -96,29 +95,11 @@ class LessonGroupApplicationServiceImplTest {
     // Act & Assert
     ResourceNotFoundException exception = assertThrows(
         ResourceNotFoundException.class,
-        () -> lessonGroupApplicationService.updateLessonGroup(command, 100)
+        () -> lessonGroupApplicationService.updateLessonGroup(command)
     );
     assertEquals("LessonGroup not found", exception.getMessage());
 
     verify(lessonGroupRepository, times(1)).findLessonGroupById(999);
-    verify(lessonGroupDomainService, never()).updateLessonGroup(any(), any());
-  }
-
-  @Test
-  void 異常系_指定されたコースIDにレッスングループが属していない場合ResourceNotFoundExceptionがスローされること() {
-    // Arrange
-    LessonGroupUpdateCommand command = LessonGroupUpdateCommand.create(1, "新しいタイトル");
-    when(lessonGroupRepository.findLessonGroupById(1))
-        .thenReturn(Optional.of(existingLessonGroup));
-
-    // Act & Assert
-    ResourceNotFoundException exception = assertThrows(
-        ResourceNotFoundException.class,
-        () -> lessonGroupApplicationService.updateLessonGroup(command, 200) // 異なるcourseId
-    );
-    assertEquals("LessonGroup does not belong to the specified course", exception.getMessage());
-
-    verify(lessonGroupRepository, times(1)).findLessonGroupById(1);
     verify(lessonGroupDomainService, never()).updateLessonGroup(any(), any());
   }
 
