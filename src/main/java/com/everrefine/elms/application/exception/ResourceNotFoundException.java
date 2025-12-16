@@ -1,4 +1,4 @@
-package com.everrefine.elms.domain.exception;
+package com.everrefine.elms.application.exception;
 
 /**
  * リソースが見つからない場合にスローされる例外。

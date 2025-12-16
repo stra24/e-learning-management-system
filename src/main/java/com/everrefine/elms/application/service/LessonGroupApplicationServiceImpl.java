@@ -3,7 +3,7 @@ package com.everrefine.elms.application.service;
 import com.everrefine.elms.application.command.LessonGroupCreateCommand;
 import com.everrefine.elms.application.command.LessonGroupUpdateCommand;
 import com.everrefine.elms.application.dto.LessonGroupDto;
-import com.everrefine.elms.domain.exception.ResourceNotFoundException;
+import com.everrefine.elms.application.exception.ResourceNotFoundException;
 import com.everrefine.elms.domain.model.lesson.LessonGroup;
 import com.everrefine.elms.domain.repository.LessonGroupRepository;
 import com.everrefine.elms.domain.service.LessonGroupDomainService;
@@ -47,7 +47,8 @@ public class LessonGroupApplicationServiceImpl implements LessonGroupApplication
 
   @Override
   @Transactional
-  public LessonGroupDto updateLessonGroup(LessonGroupUpdateCommand lessonGroupUpdateCommand, Integer courseId) {
+  public LessonGroupDto updateLessonGroup(LessonGroupUpdateCommand lessonGroupUpdateCommand,
+      Integer courseId) {
     LessonGroup lessonGroup = lessonGroupRepository.findLessonGroupById(lessonGroupUpdateCommand.getId())
         .orElseThrow(() -> new ResourceNotFoundException("LessonGroup not found"));
 

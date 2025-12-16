@@ -1,6 +1,6 @@
 package com.everrefine.elms.presentation;
 
-import com.everrefine.elms.domain.exception.ResourceNotFoundException;
+import com.everrefine.elms.application.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
