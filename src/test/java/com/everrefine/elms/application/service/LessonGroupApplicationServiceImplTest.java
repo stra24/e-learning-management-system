@@ -14,9 +14,11 @@ import com.everrefine.elms.application.dto.LessonGroupDto;
 import com.everrefine.elms.application.exception.ResourceNotFoundException;
 import com.everrefine.elms.domain.model.lesson.LessonGroup;
 import com.everrefine.elms.domain.repository.LessonGroupRepository;
+import com.everrefine.elms.domain.repository.LessonRepository;
 import com.everrefine.elms.domain.service.LessonGroupDomainService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,9 @@ class LessonGroupApplicationServiceImplTest {
 
   @Mock
   private LessonGroupRepository lessonGroupRepository;
+
+  @Mock
+  private LessonRepository lessonRepository;
 
   @Mock
   private LessonGroupDomainService lessonGroupDomainService;
@@ -69,6 +74,8 @@ class LessonGroupApplicationServiceImplTest {
         .thenReturn(Optional.of(existingLessonGroup));
     when(lessonGroupRepository.updateLessonGroup(any(LessonGroup.class)))
         .thenReturn(updatedLessonGroup);
+    when(lessonRepository.findLessonsByLessonGroupId(1))
+        .thenReturn(List.of());
 
     // Act
     LessonGroupDto result = lessonGroupApplicationService.updateLessonGroup(command);
@@ -80,9 +87,11 @@ class LessonGroupApplicationServiceImplTest {
     assertEquals("新しいタイトル", result.name());
     assertEquals(LocalDateTime.of(2025, 12, 10, 10, 0), result.createdAt());
     assertEquals(LocalDateTime.of(2025, 12, 11, 11, 0), result.updatedAt());
+    assertEquals(0, result.lessons().size());
 
     verify(lessonGroupRepository, times(1)).findLessonGroupById(1);
     verify(lessonGroupRepository, times(1)).updateLessonGroup(any(LessonGroup.class));
+    verify(lessonRepository, times(1)).findLessonsByLessonGroupId(1);
   }
 
   @Test
@@ -101,6 +110,7 @@ class LessonGroupApplicationServiceImplTest {
 
     verify(lessonGroupRepository, times(1)).findLessonGroupById(999);
     verify(lessonGroupRepository, never()).updateLessonGroup(any(LessonGroup.class));
+    verify(lessonRepository, never()).findLessonsByLessonGroupId(any());
   }
 
   @Test

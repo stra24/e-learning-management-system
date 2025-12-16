@@ -2,12 +2,16 @@ package com.everrefine.elms.application.service;
 
 import com.everrefine.elms.application.command.LessonGroupCreateCommand;
 import com.everrefine.elms.application.command.LessonGroupUpdateCommand;
+import com.everrefine.elms.application.dto.LessonDto;
 import com.everrefine.elms.application.dto.LessonGroupDto;
 import com.everrefine.elms.application.exception.ResourceNotFoundException;
+import com.everrefine.elms.domain.model.lesson.Lesson;
 import com.everrefine.elms.domain.model.lesson.LessonGroup;
 import com.everrefine.elms.domain.repository.LessonGroupRepository;
+import com.everrefine.elms.domain.repository.LessonRepository;
 import com.everrefine.elms.domain.service.LessonGroupDomainService;
 import java.math.BigDecimal;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class LessonGroupApplicationServiceImpl implements LessonGroupApplicationService {
 
   private final LessonGroupRepository lessonGroupRepository;
+  private final LessonRepository lessonRepository;
   private final LessonGroupDomainService lessonGroupDomainService;
 
   @Override
@@ -54,6 +59,11 @@ public class LessonGroupApplicationServiceImpl implements LessonGroupApplication
     LessonGroup updatedLessonGroup = lessonGroup.update(lessonGroupUpdateCommand.getTitle());
     LessonGroup persistedLessonGroup = lessonGroupRepository.updateLessonGroup(updatedLessonGroup);
 
+    List<LessonDto> lessonDtos = lessonRepository.findLessonsByLessonGroupId(persistedLessonGroup.getId())
+        .stream()
+        .map(this::toLessonDto)
+        .toList();
+
     return new LessonGroupDto(
         persistedLessonGroup.getId(),
         persistedLessonGroup.getCourseId(),
@@ -61,7 +71,21 @@ public class LessonGroupApplicationServiceImpl implements LessonGroupApplication
         persistedLessonGroup.getTitle().getValue(),
         persistedLessonGroup.getCreatedAt(),
         persistedLessonGroup.getUpdatedAt(),
-        null
+        lessonDtos
+    );
+  }
+
+  private LessonDto toLessonDto(Lesson lesson) {
+    return new LessonDto(
+        lesson.getId(),
+        lesson.getLessonGroupId(),
+        lesson.getCourseId(),
+        lesson.getLessonOrder().getValue(),
+        lesson.getTitle().getValue(),
+        lesson.getDescription() != null ? lesson.getDescription().getValue() : null,
+        lesson.getVideoUrl() != null ? lesson.getVideoUrl().getValue() : null,
+        lesson.getCreatedAt(),
+        lesson.getUpdatedAt()
     );
   }
 

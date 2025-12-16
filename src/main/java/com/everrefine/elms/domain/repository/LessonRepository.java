@@ -4,6 +4,7 @@ import com.everrefine.elms.application.command.LessonSearchCommand;
 import com.everrefine.elms.application.dto.CourseLessonsDto;
 import com.everrefine.elms.domain.model.lesson.Lesson;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 public interface LessonRepository {
@@ -15,6 +16,8 @@ public interface LessonRepository {
   java.util.List<Lesson> findLessons(LessonSearchCommand lessonSearchCommand);
 
   int countLessons(LessonSearchCommand lessonSearchCommand);
+
+  List<Lesson> findLessonsByLessonGroupId(Integer lessonGroupId);
 
   CourseLessonsDto findLessonsGroupedByLessonGroup(Integer courseId);
 

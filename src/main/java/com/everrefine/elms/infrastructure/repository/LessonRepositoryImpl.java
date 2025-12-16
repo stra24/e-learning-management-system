@@ -80,6 +80,11 @@ public class LessonRepositoryImpl implements LessonRepository {
   }
 
   @Override
+  public List<Lesson> findLessonsByLessonGroupId(Integer lessonGroupId) {
+    return lessonDao.findLessonsByLessonGroupId(lessonGroupId);
+  }
+
+  @Override
   public CourseLessonsDto findLessonsGroupedByLessonGroup(Integer courseId) {
     List<LessonGroupWithLesson> results = lessonGroupDao.findLessonGroupsByCourseId(courseId);
 
