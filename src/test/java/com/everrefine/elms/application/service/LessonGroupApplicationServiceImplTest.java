@@ -11,6 +11,7 @@ import com.everrefine.elms.application.dto.LessonGroupDto;
 import com.everrefine.elms.application.exception.ResourceNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,124 +39,132 @@ class LessonGroupApplicationServiceTest {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  @Test
-  void 正常系_レッスングループを更新できること() {
-    // Arrange
-    LocalDateTime now = LocalDateTime.now();
-    jdbcTemplate.update(
-        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-        new BigDecimal("1"), "テストコース", "コース説明", now, now);
-    Integer courseId = jdbcTemplate.queryForObject(
-        "SELECT id FROM courses WHERE title = ?", Integer.class, "テストコース");
+  @Nested
+  class 正常系 {
 
-    jdbcTemplate.update(
-        "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-        courseId, new BigDecimal("1"), "元のタイトル", now, now);
-    Integer lessonGroupId = jdbcTemplate.queryForObject(
-        "SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "元のタイトル");
+    @Test
+    void レッスングループを更新できること() {
+      // Arrange
+      LocalDateTime now = LocalDateTime.now();
+      jdbcTemplate.update(
+          "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+          new BigDecimal("1"), "テストコース", "コース説明", now, now);
+      Integer courseId = jdbcTemplate.queryForObject(
+          "SELECT id FROM courses WHERE title = ?", Integer.class, "テストコース");
 
-    jdbcTemplate.update(
-        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        lessonGroupId, courseId, new BigDecimal("1"), "レッスン1", "説明1", "https://example.com/1.mp4", now, now);
-    jdbcTemplate.update(
-        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        lessonGroupId, courseId, new BigDecimal("2"), "レッスン2", "説明2", "https://example.com/2.mp4", now, now);
+      jdbcTemplate.update(
+          "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+          courseId, new BigDecimal("1"), "元のタイトル", now, now);
+      Integer lessonGroupId = jdbcTemplate.queryForObject(
+          "SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "元のタイトル");
 
-    LessonGroupUpdateCommand command = LessonGroupUpdateCommand.create(lessonGroupId, "新しいタイトル");
+      jdbcTemplate.update(
+          "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+          lessonGroupId, courseId, new BigDecimal("1"), "レッスン1", "説明1", "https://example.com/1.mp4", now, now);
+      jdbcTemplate.update(
+          "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+          lessonGroupId, courseId, new BigDecimal("2"), "レッスン2", "説明2", "https://example.com/2.mp4", now, now);
 
-    // Act
-    LessonGroupDto result = lessonGroupApplicationService.updateLessonGroup(command);
+      LessonGroupUpdateCommand command = LessonGroupUpdateCommand.create(lessonGroupId, "新しいタイトル");
 
-    // Assert
-    assertEquals(lessonGroupId, result.id());
-    assertEquals(courseId, result.courseId());
-    assertEquals(0, result.lessonGroupOrder().compareTo(new BigDecimal("1")));
-    assertEquals("新しいタイトル", result.name());
-    assertNotNull(result.createdAt());
-    assertNotNull(result.updatedAt());
-    assertNotNull(result.lessons());
-    assertEquals(2, result.lessons().size());
-    assertEquals("レッスン1", result.lessons().get(0).getTitle());
-    assertEquals("レッスン2", result.lessons().get(1).getTitle());
+      // Act
+      LessonGroupDto result = lessonGroupApplicationService.updateLessonGroup(command);
 
-    String updatedTitle = jdbcTemplate.queryForObject(
-        "SELECT title FROM lesson_groups WHERE id = ?", String.class, lessonGroupId);
-    assertEquals("新しいタイトル", updatedTitle);
+      // Assert
+      assertEquals(lessonGroupId, result.id());
+      assertEquals(courseId, result.courseId());
+      assertEquals(0, result.lessonGroupOrder().compareTo(new BigDecimal("1")));
+      assertEquals("新しいタイトル", result.name());
+      assertNotNull(result.createdAt());
+      assertNotNull(result.updatedAt());
+      assertNotNull(result.lessons());
+      assertEquals(2, result.lessons().size());
+      assertEquals("レッスン1", result.lessons().get(0).getTitle());
+      assertEquals("レッスン2", result.lessons().get(1).getTitle());
+
+      String updatedTitle = jdbcTemplate.queryForObject(
+          "SELECT title FROM lesson_groups WHERE id = ?", String.class, lessonGroupId);
+      assertEquals("新しいタイトル", updatedTitle);
+    }
+
+    @Test
+    void レッスングループを作成できること() {
+      // Arrange
+      LocalDateTime now = LocalDateTime.now();
+      jdbcTemplate.update(
+          "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+          new BigDecimal("1"), "作成用コース", "説明", now, now);
+      Integer courseId = jdbcTemplate.queryForObject(
+          "SELECT id FROM courses WHERE title = ?", Integer.class, "作成用コース");
+
+      LessonGroupCreateCommand command = LessonGroupCreateCommand.create(courseId, "新しいグループ");
+
+      // Act
+      LessonGroupDto result = lessonGroupApplicationService.createLessonGroup(command);
+
+      // Assert
+      assertNotNull(result.id());
+      assertEquals(courseId, result.courseId());
+      assertNotNull(result.lessonGroupOrder());
+      assertEquals("新しいグループ", result.name());
+      assertNotNull(result.createdAt());
+      assertNotNull(result.updatedAt());
+      assertNull(result.lessons());
+
+      Integer count = jdbcTemplate.queryForObject(
+          "SELECT COUNT(*) FROM lesson_groups WHERE id = ?", Integer.class, result.id());
+      assertEquals(1, count);
+    }
+
+    @Test
+    void レッスングループを削除できること() {
+      // Arrange
+      LocalDateTime now = LocalDateTime.now();
+      jdbcTemplate.update(
+          "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+          new BigDecimal("1"), "削除用コース", "説明", now, now);
+      Integer courseId = jdbcTemplate.queryForObject(
+          "SELECT id FROM courses WHERE title = ?", Integer.class, "削除用コース");
+
+      jdbcTemplate.update(
+          "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+          courseId, new BigDecimal("1"), "削除対象グループ", now, now);
+      Integer lessonGroupId = jdbcTemplate.queryForObject(
+          "SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "削除対象グループ");
+
+      // Act
+      lessonGroupApplicationService.deleteLessonGroupById(lessonGroupId);
+
+      // Assert
+      Integer count = jdbcTemplate.queryForObject(
+          "SELECT COUNT(*) FROM lesson_groups WHERE id = ?", Integer.class, lessonGroupId);
+      assertEquals(0, count);
+    }
+
+    @Test
+    void 存在しないレッスングループを削除してもエラーにならないこと() {
+      // Arrange
+      // Act
+      lessonGroupApplicationService.deleteLessonGroupById(999);
+
+      // Assert
+    }
   }
 
-  @Test
-  void 異常系_存在しないレッスングループIDの場合ResourceNotFoundExceptionがスローされること() {
-    // Arrange
-    LessonGroupUpdateCommand command = LessonGroupUpdateCommand.create(999, "新しいタイトル");
+  @Nested
+  class 異常系 {
 
-    // Act & Assert
-    ResourceNotFoundException exception = assertThrows(
-        ResourceNotFoundException.class,
-        () -> lessonGroupApplicationService.updateLessonGroup(command)
-    );
-    assertEquals("LessonGroup not found", exception.getMessage());
-  }
+    @Test
+    void 存在しないレッスングループIDの場合ResourceNotFoundExceptionがスローされること() {
+      // Arrange
+      LessonGroupUpdateCommand command = LessonGroupUpdateCommand.create(999, "新しいタイトル");
 
-  @Test
-  void 正常系_レッスングループを作成できること() {
-    // Arrange
-    LocalDateTime now = LocalDateTime.now();
-    jdbcTemplate.update(
-        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-        new BigDecimal("1"), "作成用コース", "説明", now, now);
-    Integer courseId = jdbcTemplate.queryForObject(
-        "SELECT id FROM courses WHERE title = ?", Integer.class, "作成用コース");
-
-    LessonGroupCreateCommand command = LessonGroupCreateCommand.create(courseId, "新しいグループ");
-
-    // Act
-    LessonGroupDto result = lessonGroupApplicationService.createLessonGroup(command);
-
-    // Assert
-    assertNotNull(result.id());
-    assertEquals(courseId, result.courseId());
-    assertNotNull(result.lessonGroupOrder());
-    assertEquals("新しいグループ", result.name());
-    assertNotNull(result.createdAt());
-    assertNotNull(result.updatedAt());
-    assertNull(result.lessons());
-
-    Integer count = jdbcTemplate.queryForObject(
-        "SELECT COUNT(*) FROM lesson_groups WHERE id = ?", Integer.class, result.id());
-    assertEquals(1, count);
-  }
-
-  @Test
-  void 正常系_レッスングループを削除できること() {
-    // Arrange
-    LocalDateTime now = LocalDateTime.now();
-    jdbcTemplate.update(
-        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-        new BigDecimal("1"), "削除用コース", "説明", now, now);
-    Integer courseId = jdbcTemplate.queryForObject(
-        "SELECT id FROM courses WHERE title = ?", Integer.class, "削除用コース");
-
-    jdbcTemplate.update(
-        "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-        courseId, new BigDecimal("1"), "削除対象グループ", now, now);
-    Integer lessonGroupId = jdbcTemplate.queryForObject(
-        "SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "削除対象グループ");
-
-    // Act
-    lessonGroupApplicationService.deleteLessonGroupById(lessonGroupId);
-
-    // Assert
-    Integer count = jdbcTemplate.queryForObject(
-        "SELECT COUNT(*) FROM lesson_groups WHERE id = ?", Integer.class, lessonGroupId);
-    assertEquals(0, count);
-  }
-
-  @Test
-  void 正常系_存在しないレッスングループを削除してもエラーにならないこと() {
-    // Arrange
-    // Act
-    lessonGroupApplicationService.deleteLessonGroupById(999);
-
-    // Assert
+      // Act & Assert
+      ResourceNotFoundException exception = assertThrows(
+          ResourceNotFoundException.class,
+          () -> lessonGroupApplicationService.updateLessonGroup(command)
+      );
+      assertEquals("LessonGroup not found", exception.getMessage());
+    }
   }
 }
