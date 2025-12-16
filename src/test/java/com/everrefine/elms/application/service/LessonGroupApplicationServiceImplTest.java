@@ -1,105 +1,92 @@
 package com.everrefine.elms.application.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.everrefine.elms.application.command.LessonGroupCreateCommand;
 import com.everrefine.elms.application.command.LessonGroupUpdateCommand;
 import com.everrefine.elms.application.dto.LessonGroupDto;
 import com.everrefine.elms.application.exception.ResourceNotFoundException;
-import com.everrefine.elms.domain.model.lesson.LessonGroup;
-import com.everrefine.elms.domain.repository.LessonGroupRepository;
-import com.everrefine.elms.domain.repository.LessonRepository;
-import com.everrefine.elms.domain.service.LessonGroupDomainService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-@ExtendWith(MockitoExtension.class)
-class LessonGroupApplicationServiceImplTest {
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
+@Testcontainers
+@Transactional
+class LessonGroupApplicationServiceTest {
 
-  @Mock
-  private LessonGroupRepository lessonGroupRepository;
+  @Container
+  @ServiceConnection
+  static PostgreSQLContainer<?> postgres =
+      new PostgreSQLContainer<>("postgres:17");
 
-  @Mock
-  private LessonRepository lessonRepository;
-
-  @Mock
-  private LessonGroupDomainService lessonGroupDomainService;
-
-  @InjectMocks
+  @Autowired
   private LessonGroupApplicationServiceImpl lessonGroupApplicationService;
 
-  private LessonGroup existingLessonGroup;
-  private LessonGroup updatedLessonGroup;
-
-  @BeforeEach
-  void setUp() {
-    existingLessonGroup = new LessonGroup(
-        1,
-        100,
-        new com.everrefine.elms.domain.model.Order(new BigDecimal("1")),
-        new com.everrefine.elms.domain.model.lesson.Title("元のタイトル"),
-        LocalDateTime.of(2025, 12, 10, 10, 0),
-        LocalDateTime.of(2025, 12, 10, 10, 0)
-    );
-
-    updatedLessonGroup = new LessonGroup(
-        1,
-        100,
-        new com.everrefine.elms.domain.model.Order(new BigDecimal("1")),
-        new com.everrefine.elms.domain.model.lesson.Title("新しいタイトル"),
-        LocalDateTime.of(2025, 12, 10, 10, 0),
-        LocalDateTime.of(2025, 12, 11, 11, 0)
-    );
-  }
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
   @Test
   void 正常系_レッスングループを更新できること() {
     // Arrange
-    LessonGroupUpdateCommand command = LessonGroupUpdateCommand.create(1, "新しいタイトル");
-    when(lessonGroupRepository.findLessonGroupById(1))
-        .thenReturn(Optional.of(existingLessonGroup));
-    when(lessonGroupRepository.updateLessonGroup(any(LessonGroup.class)))
-        .thenReturn(updatedLessonGroup);
-    when(lessonRepository.findLessonsByLessonGroupId(1))
-        .thenReturn(List.of());
+    LocalDateTime now = LocalDateTime.now();
+    jdbcTemplate.update(
+        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        new BigDecimal("1"), "テストコース", "コース説明", now, now);
+    Integer courseId = jdbcTemplate.queryForObject(
+        "SELECT id FROM courses WHERE title = ?", Integer.class, "テストコース");
+
+    jdbcTemplate.update(
+        "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        courseId, new BigDecimal("1"), "元のタイトル", now, now);
+    Integer lessonGroupId = jdbcTemplate.queryForObject(
+        "SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "元のタイトル");
+
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("1"), "レッスン1", "説明1", "https://example.com/1.mp4", now, now);
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("2"), "レッスン2", "説明2", "https://example.com/2.mp4", now, now);
+
+    LessonGroupUpdateCommand command = LessonGroupUpdateCommand.create(lessonGroupId, "新しいタイトル");
 
     // Act
     LessonGroupDto result = lessonGroupApplicationService.updateLessonGroup(command);
 
     // Assert
-    assertEquals(1, result.id());
-    assertEquals(100, result.courseId());
-    assertEquals(new BigDecimal("1"), result.lessonGroupOrder());
+    assertEquals(lessonGroupId, result.id());
+    assertEquals(courseId, result.courseId());
+    assertEquals(0, result.lessonGroupOrder().compareTo(new BigDecimal("1")));
     assertEquals("新しいタイトル", result.name());
-    assertEquals(LocalDateTime.of(2025, 12, 10, 10, 0), result.createdAt());
-    assertEquals(LocalDateTime.of(2025, 12, 11, 11, 0), result.updatedAt());
-    assertEquals(0, result.lessons().size());
+    assertNotNull(result.createdAt());
+    assertNotNull(result.updatedAt());
+    assertNotNull(result.lessons());
+    assertEquals(2, result.lessons().size());
+    assertEquals("レッスン1", result.lessons().get(0).getTitle());
+    assertEquals("レッスン2", result.lessons().get(1).getTitle());
 
-    verify(lessonGroupRepository, times(1)).findLessonGroupById(1);
-    verify(lessonGroupRepository, times(1)).updateLessonGroup(any(LessonGroup.class));
-    verify(lessonRepository, times(1)).findLessonsByLessonGroupId(1);
+    String updatedTitle = jdbcTemplate.queryForObject(
+        "SELECT title FROM lesson_groups WHERE id = ?", String.class, lessonGroupId);
+    assertEquals("新しいタイトル", updatedTitle);
   }
 
   @Test
   void 異常系_存在しないレッスングループIDの場合ResourceNotFoundExceptionがスローされること() {
     // Arrange
     LessonGroupUpdateCommand command = LessonGroupUpdateCommand.create(999, "新しいタイトル");
-    when(lessonGroupRepository.findLessonGroupById(999))
-        .thenReturn(Optional.empty());
 
     // Act & Assert
     ResourceNotFoundException exception = assertThrows(
@@ -107,68 +94,68 @@ class LessonGroupApplicationServiceImplTest {
         () -> lessonGroupApplicationService.updateLessonGroup(command)
     );
     assertEquals("LessonGroup not found", exception.getMessage());
-
-    verify(lessonGroupRepository, times(1)).findLessonGroupById(999);
-    verify(lessonGroupRepository, never()).updateLessonGroup(any(LessonGroup.class));
-    verify(lessonRepository, never()).findLessonsByLessonGroupId(any());
   }
 
   @Test
   void 正常系_レッスングループを作成できること() {
     // Arrange
-    LessonGroupCreateCommand command = LessonGroupCreateCommand.create(100, "新しいグループ");
-    LessonGroup createdLessonGroup = new LessonGroup(
-        2,
-        100,
-        new com.everrefine.elms.domain.model.Order(new BigDecimal("2")),
-        new com.everrefine.elms.domain.model.lesson.Title("新しいグループ"),
-        LocalDateTime.now(),
-        LocalDateTime.now()
-    );
-    
-    when(lessonGroupDomainService.issueLessonGroupOrder(100))
-        .thenReturn(new BigDecimal("2"));
-    when(lessonGroupRepository.createLessonGroup(any(LessonGroup.class)))
-        .thenReturn(createdLessonGroup);
+    LocalDateTime now = LocalDateTime.now();
+    jdbcTemplate.update(
+        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        new BigDecimal("1"), "作成用コース", "説明", now, now);
+    Integer courseId = jdbcTemplate.queryForObject(
+        "SELECT id FROM courses WHERE title = ?", Integer.class, "作成用コース");
+
+    LessonGroupCreateCommand command = LessonGroupCreateCommand.create(courseId, "新しいグループ");
 
     // Act
     LessonGroupDto result = lessonGroupApplicationService.createLessonGroup(command);
 
     // Assert
-    assertEquals(2, result.id());
-    assertEquals(100, result.courseId());
-    assertEquals(new BigDecimal("2"), result.lessonGroupOrder());
+    assertNotNull(result.id());
+    assertEquals(courseId, result.courseId());
+    assertNotNull(result.lessonGroupOrder());
     assertEquals("新しいグループ", result.name());
+    assertNotNull(result.createdAt());
+    assertNotNull(result.updatedAt());
+    assertNull(result.lessons());
 
-    verify(lessonGroupDomainService, times(1)).issueLessonGroupOrder(100);
-    verify(lessonGroupRepository, times(1)).createLessonGroup(any(LessonGroup.class));
+    Integer count = jdbcTemplate.queryForObject(
+        "SELECT COUNT(*) FROM lesson_groups WHERE id = ?", Integer.class, result.id());
+    assertEquals(1, count);
   }
 
   @Test
   void 正常系_レッスングループを削除できること() {
     // Arrange
-    when(lessonGroupRepository.findLessonGroupById(1))
-        .thenReturn(Optional.of(existingLessonGroup));
+    LocalDateTime now = LocalDateTime.now();
+    jdbcTemplate.update(
+        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        new BigDecimal("1"), "削除用コース", "説明", now, now);
+    Integer courseId = jdbcTemplate.queryForObject(
+        "SELECT id FROM courses WHERE title = ?", Integer.class, "削除用コース");
+
+    jdbcTemplate.update(
+        "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        courseId, new BigDecimal("1"), "削除対象グループ", now, now);
+    Integer lessonGroupId = jdbcTemplate.queryForObject(
+        "SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "削除対象グループ");
 
     // Act
-    lessonGroupApplicationService.deleteLessonGroupById(1);
+    lessonGroupApplicationService.deleteLessonGroupById(lessonGroupId);
 
     // Assert
-    verify(lessonGroupRepository, times(1)).findLessonGroupById(1);
-    verify(lessonGroupRepository, times(1)).deleteLessonGroupById(1);
+    Integer count = jdbcTemplate.queryForObject(
+        "SELECT COUNT(*) FROM lesson_groups WHERE id = ?", Integer.class, lessonGroupId);
+    assertEquals(0, count);
   }
 
   @Test
   void 正常系_存在しないレッスングループを削除してもエラーにならないこと() {
     // Arrange
-    when(lessonGroupRepository.findLessonGroupById(999))
-        .thenReturn(Optional.empty());
-
     // Act
     lessonGroupApplicationService.deleteLessonGroupById(999);
 
     // Assert
-    verify(lessonGroupRepository, times(1)).findLessonGroupById(999);
-    verify(lessonGroupRepository, never()).deleteLessonGroupById(999);
   }
 }
