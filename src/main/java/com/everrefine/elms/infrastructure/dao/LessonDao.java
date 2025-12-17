@@ -64,4 +64,13 @@ public interface LessonDao extends CrudRepository<Lesson, Integer> {
       """)
   Optional<BigDecimal> findMaxLessonOrderByLessonGroupId(
       @Param("lessonGroupId") Integer lessonGroupId);
+
+  @Query("""
+      SELECT *
+      FROM lessons
+      WHERE lesson_group_id = :lessonGroupId
+      ORDER BY lesson_order ASC
+      """)
+  List<Lesson> findLessonsByLessonGroupId(
+      @Param("lessonGroupId") Integer lessonGroupId);
 }

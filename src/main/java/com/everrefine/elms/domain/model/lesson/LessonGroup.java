@@ -62,4 +62,21 @@ public class LessonGroup {
         LocalDateTime.now()
     );
   }
+
+  /**
+   * レッスングループを更新する。
+   *
+   * @param title 新しいタイトル
+   * @return 更新後のレッスングループ
+   */
+  public LessonGroup update(String title) {
+    return new LessonGroup(
+        this.id,
+        this.courseId,
+        this.lessonGroupOrder,
+        new Title(title),
+        this.createdAt,
+        LocalDateTime.now()
+    );
+  }
 }

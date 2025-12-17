@@ -42,17 +42,7 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
     Lesson lesson = lessonRepository.findById(lessonId)
         .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
 
-    return new LessonDto(
-        lesson.getId(),
-        lesson.getLessonGroupId(),
-        lesson.getCourseId(),
-        lesson.getLessonOrder().getValue(),
-        lesson.getTitle().getValue(),
-        lesson.getDescription() != null ? lesson.getDescription().getValue() : null,
-        lesson.getVideoUrl() != null ? lesson.getVideoUrl().getValue() : null,
-        lesson.getCreatedAt(),
-        lesson.getUpdatedAt()
-    );
+    return LessonDto.from(lesson);
   }
 
   @Override
@@ -62,17 +52,7 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
     int totalSize = lessonRepository.countLessons(lessonSearchCommand);
 
     List<LessonDto> lessonDtos = lessons.stream()
-        .map(lesson -> new LessonDto(
-            lesson.getId(),
-            lesson.getLessonGroupId(),
-            lesson.getCourseId(),
-            lesson.getLessonOrder().getValue(),
-            lesson.getTitle().getValue(),
-            lesson.getDescription() != null ? lesson.getDescription().getValue() : null,
-            lesson.getVideoUrl() != null ? lesson.getVideoUrl().getValue() : null,
-            lesson.getCreatedAt(),
-            lesson.getUpdatedAt()
-        ))
+        .map(LessonDto::from)
         .collect(Collectors.toList());
 
     return new LessonPageDto(
@@ -107,17 +87,7 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
 
     Lesson createdLesson = lessonRepository.createLesson(lesson);
 
-    return new LessonDto(
-        createdLesson.getId(),
-        createdLesson.getLessonGroupId(),
-        createdLesson.getCourseId(),
-        lessonOrder,
-        createdLesson.getTitle().getValue(),
-        createdLesson.getDescription() != null ? createdLesson.getDescription().getValue() : null,
-        createdLesson.getVideoUrl() != null ? createdLesson.getVideoUrl().getValue() : null,
-        createdLesson.getCreatedAt(),
-        createdLesson.getUpdatedAt()
-    );
+    return LessonDto.from(createdLesson);
   }
 
   @Override
@@ -135,17 +105,7 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
 
     Lesson updatedLesson = lessonRepository.updateLesson(updateLesson);
 
-    return new LessonDto(
-        updatedLesson.getId(),
-        updatedLesson.getLessonGroupId(),
-        updatedLesson.getCourseId(),
-        updatedLesson.getLessonOrder().getValue(),
-        updatedLesson.getTitle().getValue(),
-        updatedLesson.getDescription() != null ? updatedLesson.getDescription().getValue() : null,
-        updatedLesson.getVideoUrl() != null ? updatedLesson.getVideoUrl().getValue() : null,
-        updatedLesson.getCreatedAt(),
-        updatedLesson.getUpdatedAt()
-    );
+    return LessonDto.from(updatedLesson);
   }
 
   @Override
