@@ -5,7 +5,6 @@ import com.everrefine.elms.application.command.LessonGroupUpdateCommand;
 import com.everrefine.elms.application.dto.LessonDto;
 import com.everrefine.elms.application.dto.LessonGroupDto;
 import com.everrefine.elms.application.exception.ResourceNotFoundException;
-import com.everrefine.elms.domain.model.lesson.Lesson;
 import com.everrefine.elms.domain.model.lesson.LessonGroup;
 import com.everrefine.elms.domain.repository.LessonGroupRepository;
 import com.everrefine.elms.domain.repository.LessonRepository;
@@ -61,7 +60,7 @@ public class LessonGroupApplicationServiceImpl implements LessonGroupApplication
 
     List<LessonDto> lessonDtos = lessonRepository.findLessonsByLessonGroupId(persistedLessonGroup.getId())
         .stream()
-        .map(this::toLessonDto)
+        .map(LessonDto::from)
         .toList();
 
     return new LessonGroupDto(
@@ -72,20 +71,6 @@ public class LessonGroupApplicationServiceImpl implements LessonGroupApplication
         persistedLessonGroup.getCreatedAt(),
         persistedLessonGroup.getUpdatedAt(),
         lessonDtos
-    );
-  }
-
-  private LessonDto toLessonDto(Lesson lesson) {
-    return new LessonDto(
-        lesson.getId(),
-        lesson.getLessonGroupId(),
-        lesson.getCourseId(),
-        lesson.getLessonOrder().getValue(),
-        lesson.getTitle().getValue(),
-        lesson.getDescription() != null ? lesson.getDescription().getValue() : null,
-        lesson.getVideoUrl() != null ? lesson.getVideoUrl().getValue() : null,
-        lesson.getCreatedAt(),
-        lesson.getUpdatedAt()
     );
   }
 
