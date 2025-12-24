@@ -24,6 +24,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -38,6 +41,14 @@ class LessonControllerTest {
 
   @InjectMocks
   private LessonController lessonController;
+
+  private Authentication adminAuthentication() {
+    return new UsernamePasswordAuthenticationToken(
+        "1",
+        "N/A",
+        java.util.List.of(new SimpleGrantedAuthority("ADMIN"))
+    );
+  }
 
   @BeforeEach
   void setUp() {
@@ -59,6 +70,7 @@ class LessonControllerTest {
     mockMvc.perform(
             post("/api/courses/{courseId}/lesson-groups/{lessonGroupId}/lessons",
                 courseId, lessonGroupId)
+                .principal(adminAuthentication())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(
                     Map.of(
@@ -131,6 +143,7 @@ class LessonControllerTest {
     mockMvc.perform(
             put("/api/courses/{courseId}/lesson-groups/{lessonGroupId}/lessons/{lessonId}",
                 courseId, lessonGroupId, lessonId)
+                .principal(adminAuthentication())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(
                     Map.of(
@@ -199,6 +212,7 @@ class LessonControllerTest {
     mockMvc.perform(
             post("/api/courses/{courseId}/lesson-groups/{lessonGroupId}/lessons",
                 courseId, lessonGroupId)
+                .principal(adminAuthentication())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(
                     Map.of("title", "テストレッスン")
@@ -226,6 +240,7 @@ class LessonControllerTest {
     mockMvc.perform(
             put("/api/courses/{courseId}/lesson-groups/{lessonGroupId}/lessons/{lessonId}",
                 courseId, lessonGroupId, lessonId)
+                .principal(adminAuthentication())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(
                     Map.of("title", "更新テストレッスン")

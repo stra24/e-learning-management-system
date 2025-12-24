@@ -1,8 +1,10 @@
 package com.everrefine.elms.presentation;
 
 import com.everrefine.elms.application.exception.ResourceNotFoundException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -24,5 +26,16 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+  }
+
+  @ExceptionHandler(OptimisticLockingFailureException.class)
+  public ResponseEntity<String> handleOptimisticLockingFailureException(
+      OptimisticLockingFailureException e) {
+    return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict");
   }
 }

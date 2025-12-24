@@ -153,7 +153,7 @@ public class LessonApplicationServiceImplTest {
     assertEquals(lessonId, result.getId());
     assertEquals(lessonGroupId, result.getLessonGroupId());
     assertEquals(courseId, result.getCourseId());
-    assertEquals(new BigDecimal("1.0000"), result.getLessonOrder());
+    assertEquals(new BigDecimal("1.0000000000"), result.getLessonOrder());
     assertEquals("テストレッスン", result.getTitle());
     assertEquals("テスト説明", result.getDescription());
     assertEquals("https://example.com/video.mp4", result.getVideoUrl());
@@ -386,6 +386,50 @@ public class LessonApplicationServiceImplTest {
   }
 
   @Test
+  void 正常系_精度枯渇が疑われる場合に再採番後に並び替えできること() {
+    jdbcTemplate.update(
+        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        new BigDecimal("1"), "精度枯渇テストコース", "コース説明", LocalDateTime.now(), LocalDateTime.now());
+    Integer courseId = jdbcTemplate.queryForObject("SELECT id FROM courses WHERE title = ?", Integer.class,
+        "精度枯渇テストコース");
+
+    jdbcTemplate.update(
+        "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        courseId, new BigDecimal("1"), "精度枯渇テストグループ", LocalDateTime.now(), LocalDateTime.now());
+    Integer lessonGroupId = jdbcTemplate.queryForObject("SELECT id FROM lesson_groups WHERE title = ?", Integer.class,
+        "精度枯渇テストグループ");
+
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("0.0000000001"), "精度レッスン1", "説明", "https://example.com/v1.mp4",
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson1Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "精度レッスン1");
+
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("0.0000000002"), "精度レッスン2", "説明", "https://example.com/v2.mp4",
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson2Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "精度レッスン2");
+
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("0.0000000003"), "精度レッスン3", "説明", "https://example.com/v3.mp4",
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson3Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "精度レッスン3");
+
+    LessonDto result = lessonApplicationService.updateLessonOrder(1, lesson3Id, lesson1Id, lesson2Id);
+
+    BigDecimal lesson1Order = jdbcTemplate.queryForObject(
+        "SELECT lesson_order FROM lessons WHERE id = ?", BigDecimal.class, lesson1Id);
+    BigDecimal lesson2Order = jdbcTemplate.queryForObject(
+        "SELECT lesson_order FROM lessons WHERE id = ?", BigDecimal.class, lesson2Id);
+
+    assertEquals(new BigDecimal("1024.0000000000"), lesson1Order);
+    assertEquals(new BigDecimal("2048.0000000000"), lesson2Order);
+    assertEquals(new BigDecimal("1536.0000000000"), result.getLessonOrder());
+  }
+
+  @Test
   void 正常系_存在するレッスンを削除できること() {
     // Arrange - 削除対象のレッスンを準備（IDは自動生成）
     jdbcTemplate.update(
@@ -454,5 +498,212 @@ public class LessonApplicationServiceImplTest {
     Integer count = jdbcTemplate.queryForObject(
         "SELECT COUNT(*) FROM lessons WHERE id = ?", Integer.class, lessonId);
     assertEquals(0, count);
+  }
+
+  @Test
+  void 正常系_2つのレッスンの間に移動できること() {
+    // Arrange - テストデータを準備
+    jdbcTemplate.update(
+        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        new BigDecimal("1"), "テストコース", "コース説明", LocalDateTime.now(), LocalDateTime.now());
+    Integer courseId = jdbcTemplate.queryForObject("SELECT id FROM courses WHERE title = ?", Integer.class, "テストコース");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        courseId, new BigDecimal("1"), "テストグループ", LocalDateTime.now(), LocalDateTime.now());
+    Integer lessonGroupId = jdbcTemplate.queryForObject("SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "テストグループ");
+    
+    // 3つのレッスンを作成（order: 1000, 2000, 3000）
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("1000"), "レッスン1", "説明1", "https://example.com/video1.mp4", 
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson1Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "レッスン1");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("2000"), "レッスン2", "説明2", "https://example.com/video2.mp4", 
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson2Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "レッスン2");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("3000"), "レッスン3", "説明3", "https://example.com/video3.mp4", 
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson3Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "レッスン3");
+
+    // Act - レッスン3をレッスン1と2の間に移動
+    LessonDto result = lessonApplicationService.updateLessonOrder(1, lesson3Id, lesson1Id, lesson2Id);
+
+    // Assert - 新しい順序は (1000 + 2000) / 2 = 1500
+    assertNotNull(result);
+    assertEquals(lesson3Id, result.getId());
+    assertEquals(new BigDecimal("1500.0000000000"), result.getLessonOrder());
+    
+    // DBが更新されていることを確認
+    BigDecimal updatedOrder = jdbcTemplate.queryForObject(
+        "SELECT lesson_order FROM lessons WHERE id = ?", BigDecimal.class, lesson3Id);
+    assertEquals(new BigDecimal("1500.0000000000"), updatedOrder);
+  }
+
+  @Test
+  void 正常系_先頭に移動できること() {
+    // Arrange - テストデータを準備
+    jdbcTemplate.update(
+        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        new BigDecimal("1"), "テストコース", "コース説明", LocalDateTime.now(), LocalDateTime.now());
+    Integer courseId = jdbcTemplate.queryForObject("SELECT id FROM courses WHERE title = ?", Integer.class, "テストコース");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        courseId, new BigDecimal("1"), "テストグループ", LocalDateTime.now(), LocalDateTime.now());
+    Integer lessonGroupId = jdbcTemplate.queryForObject("SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "テストグループ");
+    
+    // 2つのレッスンを作成
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("1000"), "レッスン1", "説明1", "https://example.com/video1.mp4", 
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson1Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "レッスン1");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("2000"), "レッスン2", "説明2", "https://example.com/video2.mp4", 
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson2Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "レッスン2");
+
+    // Act - レッスン2を先頭に移動（precedingLessonIdをnullに）
+    LessonDto result = lessonApplicationService.updateLessonOrder(1, lesson2Id, null, lesson1Id);
+
+    // Assert - 新しい順序は 1000 / 2 = 500
+    assertNotNull(result);
+    assertEquals(lesson2Id, result.getId());
+    assertEquals(new BigDecimal("500.0000000000"), result.getLessonOrder());
+    
+    // DBが更新されていることを確認
+    BigDecimal updatedOrder = jdbcTemplate.queryForObject(
+        "SELECT lesson_order FROM lessons WHERE id = ?", BigDecimal.class, lesson2Id);
+    assertEquals(new BigDecimal("500.0000000000"), updatedOrder);
+  }
+
+  @Test
+  void 正常系_末尾に移動できること() {
+    // Arrange - テストデータを準備
+    jdbcTemplate.update(
+        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        new BigDecimal("1"), "テストコース", "コース説明", LocalDateTime.now(), LocalDateTime.now());
+    Integer courseId = jdbcTemplate.queryForObject("SELECT id FROM courses WHERE title = ?", Integer.class, "テストコース");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        courseId, new BigDecimal("1"), "テストグループ", LocalDateTime.now(), LocalDateTime.now());
+    Integer lessonGroupId = jdbcTemplate.queryForObject("SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "テストグループ");
+    
+    // 2つのレッスンを作成
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("1000"), "レッスン1", "説明1", "https://example.com/video1.mp4", 
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson1Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "レッスン1");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("2000"), "レッスン2", "説明2", "https://example.com/video2.mp4", 
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson2Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "レッスン2");
+
+    // Act - レッスン1を末尾に移動（followingLessonIdをnullに）
+    LessonDto result = lessonApplicationService.updateLessonOrder(1, lesson1Id, lesson2Id, null);
+
+    // Assert - 新しい順序は 2000 + 1024 = 3024
+    assertNotNull(result);
+    assertEquals(lesson1Id, result.getId());
+    assertEquals(new BigDecimal("3024.0000000000"), result.getLessonOrder());
+    
+    // DBが更新されていることを確認
+    BigDecimal updatedOrder = jdbcTemplate.queryForObject(
+        "SELECT lesson_order FROM lessons WHERE id = ?", BigDecimal.class, lesson1Id);
+    assertEquals(new BigDecimal("3024.0000000000"), updatedOrder);
+  }
+
+  @Test
+  void 異常系_存在しないレッスンIDで並び替えすると例外が発生すること() {
+    // Arrange - 存在するレッスンを1つ準備
+    jdbcTemplate.update(
+        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        new BigDecimal("1"), "テストコース", "コース説明", LocalDateTime.now(), LocalDateTime.now());
+    Integer courseId = jdbcTemplate.queryForObject("SELECT id FROM courses WHERE title = ?", Integer.class, "テストコース");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        courseId, new BigDecimal("1"), "テストグループ", LocalDateTime.now(), LocalDateTime.now());
+    Integer lessonGroupId = jdbcTemplate.queryForObject("SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "テストグループ");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("1000"), "レッスン1", "説明1", "https://example.com/video1.mp4", 
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson1Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "レッスン1");
+
+    // Act & Assert - 存在しないレッスンIDで並び替え
+    IllegalArgumentException exception = assertThrows(
+        IllegalArgumentException.class,
+        () -> lessonApplicationService.updateLessonOrder(1, 999, lesson1Id, null)
+    );
+    assertEquals("Lesson not found with ID: 999", exception.getMessage());
+  }
+
+  @Test
+  void 異常系_存在しないprecedingLessonIdで例外が発生すること() {
+    // Arrange - テストデータを準備
+    jdbcTemplate.update(
+        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        new BigDecimal("1"), "テストコース", "コース説明", LocalDateTime.now(), LocalDateTime.now());
+    Integer courseId = jdbcTemplate.queryForObject("SELECT id FROM courses WHERE title = ?", Integer.class, "テストコース");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        courseId, new BigDecimal("1"), "テストグループ", LocalDateTime.now(), LocalDateTime.now());
+    Integer lessonGroupId = jdbcTemplate.queryForObject("SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "テストグループ");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("1000"), "レッスン1", "説明1", "https://example.com/video1.mp4", 
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson1Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "レッスン1");
+
+    // Act & Assert - 存在しないprecedingLessonId
+    IllegalArgumentException exception = assertThrows(
+        IllegalArgumentException.class,
+        () -> lessonApplicationService.updateLessonOrder(1, lesson1Id, 999, null)
+    );
+    assertEquals("Preceding lesson not found with ID: 999", exception.getMessage());
+  }
+
+  @Test
+  void 異常系_存在しないfollowingLessonIdで例外が発生すること() {
+    // Arrange - テストデータを準備
+    jdbcTemplate.update(
+        "INSERT INTO courses (course_order, title, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        new BigDecimal("1"), "テストコース", "コース説明", LocalDateTime.now(), LocalDateTime.now());
+    Integer courseId = jdbcTemplate.queryForObject("SELECT id FROM courses WHERE title = ?", Integer.class, "テストコース");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lesson_groups (course_id, lesson_group_order, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        courseId, new BigDecimal("1"), "テストグループ", LocalDateTime.now(), LocalDateTime.now());
+    Integer lessonGroupId = jdbcTemplate.queryForObject("SELECT id FROM lesson_groups WHERE title = ?", Integer.class, "テストグループ");
+    
+    jdbcTemplate.update(
+        "INSERT INTO lessons (lesson_group_id, course_id, lesson_order, title, description, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        lessonGroupId, courseId, new BigDecimal("1000"), "レッスン1", "説明1", "https://example.com/video1.mp4", 
+        LocalDateTime.now(), LocalDateTime.now());
+    Integer lesson1Id = jdbcTemplate.queryForObject("SELECT id FROM lessons WHERE title = ?", Integer.class, "レッスン1");
+
+    // Act & Assert - 存在しないfollowingLessonId
+    IllegalArgumentException exception = assertThrows(
+        IllegalArgumentException.class,
+        () -> lessonApplicationService.updateLessonOrder(1, lesson1Id, null, 999)
+    );
+    assertEquals("Following lesson not found with ID: 999", exception.getMessage());
   }
 }

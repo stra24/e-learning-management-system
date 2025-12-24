@@ -13,6 +13,8 @@ public interface LessonRepository {
 
   Optional<Lesson> findById(Integer lessonId);
 
+  List<Lesson> findByIdIn(List<Integer> lessonIds);
+
   java.util.List<Lesson> findLessons(LessonSearchCommand lessonSearchCommand);
 
   int countLessons(LessonSearchCommand lessonSearchCommand);

@@ -1,6 +1,7 @@
 package com.everrefine.elms.domain.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface LessonDomainService {
   
@@ -13,4 +14,18 @@ public interface LessonDomainService {
    * @return 発番されたレッスンの並び順
    */
   BigDecimal issueLessonOrder(Integer lessonGroupId);
+
+  /**
+   * 新しいレッスンの並び順を計算する。
+   * 前後のレッスンの並び順から中間値を計算する。
+   *
+   * @param precedingOrder 前のレッスンの並び順（先頭に移動する場合はnull）
+   * @param followingOrder 後のレッスンの並び順（末尾に移動する場合はnull）
+   * @return 計算された新しい並び順
+   */
+  BigDecimal calculateNewOrder(BigDecimal precedingOrder, BigDecimal followingOrder);
+
+  boolean needsReordering(Integer lessonGroupId);
+
+  List<BigDecimal> reorderAllLessons(Integer lessonGroupId);
 }

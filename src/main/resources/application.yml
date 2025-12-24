@@ -14,3 +14,9 @@ logging:
 
 upload:
   directory: uploads # ファイルアップロード先ディレクトリ
+
+lesson:
+  order:
+    interval: 1024
+    scale: 10
+    reorder-threshold: 0.0000000001

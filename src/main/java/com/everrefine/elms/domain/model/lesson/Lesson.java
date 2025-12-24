@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.lang.Nullable;
@@ -22,6 +23,10 @@ public class Lesson {
 
   @Id
   private final Integer id;
+
+  @Version
+  @Column("version")
+  private Long version;
   @NotNull
   @Column("lesson_group_id")
   private Integer lessonGroupId;
@@ -66,6 +71,7 @@ public class Lesson {
   ) {
     return new Lesson(
         null,
+        null,
         lessonGroupId,
         courseId,
         new Order(lessonOrder),
@@ -88,12 +94,34 @@ public class Lesson {
   public Lesson update(String title, String description, String videoUrl) {
     return new Lesson(
         this.id,
+        this.version,
         this.lessonGroupId,
         this.courseId,
         this.lessonOrder,
         title == null ? this.title : new Title(title),
         description == null ? this.description : new Description(description),
         videoUrl == null ? this.videoUrl : new Url(videoUrl),
+        this.createdAt,
+        LocalDateTime.now()
+    );
+  }
+
+  /**
+   * レッスンの並び順を変更する。
+   *
+   * @param newOrder 新しい並び順
+   * @return 並び順が変更されたレッスン
+   */
+  public Lesson changeOrder(BigDecimal newOrder) {
+    return new Lesson(
+        this.id,
+        this.version,
+        this.lessonGroupId,
+        this.courseId,
+        new Order(newOrder),
+        this.title,
+        this.description,
+        this.videoUrl,
         this.createdAt,
         LocalDateTime.now()
     );
