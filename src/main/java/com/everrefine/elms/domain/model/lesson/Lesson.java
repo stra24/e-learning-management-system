@@ -71,7 +71,7 @@ public class Lesson {
   ) {
     return new Lesson(
         null,
-        0L,
+        null,
         lessonGroupId,
         courseId,
         new Order(lessonOrder),
