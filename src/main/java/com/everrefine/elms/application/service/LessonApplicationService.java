@@ -23,4 +23,6 @@ public interface LessonApplicationService {
   LessonDto updateLesson(LessonUpdateCommand lessonUpdateCommand);
  
   void deleteLessonById(Integer lessonId);
+
+  LessonDto updateLessonOrder(Integer operatorUserId, Integer lessonId, Integer precedingLessonId, Integer followingLessonId);
 }

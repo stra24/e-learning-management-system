@@ -11,15 +11,22 @@ import com.everrefine.elms.domain.model.lesson.Lesson;
 import com.everrefine.elms.domain.repository.LessonRepository;
 import com.everrefine.elms.domain.service.LessonDomainService;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
 public class LessonApplicationServiceImpl implements LessonApplicationService {
+
+  private static final Logger logger = LoggerFactory.getLogger(LessonApplicationServiceImpl.class);
 
   private final LessonRepository lessonRepository;
   private final LessonDomainService lessonDomainService;
@@ -114,4 +121,64 @@ public class LessonApplicationServiceImpl implements LessonApplicationService {
     lessonRepository.findById(lessonId)
         .ifPresent(lesson -> lessonRepository.deleteLessonById(lessonId));
   }
-}
+
+  @Override
+  @Transactional
+  public LessonDto updateLessonOrder(Integer operatorUserId, Integer lessonId, Integer precedingLessonId,
+      Integer followingLessonId) {
+    Lesson initialTargetLesson = lessonRepository.findById(lessonId)
+        .orElseThrow(() -> new IllegalArgumentException("Lesson not found with ID: " + lessonId));
+
+    BigDecimal oldOrder = initialTargetLesson.getLessonOrder().getValue();
+
+    Integer lessonGroupId = initialTargetLesson.getLessonGroupId();
+    if (lessonDomainService.needsReordering(lessonGroupId)) {
+      lessonDomainService.reorderAllLessons(lessonGroupId);
+    }
+
+    List<Integer> ids = new ArrayList<>();
+    ids.add(lessonId);
+    if (precedingLessonId != null && !ids.contains(precedingLessonId)) {
+      ids.add(precedingLessonId);
+    }
+    if (followingLessonId != null && !ids.contains(followingLessonId)) {
+      ids.add(followingLessonId);
+    }
+
+    Map<Integer, Lesson> lessonMap = lessonRepository.findByIdIn(ids).stream()
+        .collect(Collectors.toMap(Lesson::getId, Function.identity()));
+
+    Lesson targetLesson = lessonMap.get(lessonId);
+    if (targetLesson == null) {
+      throw new IllegalArgumentException("Lesson not found with ID: " + lessonId);
+    }
+
+    BigDecimal precedingOrder = null;
+    if (precedingLessonId != null) {
+      Lesson precedingLesson = lessonMap.get(precedingLessonId);
+      if (precedingLesson == null) {
+        throw new IllegalArgumentException("Preceding lesson not found with ID: " + precedingLessonId);
+      }
+      precedingOrder = precedingLesson.getLessonOrder().getValue();
+    }
+
+    BigDecimal followingOrder = null;
+    if (followingLessonId != null) {
+      Lesson followingLesson = lessonMap.get(followingLessonId);
+      if (followingLesson == null) {
+        throw new IllegalArgumentException("Following lesson not found with ID: " + followingLessonId);
+      }
+      followingOrder = followingLesson.getLessonOrder().getValue();
+    }
+
+    BigDecimal newOrder = lessonDomainService.calculateNewOrder(precedingOrder, followingOrder);
+
+    Lesson updatedLesson = targetLesson.changeOrder(newOrder);
+    Lesson savedLesson = lessonRepository.updateLesson(updatedLesson);
+
+    logger.info("lesson_order_changed operatorUserId={} lessonId={} oldOrder={} newOrder={} precedingLessonId={} followingLessonId={}",
+        operatorUserId, lessonId, oldOrder, newOrder, precedingLessonId, followingLessonId);
+
+    return LessonDto.from(savedLesson);
+  }
+ }

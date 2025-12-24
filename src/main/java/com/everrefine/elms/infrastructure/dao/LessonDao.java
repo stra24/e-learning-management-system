@@ -68,6 +68,13 @@ public interface LessonDao extends CrudRepository<Lesson, Integer> {
   @Query("""
       SELECT *
       FROM lessons
+      WHERE id IN (:lessonIds)
+      """)
+  List<Lesson> findByIdIn(@Param("lessonIds") List<Integer> lessonIds);
+
+  @Query("""
+      SELECT *
+      FROM lessons
       WHERE lesson_group_id = :lessonGroupId
       ORDER BY lesson_order ASC
       """)

@@ -36,6 +36,14 @@ public class LessonRepositoryImpl implements LessonRepository {
   }
 
   @Override
+  public List<Lesson> findByIdIn(List<Integer> lessonIds) {
+    if (lessonIds == null || lessonIds.isEmpty()) {
+      return List.of();
+    }
+    return lessonDao.findByIdIn(lessonIds);
+  }
+
+  @Override
   public List<Lesson> findLessons(LessonSearchCommand lessonSearchCommand) {
     Integer courseId = lessonSearchCommand.getCourseId() != null ?
         Integer.valueOf(lessonSearchCommand.getCourseId()) : null;
